@@ -15,6 +15,9 @@ abstract class Routes {
   static const SIDEBAR = _Paths.SIDEBAR;
   static const NAVIGATION = _Paths.NAVIGATION;
   static const USER = _Paths.USER;
+  static const JENISHEWAN = _Paths.JENISHEWAN;
+  static const RUMPUNHEWAN = _Paths.RUMPUNHEWAN;
+  static const TUJUANPEMELIHARAAN = _Paths.TUJUANPEMELIHARAAN;
   static const HEWAN = _Paths.HEWAN;
   static const PKB = _Paths.PKB;
   static const PENGOBATAN = _Paths.PENGOBATAN;
@@ -22,6 +25,8 @@ abstract class Routes {
   static const PEMILIK = _Paths.PEMILIK;
   static const KARTU_TERNAK = _Paths.KARTU_TERNAK;
   static const INSEMINASI = _Paths.INSEMINASI;
+  static const JENISVAKSIN = _Paths.JENISVAKSIN;
+  static const NAMAVAKSIN = _Paths.NAMAVAKSIN;
   static const VAKSIN = _Paths.VAKSIN;
   static const MAIN = _Paths.MAIN;
   static const MYACCOUNT = _Paths.MYACCOUNT;
@@ -67,6 +72,9 @@ abstract class _Paths {
   static const SIDEBAR = '/sidebar';
   static const NAVIGATION = '/navigation';
   static const USER = '/user';
+  static const JENISHEWAN = '/jenis-hewan';
+  static const RUMPUNHEWAN = '/rumpun-hewan';
+  static const TUJUANPEMELIHARAAN = '/tujuan-pemeliharaan';
   static const HEWAN = '/hewan';
   static const PKB = '/pkb';
   static const PENGOBATAN = '/pengobatan';
@@ -74,6 +82,8 @@ abstract class _Paths {
   static const PEMILIK = '/pemilik';
   static const KARTU_TERNAK = '/kartu-ternak';
   static const INSEMINASI = '/inseminasi';
+  static const JENISVAKSIN = '/jenis-vaksin';
+  static const NAMAVAKSIN = '/nama-vaksin';
   static const VAKSIN = '/vaksin';
   static const MAIN = '/main';
   static const MYACCOUNT = '/myaccount';
