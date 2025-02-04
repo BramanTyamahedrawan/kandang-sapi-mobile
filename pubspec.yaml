@@ -38,7 +38,7 @@ dependencies:
   ping_discover_network_v2: ^0.0.2
   uuid: ^4.3.3
   easy_search_bar: ^2.5.0
-  wakelock_plus: ^1.2.10
+  wakelock_plus: ^1.2.10 
   #environment:
   # sdk: '>=2.12.0 <3.0.0'
   # geocoding_android: ^latest_version
