@@ -1,11 +1,22 @@
-import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/add_jenishewan/bindings/add_jenishewan_binding.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/add_jenishewan/views/add_jenishewan.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/detail_jenishewan/bindings/detail_jenishewan_binding.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/detail_jenishewan/views/detail_jenishewan_view.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/rumpun-hewan/add_rumpunhewan/bindings/add_rumpunhewan_binding.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/rumpun-hewan/add_rumpunhewan/views/add_rumpunhewan.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/rumpun-hewan/detail_rumpunhewan/bindings/detail_rumpunhewan_binding.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/rumpun-hewan/detail_rumpunhewan/views/detail_hewan_rumpunview.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/tujuan-pemeliharaan/add-tujuan-pemeliharaan/bindings/add_rumpunhewan_binding.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/tujuan-pemeliharaan/add-tujuan-pemeliharaan/views/add_rumpunhewan.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/tujuan-pemeliharaan/detail_tujuan-pemeliharaan/bindings/detail_tujuanpemeliharaan_binding.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/tujuan-pemeliharaan/detail_tujuan-pemeliharaan/views/detail_tujuanpemeliharaan_view.dart';
 import 'package:crud_flutter_api/app/modules/menu/monitoring/bindings/monitoring_binding.dart';
 import 'package:crud_flutter_api/app/modules/menu/monitoring/views/monitoring_view.dart';
+import 'package:crud_flutter_api/app/modules/menu/rumpun-hewan/bindings/rumpunhewan_binding.dart';
+import 'package:crud_flutter_api/app/modules/menu/rumpun-hewan/views/rumpunhewan_view.dart';
 import 'package:crud_flutter_api/app/modules/menu/ternak_saya/bindings/ternak_saya_binding.dart';
 import 'package:crud_flutter_api/app/modules/menu/ternak_saya/views/ternak_saya_view.dart';
+import 'package:crud_flutter_api/app/modules/menu/tujuan-pemeliharaan/bindings/tujuanpemeliharaan_binding.dart';
+import 'package:crud_flutter_api/app/modules/menu/tujuan-pemeliharaan/views/tujuanpemeliharaan_view.dart';
 import 'package:get/get.dart';
 
 // Jenis Hewan
@@ -151,6 +162,18 @@ class AppPages {
       binding: JenisHewanBinding(),
       transition: Transition.rightToLeft,
     ),
+    GetPage(
+      name: _Paths.RUMPUNHEWAN,
+      page: () => const RumpunHewanView(),
+      binding: RumpunHewanBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: _Paths.TUJUANPEMELIHARAAN,
+      page: () => const TujuanPemeliharaanView(),
+      binding: TujuanPemeliharaanBinding(),
+      transition: Transition.rightToLeft,
+    ),
 
     GetPage(
       name: _Paths.HEWAN,
@@ -220,6 +243,17 @@ class AppPages {
         binding: AddHewanBinding(),
         transition: Transition.rightToLeft),
     GetPage(
+        name: _Paths.ADDRUMPUNHEWAN,
+        page: () => const AddRumpunhewan(),
+        binding: AddRumpunHewanBinding(),
+        transition: Transition.rightToLeft),
+    GetPage(
+        name: _Paths.ADDTUJUANPEMELIHARAAN,
+        page: () => const AddTujuanPemeliharaan(),
+        binding: AddTujuanPemeliharaanBinding(),
+        transition: Transition.rightToLeft),
+
+    GetPage(
       name: _Paths.ADDHEWAN,
       page: () => const AddHewanView(),
       binding: AddHewanBinding(),
@@ -286,6 +320,16 @@ class AppPages {
         name: _Paths.DETAILJENISHEWAN,
         page: () => const DetailJenisHewanView(),
         binding: DetailJenisHewanBinding(),
+        transition: Transition.rightToLeft),
+    GetPage(
+        name: _Paths.DETAILRUMPUNHEWAN,
+        page: () => const DetailRumpunHewanView(),
+        binding: DetailRumpunHewanBinding(),
+        transition: Transition.rightToLeft),
+    GetPage(
+        name: _Paths.DETAILTUJUANPEMELIHARAAN,
+        page: () => const DetailTujuanPemeliharaanView(),
+        binding: DetailTujuanPemeliharaanBinding(),
         transition: Transition.rightToLeft),
     GetPage(
       name: _Paths.DETAILHEWAN,
