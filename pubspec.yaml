@@ -36,7 +36,7 @@ dependencies:
   permission_handler: ^11.0.1
   flutter_map_marker_cluster: ^1.4.0
   ping_discover_network_v2: ^0.0.2
-  uuid: ^4.3.3
+  uuid: ^4.5.1
   easy_search_bar: ^2.5.0
   wakelock_plus: ^1.2.10 
   #environment:

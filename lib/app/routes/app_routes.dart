@@ -36,6 +36,7 @@ abstract class Routes {
   static const TERNAKSAYA = _Paths.TERNAKSAYA;
 
   // ADD DATA
+  static const ADDJENISHEWAN = _Paths.ADDJENISHEWAN;
   static const ADDHEWAN = _Paths.ADDHEWAN;
   static const ADDPETERNAK = _Paths.ADDPETERNAK;
   static const ADDPETUGAS = _Paths.ADDPETUGAS;
@@ -47,6 +48,7 @@ abstract class Routes {
   static const ADDKANDANG = _Paths.ADDKANDANG;
 
   //Detail Post
+  static const DETAILJENISHEWAN = _Paths.DETAILJENISHEWAN;
   static const DETAILPETUGAS = _Paths.DETAILPETUGAS;
   static const DETAILHEWAN = _Paths.DETAILHEWAN;
   static const DETAILPETERNAK = _Paths.DETAILPETERNAK;
@@ -93,7 +95,7 @@ abstract class _Paths {
   static const TERNAKSAYA = '/ternak-saya';
 
   // Create read update delete
-
+  static const ADDJENISHEWAN = '/add-jenis-hewan';
   static const ADDHEWAN = '/add-hewan';
   static const ADDPETERNAK = '/add-peternak';
   static const ADDPETUGAS = '/add-petugas';
@@ -106,6 +108,7 @@ abstract class _Paths {
 
   // Detail Post
   static const DETAILPETUGAS = '/detail-petugas';
+  static const DETAILJENISHEWAN = '/detail-jenis-hewan';
   static const DETAILHEWAN = '/detail-hewan';
   static const DETAILPETERNAK = '/detail-peternak';
   static const DETAILPKB = '/detail-pkn';

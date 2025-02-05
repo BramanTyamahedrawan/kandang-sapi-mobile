@@ -65,13 +65,12 @@ class MainMenuView extends GetView<MainMenuController> {
               FaIcon(FontAwesomeIcons.addressCard, color: Colors.white)),
           buildButton(Routes.PEMILIK, 'Peternak',
               FaIcon(FontAwesomeIcons.users, color: Colors.white)),
-              buildButton(Routes.KANDANG, 'Kandang',
+          buildButton(Routes.KANDANG, 'Kandang',
               FaIcon(FontAwesomeIcons.house, color: Colors.white)),
-         
         ]),
         const SizedBox(height: 30),
         buildButtonRow([
-           buildButton(Routes.JENISHEWAN, 'Jenis Hewan',
+          buildButton(Routes.JENISHEWAN, 'Jenis Hewan',
               FaIcon(FontAwesomeIcons.qrcode, color: Colors.white)),
           buildButton(Routes.RUMPUNHEWAN, 'Rumpun Hewan',
               FaIcon(FontAwesomeIcons.networkWired, color: Colors.white)),
@@ -83,9 +82,9 @@ class MainMenuView extends GetView<MainMenuController> {
           buildButton(Routes.HEWAN, 'Daftar Hewan',
               FaIcon(FontAwesomeIcons.cow, color: Colors.white)),
           buildButton(Routes.JENISVAKSIN, 'Jenis Vaksin',
-              FaIcon(FontAwesomeIcons.cow, color: Colors.white)),
+              FaIcon(FontAwesomeIcons.virus, color: Colors.white)),
           buildButton(Routes.NAMAVAKSIN, 'Nama Vaksin',
-              FaIcon(FontAwesomeIcons.cow, color: Colors.white)),
+              FaIcon(FontAwesomeIcons.pills, color: Colors.white)),
         ]),
         const SizedBox(height: 30),
         buildButtonRow([

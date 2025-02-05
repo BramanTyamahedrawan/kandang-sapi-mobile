@@ -1,71 +1,99 @@
+import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/add_jenishewan/bindings/add_jenishewan_binding.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/add_jenishewan/views/add_jenishewan.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/detail_jenishewan/bindings/detail_jenishewan_binding.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/detail_jenishewan/views/detail_jenishewan_view.dart';
 import 'package:crud_flutter_api/app/modules/menu/monitoring/bindings/monitoring_binding.dart';
 import 'package:crud_flutter_api/app/modules/menu/monitoring/views/monitoring_view.dart';
 import 'package:crud_flutter_api/app/modules/menu/ternak_saya/bindings/ternak_saya_binding.dart';
 import 'package:crud_flutter_api/app/modules/menu/ternak_saya/views/ternak_saya_view.dart';
 import 'package:get/get.dart';
 
+// Jenis Hewan
+import '../modules/menu/jenis-hewan/views/jenishewan_view.dart';
+import '../modules/menu/jenis-hewan/bindings/jenishewan_binding.dart';
+
+// Hewan
 import '../modules/CRUD/hewan/add_hewan/bindings/add_hewan_binding.dart';
 import '../modules/CRUD/hewan/add_hewan/views/add_hewan.dart';
 import '../modules/CRUD/hewan/detail_hewan/bindings/detail_hewan_binding.dart';
 import '../modules/CRUD/hewan/detail_hewan/views/detail_hewan_view.dart';
+import '../modules/menu/hewan/bindings/hewan_binding.dart';
+import '../modules/menu/hewan/views/hewan_view.dart';
+
+// Inseminasi
 import '../modules/CRUD/inseminasi/add_inseminasi/bindings/add_inseminasi_binding.dart';
 import '../modules/CRUD/inseminasi/add_inseminasi/views/add_inseminasi.dart';
 import '../modules/CRUD/inseminasi/detail_inseminasi/bindings/detail_inseminasi_binding.dart';
 import '../modules/CRUD/inseminasi/detail_inseminasi/views/detail_inseminasi_view.dart';
+import '../modules/menu/inseminasi/bindings/inseminasi_binding.dart';
+import '../modules/menu/inseminasi/views/inseminasi_view.dart';
+
+// Kandang
 import '../modules/CRUD/kandang/add_kandang/bindings/add_kandang_binding.dart';
 import '../modules/CRUD/kandang/add_kandang/views/add_kandang.dart';
 import '../modules/CRUD/kandang/detail_kandang/bindings/detail_kandang_binding.dart';
 import '../modules/CRUD/kandang/detail_kandang/views/detail_kandang_view.dart';
+import '../modules/menu/kandang/bindings/kandang_binding.dart';
+import '../modules/menu/kandang/views/kandang_view.dart';
+
+// Kelahiran
 import '../modules/CRUD/kelahiran/add_kelahiran/bindings/add_kelahiran_binding.dart';
 import '../modules/CRUD/kelahiran/add_kelahiran/views/add_kelahiran.dart';
 import '../modules/CRUD/kelahiran/detail_kelahiran/bindings/detail_kelahiran_binding.dart';
 import '../modules/CRUD/kelahiran/detail_kelahiran/views/detail_kelahiran_view.dart';
+import '../modules/menu/kelahiran/bindings/kelahiran_binding.dart';
+import '../modules/menu/kelahiran/views/kelahiran_view.dart';
+
+// Pengobatan
 import '../modules/CRUD/pengobatan/add_pengobatan/bindings/add_pengobatan_binding.dart';
 import '../modules/CRUD/pengobatan/add_pengobatan/views/add_pengobatan.dart';
 import '../modules/CRUD/pengobatan/detail_pengobatan/bindings/detail_pengobatan_binding.dart';
 import '../modules/CRUD/pengobatan/detail_pengobatan/views/detail_pengobatan_view.dart';
+import '../modules/menu/pengobatan/bindings/pengobatan_binding.dart';
+import '../modules/menu/pengobatan/views/pengobatan_view.dart';
+
+// Peternak
 import '../modules/CRUD/peternak/add_peternak/bindings/add_peternak_binding.dart';
 import '../modules/CRUD/peternak/add_peternak/views/add_peternak.dart';
 import '../modules/CRUD/peternak/detail_peternak/bindings/detail_peternak_binding.dart';
 import '../modules/CRUD/peternak/detail_peternak/views/detail_peternak_view.dart';
+import '../modules/menu/peternak/bindings/peternak_binding.dart';
+import '../modules/menu/peternak/views/peternak_view.dart';
+
+// Petugas
 import '../modules/CRUD/petugas/add_petugas/bindings/add_petugas_binding.dart';
 import '../modules/CRUD/petugas/add_petugas/views/add_petugas.dart';
 import '../modules/CRUD/petugas/detail_petugas/bindings/detail_petugas_binding.dart';
 import '../modules/CRUD/petugas/detail_petugas/views/detail_petugas_view.dart';
+import '../modules/menu/petugas/bindings/petugas_binding.dart';
+import '../modules/menu/petugas/views/petugas_view.dart';
+
+// PKB
 import '../modules/CRUD/pkb/add_pkb/bindings/add_pkb_binding.dart';
 import '../modules/CRUD/pkb/add_pkb/views/add_pkb.dart';
 import '../modules/CRUD/pkb/detail_pkb/bindings/detail_pkb_binding.dart';
 import '../modules/CRUD/pkb/detail_pkb/views/detail_pkb_view.dart';
+import '../modules/menu/PKB/bindings/pkb_binding.dart';
+import '../modules/menu/PKB/views/pkb_view.dart';
+
+// Vaksin
 import '../modules/CRUD/vaksin/add_vaksin/bindings/add_vaksin_binding.dart';
 import '../modules/CRUD/vaksin/add_vaksin/views/add_vaksin.dart';
 import '../modules/CRUD/vaksin/detail_vaksin/bindings/detail_vaksin_binding.dart';
 import '../modules/CRUD/vaksin/detail_vaksin/views/detail_vaksin_view.dart';
-import '../modules/home/bindings/home_binding.dart';
-import '../modules/home/views/home_view.dart';
-import '../modules/login/bindings/login_binding.dart';
-import '../modules/login/views/login_view.dart';
-import '../modules/menu/PKB/bindings/pkb_binding.dart';
-import '../modules/menu/PKB/views/pkb_view.dart';
-import '../modules/menu/hewan/bindings/hewan_binding.dart';
-import '../modules/menu/hewan/views/hewan_view.dart';
-import '../modules/menu/inseminasi/bindings/inseminasi_binding.dart';
-import '../modules/menu/inseminasi/views/inseminasi_view.dart';
-import '../modules/menu/kandang/bindings/kandang_binding.dart';
-import '../modules/menu/kandang/views/kandang_view.dart';
-import '../modules/menu/kelahiran/bindings/kelahiran_binding.dart';
-import '../modules/menu/kelahiran/views/kelahiran_view.dart';
-import '../modules/menu/pengobatan/bindings/pengobatan_binding.dart';
-import '../modules/menu/pengobatan/views/pengobatan_view.dart';
-import '../modules/menu/peternak/bindings/peternak_binding.dart';
-import '../modules/menu/peternak/views/peternak_view.dart';
-import '../modules/menu/petugas/bindings/petugas_binding.dart';
-import '../modules/menu/petugas/views/petugas_view.dart';
 import '../modules/menu/vaksin/bindings/vaksin_binding.dart';
 import '../modules/menu/vaksin/views/vaksin_view.dart';
+
+// Home
+import '../modules/home/bindings/home_binding.dart';
+import '../modules/home/views/home_view.dart';
+
+// Login
+import '../modules/login/bindings/login_binding.dart';
+import '../modules/login/views/login_view.dart';
+
 import '../modules/navigation/bindings/navigation_binding.dart';
 import '../modules/navigation/views/navigation_view.dart';
-import '../modules/register/bindings/register_binding.dart';
-import '../modules/register/views/register_view.dart';
 import '../modules/start/bindings/start_binding.dart';
 import '../modules/start/views/start_view.dart';
 import '../modules/user/bindings/user_binding.dart';
@@ -116,6 +144,14 @@ class AppPages {
       page: () => const UserView(),
       binding: UserBinding(),
     ),
+
+    GetPage(
+      name: _Paths.JENISHEWAN,
+      page: () => const JenisHewanView(),
+      binding: JenisHewanBinding(),
+      transition: Transition.rightToLeft,
+    ),
+
     GetPage(
       name: _Paths.HEWAN,
       page: () => const HewanView(),
@@ -178,7 +214,11 @@ class AppPages {
     ),
 
     // ADD Data
-
+    GetPage(
+        name: _Paths.ADDJENISHEWAN,
+        page: () => const AddJenishewan(),
+        binding: AddHewanBinding(),
+        transition: Transition.rightToLeft),
     GetPage(
       name: _Paths.ADDHEWAN,
       page: () => const AddHewanView(),
@@ -235,13 +275,18 @@ class AppPages {
     ),
 
     //DETAIL POST
-
     GetPage(
       name: _Paths.DETAILPETUGAS,
       page: () => const DetailPetugasView(),
       binding: DetailPetugasBinding(),
       transition: Transition.rightToLeft,
     ),
+
+    GetPage(
+        name: _Paths.DETAILJENISHEWAN,
+        page: () => const DetailJenisHewanView(),
+        binding: DetailJenisHewanBinding(),
+        transition: Transition.rightToLeft),
     GetPage(
       name: _Paths.DETAILHEWAN,
       page: () => const DetailHewanView(),
