@@ -1,10 +1,12 @@
 import 'package:crud_flutter_api/app/data/hewan_model.dart';
 import 'package:crud_flutter_api/app/data/inseminasi_model.dart';
+import 'package:crud_flutter_api/app/data/jenisvaksin_model.dart';
 import 'package:crud_flutter_api/app/data/kandang_model.dart';
 import 'package:crud_flutter_api/app/data/peternak_model.dart';
 import 'package:crud_flutter_api/app/data/petugas_model.dart';
 import 'package:crud_flutter_api/app/services/hewan_api.dart';
 import 'package:crud_flutter_api/app/services/inseminasi_api.dart';
+import 'package:crud_flutter_api/app/services/jenisvaksin_api.dart';
 import 'package:crud_flutter_api/app/services/kandang_api.dart';
 import 'package:crud_flutter_api/app/services/peternak_api.dart';
 import 'package:crud_flutter_api/app/services/petugas_api.dart';
@@ -27,6 +29,10 @@ class FetchData {
   RxList<HewanModel> hewanList = <HewanModel>[].obs;
   RxList<HewanModel> filteredHewanList =
       <HewanModel>[].obs; // List filtered for the selected peternak
+
+  RxString selectedJenisVaksin = ''.obs;
+  RxList<JenisVaksinModel> jenisVaksinList = <JenisVaksinModel>[].obs;
+  RxList<JenisVaksinModel> filteredJenisVaksinList = <JenisVaksinModel>[].obs;
 
   RxString selectedInseminasiId = ''.obs;
   RxList<InseminasiModel> inseminasiList = <InseminasiModel>[].obs;
@@ -100,6 +106,23 @@ class FetchData {
       return [];
     }
   }
+
+  // Future<List<JenisVaksinModel>> fetchJenisVaksin() async {
+  //   try {
+  //     final JenisVaksinModel jenisVaksinModel = await JenisVaksinApi().loadJenisVaksinApi();
+  //     final List<JenisVaksinModel> hewan = jenisVaksinModel.content ?? [];
+  //     if (hewan.isNotEmpty) {
+  //       selectedHewanEartag.value = hewan.first.kodeEartagNasional ?? '';
+  //     }
+  //     hewanList.assignAll(hewan);
+  //     filterHewanByPeternak(selectedPeternakId.value); // Apply initial filter
+  //     return hewan;
+  //   } catch (e) {
+  //     print('Error fetching hewan: $e');
+  //     showErrorMessage("Error fetching hewan: $e");
+  //     return [];
+  //   }
+  // }
 
   Future<List<InseminasiModel>> fetchInseminasi() async {
     try {

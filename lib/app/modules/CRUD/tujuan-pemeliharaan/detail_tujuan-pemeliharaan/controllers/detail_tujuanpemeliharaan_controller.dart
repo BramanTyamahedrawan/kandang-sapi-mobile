@@ -1,10 +1,10 @@
 import 'package:crud_flutter_api/app/data/TujuanPemeliharaan_model.dart';
 import 'package:crud_flutter_api/app/modules/menu/tujuan-pemeliharaan/controllers/tujuanpemeliharaan_controller.dart';
+import 'package:crud_flutter_api/app/routes/app_pages.dart';
 import 'package:crud_flutter_api/app/services/tujuanpemeliharaan_api.dart';
 import 'package:crud_flutter_api/app/widgets/message/custom_alert_dialog.dart';
 import 'package:crud_flutter_api/app/widgets/message/errorMessage.dart';
 import 'package:flutter/widgets.dart';
-import 'package:crud_flutter_api/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 import '../../../../../widgets/message/successMessage.dart';
@@ -112,7 +112,8 @@ class DetailTujuanPemeliharaanController extends GetxController {
               showSuccessMessage("Tujuan Pemeliharaan berhasil diubah");
 
               update();
-              Get.offAllNamed(Routes.TUJUANPEMELIHARAAN);
+              Get.back();
+              Get.back();
             } else {
               showErrorMessage(
                   "Gagal mengubah tujuan pemeliharaan. Pesan: ${tujuaPemeliharaanModel?.message ?? 'Unknown error'}");

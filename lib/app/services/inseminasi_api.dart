@@ -1,11 +1,13 @@
-import 'package:crud_flutter_api/app/utils/api.dart';
-import 'package:crud_flutter_api/app/widgets/message/loading.dart';
-import 'package:crud_flutter_api/app/widgets/message/internetMessage.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../data/inseminasi_model.dart';
+import 'package:crud_flutter_api/app/data/inseminasi_model.dart';
+import 'package:crud_flutter_api/app/utils/api.dart';
+import 'package:crud_flutter_api/app/widgets/message/internetMessage.dart';
+import 'package:crud_flutter_api/app/widgets/message/loading.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
+
+
 
 class InseminasiApi extends SharedApi {
   final box = GetStorage();

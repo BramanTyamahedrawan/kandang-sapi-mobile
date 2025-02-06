@@ -1,12 +1,12 @@
 import 'dart:async';
+
 import 'package:bot_toast/bot_toast.dart';
+import 'package:crud_flutter_api/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'app/routes/app_pages.dart';
-
 void main() async {
   try {
     // Pastikan Flutter binding diinisialisasi

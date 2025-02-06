@@ -1,10 +1,10 @@
 import 'package:crud_flutter_api/app/data/jenishewan_model.dart';
 import 'package:crud_flutter_api/app/modules/menu/jenis-hewan/controllers/jenishewan_controller.dart';
+import 'package:crud_flutter_api/app/routes/app_pages.dart';
 import 'package:crud_flutter_api/app/services/jenishewan_api.dart';
 import 'package:crud_flutter_api/app/widgets/message/custom_alert_dialog.dart';
 import 'package:crud_flutter_api/app/widgets/message/errorMessage.dart';
 import 'package:flutter/widgets.dart';
-import 'package:crud_flutter_api/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 import '../../../../../widgets/message/successMessage.dart';
@@ -99,8 +99,6 @@ class DetailJenisHewanController extends GetxController {
       onCancel: () => Get.back(),
       onConfirm: () async {
         try {
-          Get.back();
-          update();
           final response = await JenisHewanApi().editJenisHewanApi(
               idJenisHewanC.text, jenisC.text, deskripsiC.text);
 
@@ -112,7 +110,9 @@ class DetailJenisHewanController extends GetxController {
                     "Jenis Hewan Updated Successfully") {
               showSuccessMessage("Jenis Hewan berhasil diubah");
 
-              Get.offAllNamed(Routes.JENISHEWAN);
+              update();
+              Get.back();
+              Get.back();
             } else {
               showErrorMessage(
                   "Gagal mengubah jenis hewan. Pesan: ${jenisHewanModel?.message ?? 'Unknown error'}");

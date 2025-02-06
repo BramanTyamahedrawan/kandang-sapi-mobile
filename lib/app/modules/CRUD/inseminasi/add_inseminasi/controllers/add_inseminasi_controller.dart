@@ -1,19 +1,14 @@
-import 'package:crud_flutter_api/app/data/hewan_model.dart';
+
 import 'package:crud_flutter_api/app/data/inseminasi_model.dart';
-import 'package:crud_flutter_api/app/data/peternak_model.dart';
-import 'package:crud_flutter_api/app/data/petugas_model.dart';
 import 'package:crud_flutter_api/app/modules/menu/inseminasi/controllers/inseminasi_controller.dart';
 import 'package:crud_flutter_api/app/services/fetch_data.dart';
-import 'package:crud_flutter_api/app/services/hewan_api.dart';
-import 'package:crud_flutter_api/app/services/peternak_api.dart';
-import 'package:crud_flutter_api/app/services/petugas_api.dart';
 import 'package:crud_flutter_api/app/widgets/message/errorMessage.dart';
 import 'package:crud_flutter_api/app/widgets/message/successMessage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+
 import '../../../../../services/inseminasi_api.dart';
 
 class AddInseminasiController extends GetxController {

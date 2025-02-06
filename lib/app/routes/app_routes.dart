@@ -42,6 +42,8 @@ abstract class Routes {
   static const ADDHEWAN = _Paths.ADDHEWAN;
   static const ADDPETERNAK = _Paths.ADDPETERNAK;
   static const ADDPETUGAS = _Paths.ADDPETUGAS;
+  static const ADDJENISVAKSIN = _Paths.ADDJENISVAKSIN;
+  static const ADDNAMAVAKSIN = _Paths.ADDNAMAVAKSIN;
   static const ADDVAKSIN = _Paths.ADDVAKSIN;
   static const ADDINSEMINASI = _Paths.ADDINSEMINASI;
   static const ADDPENGOBATAN = _Paths.ADDPENGOBATAN;
@@ -57,6 +59,7 @@ abstract class Routes {
   static const DETAILHEWAN = _Paths.DETAILHEWAN;
   static const DETAILPETERNAK = _Paths.DETAILPETERNAK;
   static const DETAILPKB = _Paths.DETAILPKB;
+  static const DETAILJENISVAKSIN = _Paths.DETAILJENISVAKSIN;
   static const DETAILVAKSIN = _Paths.DETAILVAKSIN;
   static const DETAILINSEMINASI = _Paths.DETAILINSEMINASI;
   static const DETAILKELAHIRAN = _Paths.DETAILKELAHIRAN;
@@ -105,6 +108,8 @@ abstract class _Paths {
   static const ADDHEWAN = '/add-hewan';
   static const ADDPETERNAK = '/add-peternak';
   static const ADDPETUGAS = '/add-petugas';
+  static const ADDJENISVAKSIN = '/add-jenis-vaksin';
+  static const ADDNAMAVAKSIN = '/add-nama-vaksin';
   static const ADDVAKSIN = '/add-vaksin';
   static const ADDINSEMINASI = '/add-inseminasi';
   static const ADDPENGOBATAN = '/add-pengobatan';
@@ -120,6 +125,8 @@ abstract class _Paths {
   static const DETAILHEWAN = '/detail-hewan';
   static const DETAILPETERNAK = '/detail-peternak';
   static const DETAILPKB = '/detail-pkn';
+  static const DETAILJENISVAKSIN = '/detail-jenis-vaksin';
+  static const DETAILNAMAVAKSIN = '/detail-nama-vaksin';
   static const DETAILVAKSIN = '/detail-vaksin';
   static const DETAILINSEMINASI = '/detail-inseminasi';
   static const DETAILKELAHIRAN = '/detail-kelahiran';

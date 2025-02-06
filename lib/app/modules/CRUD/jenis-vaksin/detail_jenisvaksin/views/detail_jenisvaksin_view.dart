@@ -1,11 +1,12 @@
-import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/detail_jenishewan/controllers/detail_jenishewan_contoller.dart';
+
+import 'package:crud_flutter_api/app/modules/CRUD/jenis-vaksin/detail_jenisvaksin/controllers/detail_jenisvaksin_contoller.dart';
 import 'package:crud_flutter_api/app/utils/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 
-class DetailJenisHewanView extends GetView<DetailJenisHewanController> {
-  const DetailJenisHewanView({super.key});
+class DetailJenisVaksinView extends GetView<DetailJenisVaksinController> {
+  const DetailJenisVaksinView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class DetailJenisHewanView extends GetView<DetailJenisHewanController> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
-          'Detail Jenis Hewan',
+          'Detail Jenis Vaksin',
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -69,9 +70,9 @@ class DetailJenisHewanView extends GetView<DetailJenisHewanController> {
               child: Column(
                 children: [
                   // Hanya membungkus bagian yang berubah dengan Obx
-                  buildTextField("Id", controller.idJenisHewanC, false, 1),
+                  buildTextField("Id", controller.idJenisVaksinC, false, 1),
                   Obx(() {
-                    return buildTextField("Jenis Hewan", controller.jenisC,
+                    return buildTextField("Jenis Vaksin", controller.jenisC,
                         controller.isEditing.value, 1);
                   }),
                   Obx(() {
@@ -83,7 +84,7 @@ class DetailJenisHewanView extends GetView<DetailJenisHewanController> {
                       child: ElevatedButton(
                         onPressed: () {
                           controller.isEditing.value
-                              ? controller.editJenisHewan()
+                              ? controller.editJenisVaksin()
                               : controller.deletePost();
                         },
                         style: ElevatedButton.styleFrom(
