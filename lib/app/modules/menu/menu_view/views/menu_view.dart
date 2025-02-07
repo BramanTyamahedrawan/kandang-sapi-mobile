@@ -23,6 +23,7 @@ class MainMenuView extends GetView<MainMenuController> {
         elevation: 0.0,
       ),
       body: Container(
+        color: Colors.white,
         child: SingleChildScrollView(
           child: Padding(
             padding:

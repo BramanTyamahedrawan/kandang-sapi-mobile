@@ -8,7 +8,7 @@ class NoData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColor.primary,
+      color: Colors.white,
       width: double.infinity,
       height: double.infinity,
       alignment: Alignment.center,

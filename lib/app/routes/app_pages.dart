@@ -4,6 +4,10 @@ import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/detail_jenishewan/
 import 'package:crud_flutter_api/app/modules/CRUD/jenis-vaksin/add_jenisvaksin/views/add_jenisvaksin.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/jenis-vaksin/detail_jenisvaksin/bindings/detail_jenisvaksin_binding.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/jenis-vaksin/detail_jenisvaksin/views/detail_jenisvaksin_view.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/nama-vaksin/add_namavaksin/bindings/add_nama_vaksin_binding.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/nama-vaksin/add_namavaksin/views/add_nama_vaksin.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/nama-vaksin/detail_namavaksin/bindings/detail_nama_vaksin_binding.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/nama-vaksin/detail_namavaksin/views/detail_nama_vaksin_view.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/rumpun-hewan/add_rumpunhewan/bindings/add_rumpunhewan_binding.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/rumpun-hewan/add_rumpunhewan/views/add_rumpunhewan.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/rumpun-hewan/detail_rumpunhewan/bindings/detail_rumpunhewan_binding.dart';
@@ -16,6 +20,8 @@ import 'package:crud_flutter_api/app/modules/menu/jenis-vaksin/bindings/jenisvak
 import 'package:crud_flutter_api/app/modules/menu/jenis-vaksin/views/jenisvaksin_view.dart';
 import 'package:crud_flutter_api/app/modules/menu/monitoring/bindings/monitoring_binding.dart';
 import 'package:crud_flutter_api/app/modules/menu/monitoring/views/monitoring_view.dart';
+import 'package:crud_flutter_api/app/modules/menu/nama-vaksin/bindings/namavaksin_binding.dart';
+import 'package:crud_flutter_api/app/modules/menu/nama-vaksin/views/namavaksin_view.dart';
 import 'package:crud_flutter_api/app/modules/menu/rumpun-hewan/bindings/rumpunhewan_binding.dart';
 import 'package:crud_flutter_api/app/modules/menu/rumpun-hewan/views/rumpunhewan_view.dart';
 import 'package:crud_flutter_api/app/modules/menu/ternak_saya/bindings/ternak_saya_binding.dart';
@@ -201,7 +207,13 @@ class AppPages {
     GetPage(
       name: _Paths.JENISVAKSIN,
       page: () => const JenisVaksinView(),
-      binding:JenisVaksinBinding(),
+      binding: JenisVaksinBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: _Paths.NAMAVAKSIN,
+      page: () => const NamaVaksinView(),
+      binding: NamaVaksinBinding(),
       transition: Transition.rightToLeft,
     ),
     GetPage(
@@ -283,6 +295,12 @@ class AppPages {
       transition: Transition.rightToLeft,
     ),
     GetPage(
+      name: _Paths.ADDNAMAVAKSIN,
+      page: () => const AddNamaVaksinView(),
+      binding: AddNamaVaksinBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
       name: _Paths.ADDINSEMINASI,
       page: () => const AddInseminasiView(),
       binding: AddInseminasiBinding(),
@@ -358,6 +376,12 @@ class AppPages {
       name: _Paths.DETAILJENISVAKSIN,
       page: () => const DetailJenisVaksinView(),
       binding: DetailJenisVaksinBinding(),
+      transition: Transition.rightToLeft,
+    ),
+    GetPage(
+      name: _Paths.DETAILNAMAVAKSIN,
+      page: () => const DetailNamaVaksinView(),
+      binding: DetailNamaVaksinBinding(),
       transition: Transition.rightToLeft,
     ),
     GetPage(

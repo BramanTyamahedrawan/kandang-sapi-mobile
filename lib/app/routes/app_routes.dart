@@ -60,6 +60,7 @@ abstract class Routes {
   static const DETAILPETERNAK = _Paths.DETAILPETERNAK;
   static const DETAILPKB = _Paths.DETAILPKB;
   static const DETAILJENISVAKSIN = _Paths.DETAILJENISVAKSIN;
+  static const DETAILNAMAVAKSIN = _Paths.DETAILNAMAVAKSIN;
   static const DETAILVAKSIN = _Paths.DETAILVAKSIN;
   static const DETAILINSEMINASI = _Paths.DETAILINSEMINASI;
   static const DETAILKELAHIRAN = _Paths.DETAILKELAHIRAN;

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-
 class NamaVaksinView extends GetView<NamaVaksinController> {
   const NamaVaksinView({super.key});
   @override
@@ -19,7 +18,7 @@ class NamaVaksinView extends GetView<NamaVaksinController> {
           await controller.loadNamaVaksin();
         },
         child: Scaffold(
-          backgroundColor: AppColor.primary,
+          backgroundColor: Colors.white,
           appBar: EasySearchBar(
               searchBackgroundColor: AppColor.secondary,
               elevation: 0,
@@ -57,9 +56,9 @@ class NamaVaksinView extends GetView<NamaVaksinController> {
                             arguments: {
                               "idNamaVaksin": "${postData.idNamaVaksin}",
                               "idJenisVaksin":
-                                  "${postData.idJenisVaksin}",
+                                  "${postData.idJenisVaksin?.idJenisVaksin}",
                               "nama": "${postData.nama}",
-                              "deskripsi" : "${postData.deskripsi}"
+                              "deskripsi": "${postData.deskripsi}"
                             },
                           ),
                         },
@@ -120,19 +119,19 @@ class NamaVaksinView extends GetView<NamaVaksinController> {
               }
             },
           ),
-          floatingActionButton:  Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      Get.toNamed(Routes.ADDNAMAVAKSIN);
-                    },
-                    backgroundColor: const Color(0xff132137),
-                    child: const Icon(
-                      Icons.add,
-                      color: Colors.amber,
-                    ),
-                  ),
-                ),
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: FloatingActionButton(
+              onPressed: () {
+                Get.toNamed(Routes.ADDNAMAVAKSIN);
+              },
+              backgroundColor: const Color(0xff132137),
+              child: const Icon(
+                Icons.add,
+                color: Colors.amber,
+              ),
+            ),
+          ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
         ),

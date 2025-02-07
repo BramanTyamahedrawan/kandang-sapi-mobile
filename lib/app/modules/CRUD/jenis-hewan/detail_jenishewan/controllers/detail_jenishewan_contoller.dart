@@ -87,7 +87,8 @@ class DetailJenisHewanController extends GetxController {
             Get.put(JenisHewanController());
         jenisHewanController.reInitialize();
         update();
-        Get.offAllNamed(Routes.JENISHEWAN);
+        Get.back();
+        Get.back();
       },
     );
   }
@@ -123,6 +124,10 @@ class DetailJenisHewanController extends GetxController {
         } catch (e) {
           showErrorMessage("Terjadi kesalahan: ${e.toString()}");
         } finally {
+          final JenisHewanController jenisHewanController =
+              Get.put(JenisHewanController());
+          jenisHewanController.reInitialize();
+          update();
           isLoading.value = false;
           isEditing.value = false;
         }

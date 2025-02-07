@@ -1,4 +1,3 @@
-
 import 'package:crud_flutter_api/app/data/jenisvaksin_model.dart';
 import 'package:crud_flutter_api/app/modules/menu/jenis-vaksin/controllers/jenisvaksin_controller.dart';
 import 'package:crud_flutter_api/app/routes/app_pages.dart';
@@ -75,8 +74,8 @@ class DetailJenisVaksinController extends GetxController {
       message: "Apakah anda ingin menghapus data Jenis Vaksin ini ?",
       onCancel: () => Get.back(),
       onConfirm: () async {
-        jenisVaksinModel =
-            await JenisVaksinApi().deleteJenisVaksinApi(argsData["idJenisVaksin"]);
+        jenisVaksinModel = await JenisVaksinApi()
+            .deleteJenisVaksinApi(argsData["idJenisVaksin"]);
 
         if (jenisVaksinModel?.status == 200) {
           showSuccessMessage("Berhasil Hapus Data Jenis Vaksin");
@@ -88,7 +87,8 @@ class DetailJenisVaksinController extends GetxController {
             Get.put(JenisVaksinController());
         jenisVaksinController.reInitialize();
         update();
-        Get.offAllNamed(Routes.JENISVAKSIN);
+        Get.back();
+        Get.back();
       },
     );
   }
@@ -124,6 +124,10 @@ class DetailJenisVaksinController extends GetxController {
         } catch (e) {
           showErrorMessage("Terjadi kesalahan: ${e.toString()}");
         } finally {
+          JenisVaksinController jenisVaksinController =
+              Get.put(JenisVaksinController());
+          jenisVaksinController.reInitialize();
+          update();
           isLoading.value = false;
           isEditing.value = false;
         }

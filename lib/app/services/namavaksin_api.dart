@@ -5,8 +5,8 @@ import 'package:crud_flutter_api/app/utils/api.dart';
 import 'package:crud_flutter_api/app/widgets/message/internetMessage.dart';
 import 'package:crud_flutter_api/app/widgets/message/loading.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
-
 
 class NamavaksinApi extends SharedApi {
   final box = GetStorage();
@@ -48,17 +48,17 @@ class NamavaksinApi extends SharedApi {
 
 //ADD
   Future<NamaVaksinModel?> addNamaVaksinAPI(
-    String idNamaVaksin,
     String idJenisVaksin,
     String nama,
     String deskripsi,
   ) async {
     try {
+      var generateId = Uuid().v4();
       var jsonData;
       showLoading();
 
       var bodyData = {
-        'idNamaVaksin': idNamaVaksin,
+        'idNamaVaksin': generateId,
         'idJenisVaksin': idJenisVaksin,
         'nama': nama,
         'deskripsi': deskripsi,
@@ -74,7 +74,6 @@ class NamavaksinApi extends SharedApi {
       stopLoading();
       jsonData = json.decode(data.body);
       print(data.body);
-      print("apalah");
       if (data.statusCode == 201) {
         return NamaVaksinModel.fromJson({
           "status": 201,
@@ -84,6 +83,7 @@ class NamavaksinApi extends SharedApi {
           "deskripsi": jsonData['deskripsi'],
         });
       } else {
+        print("error:");
         return null; // return VaksinModel.fromJson({"status": data.statusCode});
       }
     } on Exception catch (_) {
@@ -94,7 +94,7 @@ class NamavaksinApi extends SharedApi {
   }
 
 //EDIT
-  Future<NamaVaksinModel?> editVaksinApi(
+  Future<NamaVaksinModel?> editNamaVaksinApi(
     String idNamaVaksin,
     String idJenisVaksin,
     String nama,
@@ -111,7 +111,7 @@ class NamavaksinApi extends SharedApi {
       };
 
       var data = await http.put(
-        Uri.parse('$baseUrl/vaksin/$idNamaVaksin'),
+        Uri.parse('$baseUrl/namavaksin/$idNamaVaksin'),
         headers: {...getToken(), 'Content-Type': 'application/json'},
         body: jsonEncode(bodyDataedit),
       );

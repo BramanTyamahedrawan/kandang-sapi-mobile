@@ -30,7 +30,7 @@ class FetchData {
   RxList<HewanModel> filteredHewanList =
       <HewanModel>[].obs; // List filtered for the selected peternak
 
-  RxString selectedJenisVaksin = ''.obs;
+  RxString selectedIdJenisVaksin = ''.obs;
   RxList<JenisVaksinModel> jenisVaksinList = <JenisVaksinModel>[].obs;
   RxList<JenisVaksinModel> filteredJenisVaksinList = <JenisVaksinModel>[].obs;
 
@@ -107,22 +107,22 @@ class FetchData {
     }
   }
 
-  // Future<List<JenisVaksinModel>> fetchJenisVaksin() async {
-  //   try {
-  //     final JenisVaksinModel jenisVaksinModel = await JenisVaksinApi().loadJenisVaksinApi();
-  //     final List<JenisVaksinModel> hewan = jenisVaksinModel.content ?? [];
-  //     if (hewan.isNotEmpty) {
-  //       selectedHewanEartag.value = hewan.first.kodeEartagNasional ?? '';
-  //     }
-  //     hewanList.assignAll(hewan);
-  //     filterHewanByPeternak(selectedPeternakId.value); // Apply initial filter
-  //     return hewan;
-  //   } catch (e) {
-  //     print('Error fetching hewan: $e');
-  //     showErrorMessage("Error fetching hewan: $e");
-  //     return [];
-  //   }
-  // }
+  Future<void> fetchJenisVaksin() async {
+    try {
+      final JenisVaksinListModel jenisVaksinListModel =
+          await JenisVaksinApi().loadJenisVaksinApi();
+      final List<JenisVaksinModel> jenis = jenisVaksinListModel.content ?? [];
+
+      // if (jenis.isNotEmpty) {
+      //   selectedIdJenisVaksin.value = jenis.first.idJenisVaksin ?? '';
+      // }
+      // Jangan langsung set selectedIdJenisVaksin, biarkan kosong dulu
+      jenisVaksinList.assignAll(jenis);
+    } catch (e) {
+      print('Error fetching jenis: $e');
+      showErrorMessage("Error fetching jenis vaksin: $e");
+    }
+  }
 
   Future<List<InseminasiModel>> fetchInseminasi() async {
     try {

@@ -87,7 +87,8 @@ class DetailTujuanPemeliharaanController extends GetxController {
             Get.put(TujuanPemeliharaanController());
         tujuanPemeliharaanController.reInitialize();
         update();
-        Get.offAllNamed(Routes.TUJUANPEMELIHARAAN);
+        Get.back();
+        Get.back();
       },
     );
   }
@@ -124,6 +125,10 @@ class DetailTujuanPemeliharaanController extends GetxController {
         } catch (e) {
           showErrorMessage("Terjadi kesalahan: ${e.toString()}");
         } finally {
+          final TujuanPemeliharaanController tujuanPemeliharaanController =
+              Get.put(TujuanPemeliharaanController());
+          tujuanPemeliharaanController.reInitialize();
+          update();
           isLoading.value = false;
           isEditing.value = false;
         }

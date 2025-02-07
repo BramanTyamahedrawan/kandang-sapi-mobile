@@ -87,7 +87,8 @@ class DetailRumpunHewanController extends GetxController {
             Get.put(RumpunHewanController());
         rumpunHewanController.reInitialize();
         update();
-        Get.offAllNamed(Routes.RUMPUNHEWAN);
+        Get.back();
+        Get.back();
       },
     );
   }
@@ -123,6 +124,10 @@ class DetailRumpunHewanController extends GetxController {
         } catch (e) {
           showErrorMessage("Terjadi kesalahan: ${e.toString()}");
         } finally {
+          final RumpunHewanController rumpunHewanController =
+              Get.put(RumpunHewanController());
+          rumpunHewanController.reInitialize();
+          update();
           isLoading.value = false;
           isEditing.value = false;
         }

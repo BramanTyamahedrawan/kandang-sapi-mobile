@@ -1,5 +1,3 @@
-
-
 import 'package:crud_flutter_api/app/data/jenisvaksin_model.dart';
 
 class NamaVaksinModel {
@@ -8,25 +6,26 @@ class NamaVaksinModel {
   final JenisVaksinModel? idJenisVaksin;
   final String? nama;
   final String? deskripsi;
+  final String? message;
 
-  NamaVaksinModel({
-    this.status,
-    this.idNamaVaksin,
-    this.idJenisVaksin,
-    this.nama,
-    this.deskripsi,
-  });
+  NamaVaksinModel(
+      {this.status,
+      this.idNamaVaksin,
+      this.idJenisVaksin,
+      this.nama,
+      this.deskripsi,
+      this.message});
 
   factory NamaVaksinModel.fromJson(Map<String, dynamic> jsonData) {
     return NamaVaksinModel(
-      status: jsonData['status'] ?? 0,
-      idNamaVaksin: jsonData['idNamaVaksin'] ?? "",
-      idJenisVaksin: jsonData['jenisVaksin'] != null
-          ? JenisVaksinModel.fromJson(jsonData['jenisVaksin'])
-          : null,
-      nama: jsonData['nama'] ?? "",
-      deskripsi: jsonData['deskripsi'] ?? "",
-    );
+        status: jsonData['status'] ?? 0,
+        idNamaVaksin: jsonData['idNamaVaksin'] ?? "",
+        idJenisVaksin: jsonData['jenisVaksin'] != null
+            ? JenisVaksinModel.fromJson(jsonData['jenisVaksin'])
+            : null,
+        nama: jsonData['nama'] ?? "",
+        deskripsi: jsonData['deskripsi'] ?? "",
+        message: jsonData['message'] ?? "");
   }
 }
 
