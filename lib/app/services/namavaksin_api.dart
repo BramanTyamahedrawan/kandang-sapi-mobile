@@ -8,24 +8,13 @@ import 'package:get_storage/get_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
-class NamavaksinApi extends SharedApi {
+class NamaVaksinApi extends SharedApi {
   final box = GetStorage();
   // Login API
   Future<NamaVaksinListModel> loadNamaVaksinAPI() async {
     try {
-      final String? role = box.read('role');
-      final String? username = box.read('username');
-      String apiUrl = '$baseUrl/namavaksin';
-
-      // Modify URL if the role is ROLE_PETERNAK
-      if (role == 'ROLE_PETERNAK') {
-        apiUrl += '/?peternakID=$username';
-      }
-
-      final http.Response response = await http.get(
-        Uri.parse(apiUrl),
-        headers: getToken(),
-      );
+      var response =
+          await http.get(Uri.parse('$baseUrl/namavaksin'), headers: getToken());
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);

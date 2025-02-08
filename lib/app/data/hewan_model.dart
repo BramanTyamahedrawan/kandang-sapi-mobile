@@ -4,6 +4,7 @@ import 'package:crud_flutter_api/app/data/kandang_model.dart';
 import 'package:crud_flutter_api/app/data/petugas_model.dart';
 
 class HewanModel {
+  final String? idHewan;
   final String? kodeEartagNasional;
   final String? noKartuTernak;
   final String? provinsi;
@@ -28,6 +29,7 @@ class HewanModel {
   final int? status;
 
   HewanModel({
+    this.idHewan,
     this.status,
     this.kodeEartagNasional,
     this.noKartuTernak,
@@ -52,6 +54,7 @@ class HewanModel {
   factory HewanModel.fromJson(Map<String, dynamic> jsonData) {
     return HewanModel(
       status: jsonData['status'] ?? 0,
+      idHewan: jsonData['idHewan'] ?? "",
       kodeEartagNasional: jsonData['kodeEartagNasional'] ?? "",
       alamat: jsonData['alamat'] ?? "",
       provinsi: jsonData['provinsi'] ?? "",

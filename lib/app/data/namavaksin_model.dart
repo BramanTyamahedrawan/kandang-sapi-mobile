@@ -27,6 +27,10 @@ class NamaVaksinModel {
         deskripsi: jsonData['deskripsi'] ?? "",
         message: jsonData['message'] ?? "");
   }
+  @override
+  String toString() {
+    return 'NamaVaksinModel(idNamaVaksin: $idNamaVaksin, nama: $nama, jenis: $idJenisVaksin)';
+  }
 }
 
 class NamaVaksinListModel {

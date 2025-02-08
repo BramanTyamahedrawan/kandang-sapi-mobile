@@ -1,12 +1,6 @@
-import 'package:crud_flutter_api/app/data/hewan_model.dart';
-import 'package:crud_flutter_api/app/data/peternak_model.dart';
-import 'package:crud_flutter_api/app/data/petugas_model.dart';
 import 'package:crud_flutter_api/app/data/vaksin_model.dart';
 import 'package:crud_flutter_api/app/modules/menu/vaksin/controllers/vaksin_controller.dart';
 import 'package:crud_flutter_api/app/services/fetch_data.dart';
-import 'package:crud_flutter_api/app/services/hewan_api.dart';
-import 'package:crud_flutter_api/app/services/peternak_api.dart';
-import 'package:crud_flutter_api/app/services/petugas_api.dart';
 import 'package:crud_flutter_api/app/services/vaksin_api.dart';
 import 'package:crud_flutter_api/app/widgets/message/custom_alert_dialog.dart';
 import 'package:crud_flutter_api/app/widgets/message/errorMessage.dart';
@@ -30,34 +24,31 @@ class DetailVaksinController extends GetxController {
   RxBool isEditing = false.obs;
 
   RxString selectedPeternakIdInEditMode = ''.obs;
+  RxString selectedIdHewanInEditMode = ''.obs;
+  RxString selectedIdNamaVaksinInEditMode = ''.obs;
+  RxString selectedIdJenisVaksinInEditMode = ''.obs;
+  RxString selectedPetugasIdInEditMode = ''.obs;
 
   TextEditingController idVaksinC = TextEditingController();
-  TextEditingController idPeternakC = TextEditingController();
-  TextEditingController namaPeternakC = TextEditingController();
-  TextEditingController eartagC = TextEditingController();
-  TextEditingController inseminatorC = TextEditingController();
-  TextEditingController namaVaksinC = TextEditingController();
-  TextEditingController jenisVaksinC = TextEditingController();
+  TextEditingController batchVaksinC = TextEditingController();
+  TextEditingController vaksinKeC = TextEditingController();
   TextEditingController tglVaksinC = TextEditingController();
 
   String originalIdVaksin = "";
+  String originalIdHewan = "";
   String originalIdPeternak = "";
-  String originalNamaPeternak = "";
-  String originalEartag = "";
-  String originalInseminator = "";
-  String originalnamaVaksin = "";
-  String originaljenisVaksin = "";
+  String originalIdNamaVaksin = "";
+  String originalIdJenisVaksin = "";
+  String originalBatchVaksin = "";
+  String originalVaksinKe = "";
   String originaltglVaksin = "";
+  String originalPetugas = "";
 
   @override
   onClose() {
     idVaksinC.dispose();
-    idPeternakC.dispose();
-    namaPeternakC.dispose();
-    eartagC.dispose();
-    inseminatorC.dispose();
-    namaVaksinC.dispose();
-    jenisVaksinC.dispose();
+    batchVaksinC.dispose();
+    vaksinKeC.dispose();
     tglVaksinC.dispose();
   }
 
@@ -67,7 +58,8 @@ class DetailVaksinController extends GetxController {
     fetchData.fetchPeternaks();
     fetchData.fetchHewan();
     fetchData.fetchPetugas();
-
+    fetchData.fetchJenisVaksin();
+    fetchData.fetchNamaVaksin();
     fetchData.selectedPeternakId.listen((peternakId) {
       fetchData.filterHewanByPeternak(peternakId);
     });
@@ -75,56 +67,105 @@ class DetailVaksinController extends GetxController {
     role;
 
     idVaksinC.text = argsData["idVaksin"];
-    idPeternakC.text = argsData["idPeternak"];
-    namaPeternakC.text = argsData["namaPeternak"];
-    eartagC.text = argsData["kodeEartagNasional"];
-    inseminatorC.text = argsData["inseminator"];
-    namaVaksinC.text = argsData["namaVaksin"];
-    jenisVaksinC.text = argsData["jenisVaksin"];
+    batchVaksinC.text = argsData["batchVaksin"];
+    vaksinKeC.text = argsData["vaksinKe"];
     tglVaksinC.text = argsData["tglVaksin"];
 
-    ever(fetchData.selectedPeternakId, (String? selectedId) {
-      // Perbarui nilai nikPeternakC dan namaPeternakC berdasarkan selectedId
-      PeternakModel? selectedPeternak = fetchData.peternakList.firstWhere(
-          (peternak) => peternak.idPeternak == selectedId,
-          orElse: () => PeternakModel());
-      namaPeternakC.text =
-          selectedPeternak.namaPeternak ?? argsData["namaPeternak"];
-      update();
-    });
-
-    ever(fetchData.selectedHewanEartag, (String? selectedId) {
-      // Perbarui nilai nikPeternakC dan namaPeternakC berdasarkan selectedId
-      HewanModel? selectedHewan = fetchData.hewanList.firstWhere(
-          (peternak) => peternak.kodeEartagNasional == selectedId,
-          orElse: () => HewanModel());
-      eartagC.text =
-          selectedHewan.kodeEartagNasional ?? argsData["kodeEartagNasional"];
-      update();
-    });
-
-    ever(fetchData.selectedPetugasId, (String? selectedName) {
-      // Perbarui nilai nikPeternakC dan namaPeternakC berdasarkan selectedId
-      PetugasModel? selectedPetugassss = fetchData.petugasList.firstWhere(
-          (petugas) => petugas.nikPetugas == selectedName,
-          orElse: () => PetugasModel());
-      // selectedPetugasId.value = selectedPetugassss.nikPetugas ??
-      //     argsData["petugas_terdaftar_hewan_detail"];
-      inseminatorC.text =
-          selectedPetugassss.namaPetugas ?? argsData["inseminator"];
-      //print(selectedPetugasId.value);
-      update();
-    });
+    final idHewan = argsData["kodeEartagNasional"];
+    final idPeternak = argsData["idPeternak"];
+    final idNamaVaksin = argsData["namaVaksin"];
+    final idJenisVaksin = argsData["jenisVaksin"];
+    final idPetugas = argsData["inseminator"];
 
     originalIdVaksin = argsData["idVaksin"];
+    originalIdHewan = argsData["kodeEartagNasional"];
     originalIdPeternak = argsData["idPeternak"];
-    originalNamaPeternak = argsData["namaPeternak"];
-    originalEartag = argsData["kodeEartagNasional"];
-    originalInseminator = argsData["inseminator"];
-    originalnamaVaksin = argsData["namaVaksin"];
-    originaljenisVaksin = argsData["jenisVaksin"];
+    originalIdNamaVaksin = argsData["namaVaksin"];
+    originalIdJenisVaksin = argsData["jenisVaksin"];
+    originalBatchVaksin = argsData["batchVaksin"];
+    originalVaksinKe = argsData["vaksinKe"];
     originaltglVaksin = argsData["tglVaksin"];
-    update();
+    originalPetugas = argsData["inseminator"];
+
+    fetchData.fetchPeternaks().then((_) {
+      if (idPeternak != null) {
+        bool isValid = fetchData.peternakList
+            .any((peternaks) => peternaks.idPeternak == idPeternak);
+        if (isValid) {
+          fetchData.selectedPeternakId.value = idPeternak;
+        } else {
+          print(
+              "❌ ID Peternak dari argsData tidak ditemukan di daftar peternak!");
+        }
+      } else {
+        print("�� ID Peternak kosong! Harap mengisi ID Peternak yang valid.");
+      }
+    });
+
+    fetchData.fetchHewan().then((_) {
+      if (idHewan != null) {
+        bool isValid =
+            fetchData.hewanList.any((hewans) => hewans.idHewan == idHewan);
+        if (isValid) {
+          fetchData.selectedHewanEartag.value = idHewan;
+          print("data controller ${fetchData.selectedHewanEartag.value}");
+        } else {
+          print("�� ID Hewan dari argsData tidak ditemukan di daftar hewan!");
+        }
+      } else {
+        print("�� ID Hewan kosong! Harap mengisi ID Hewan yang valid.");
+      }
+    });
+
+    fetchData.fetchPetugas().then((_) {
+      if (idPetugas != null) {
+        bool isValid = fetchData.petugasList
+            .any((petugas) => petugas.petugasId == idPetugas);
+        if (isValid) {
+          fetchData.selectedPetugasId.value = idPetugas;
+        } else {
+          print(
+              "�� ID Petugas dari argsData tidak ditemukan di daftar petugas!");
+        }
+      } else {
+        print("�� ID Petugas kosong! Harap mengisi ID Petugas yang valid.");
+      }
+      update();
+    });
+
+    fetchData.fetchJenisVaksin().then((_) {
+      if (idJenisVaksin != null) {
+        bool isValid = fetchData.jenisVaksinList
+            .any((vaksin) => vaksin.idJenisVaksin == idJenisVaksin);
+        if (isValid) {
+          fetchData.selectedIdJenisVaksin.value = idJenisVaksin;
+        } else {
+          print(
+              "�� ID Jenis Vaksin dari argsData tidak ditemukan di daftar jenis vaksin!");
+        }
+      } else {
+        print(
+            "�� ID Jenis Vaksin kosong! Harap mengisi ID Jenis Vaksin yang valid.");
+      }
+      update();
+    });
+
+    fetchData.fetchNamaVaksin().then((_) {
+      if (idNamaVaksin != null) {
+        bool isValid = fetchData.namaVaksinList
+            .any((vaksin) => vaksin.idNamaVaksin == idNamaVaksin);
+        if (isValid) {
+          fetchData.selectedIdNamaVaksin.value = idNamaVaksin;
+        } else {
+          print(
+              "�� ID Nama Vaksin dari argsData tidak ditemukan di daftar nama vaksin!");
+        }
+      } else {
+        print(
+            "�� ID Nama Vaksin kosong! Harap mengisi ID Nama Vaksin yang valid.");
+      }
+      update();
+    });
   }
 
   Future<void> tombolEdit() async {
@@ -145,14 +186,14 @@ class DetailVaksinController extends GetxController {
         update();
         // Reset data ke yang sebelumnya
         idVaksinC.text = originalIdVaksin;
-        idPeternakC.text = originalIdPeternak;
-        namaPeternakC.text = originalNamaPeternak;
-        eartagC.text = originalEartag;
-        inseminatorC.text = originalInseminator;
-        namaVaksinC.text = originalnamaVaksin;
-        jenisVaksinC.text = originaljenisVaksin;
+        batchVaksinC.text = originalBatchVaksin;
+        vaksinKeC.text = originalVaksinKe;
         tglVaksinC.text = originaltglVaksin;
-
+        selectedPeternakIdInEditMode.value = originalIdPeternak;
+        selectedIdHewanInEditMode.value = originalIdHewan;
+        selectedIdJenisVaksinInEditMode.value = originalIdJenisVaksin;
+        selectedIdNamaVaksinInEditMode.value = originalIdNamaVaksin;
+        selectedPetugasIdInEditMode.value = originalPetugas;
         isEditing.value = false;
       },
     );
@@ -193,8 +234,10 @@ class DetailVaksinController extends GetxController {
           fetchData.selectedPeternakId.value,
           fetchData.selectedHewanEartag.value,
           fetchData.selectedPetugasId.value,
-          namaVaksinC.text,
-          jenisVaksinC.text,
+          fetchData.selectedIdNamaVaksin.value,
+          fetchData.selectedIdJenisVaksin.value,
+          batchVaksinC.text,
+          vaksinKeC.text,
           tglVaksinC.text,
         );
         isEditing.value = false;

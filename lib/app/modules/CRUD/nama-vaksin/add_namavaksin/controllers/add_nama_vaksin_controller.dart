@@ -38,7 +38,7 @@ class AddNamaVaksinController extends GetxController {
         throw "Pilih jenis vaksin terlebih dahulu.";
       }
 
-      namaVaksinModel = await NamavaksinApi().addNamaVaksinAPI(
+      namaVaksinModel = await NamaVaksinApi().addNamaVaksinAPI(
         fetchdata.selectedIdJenisVaksin.value,
         namaC.text,
         deskripsiC.text,

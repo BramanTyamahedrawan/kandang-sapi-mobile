@@ -25,7 +25,6 @@ class DetailNamaVaksinController extends GetxController {
   RxString selectedIdJenisVaksinInEditMode = ''.obs;
 
   TextEditingController idNamaVaksinC = TextEditingController();
-  TextEditingController idJenisVaksinC = TextEditingController();
   TextEditingController namaC = TextEditingController();
   TextEditingController deskripsiC = TextEditingController();
 
@@ -37,7 +36,6 @@ class DetailNamaVaksinController extends GetxController {
   @override
   onClose() {
     idNamaVaksinC.dispose();
-    idJenisVaksinC.dispose();
     namaC.dispose();
     deskripsiC.dispose();
   }
@@ -45,7 +43,6 @@ class DetailNamaVaksinController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Periksa apakah argsData["idJenisVaksin"] adalah model atau string
     final idJenisVaksin = argsData["idJenisVaksin"];
 
     fetchData.fetchJenisVaksin().then((_) {
@@ -91,7 +88,6 @@ class DetailNamaVaksinController extends GetxController {
         update();
         // Reset data ke yang sebelumnya
         idNamaVaksinC.text = originalIdNamaVaksin;
-        idJenisVaksinC.text = originalIdJenisVaksin;
         namaC.text = originalNama;
         deskripsiC.text = originalDeskripsi;
         isEditing.value = false;
@@ -106,7 +102,7 @@ class DetailNamaVaksinController extends GetxController {
       onCancel: () => Get.back(),
       onConfirm: () async {
         namaVaksinModel =
-            await NamavaksinApi().deleteNamaVaksinApi(argsData["idNamaVaksin"]);
+            await NamaVaksinApi().deleteNamaVaksinApi(argsData["idNamaVaksin"]);
         if (namaVaksinModel != null) {
           if (namaVaksinModel!.status == 200) {
             showSuccessMessage(
@@ -133,7 +129,7 @@ class DetailNamaVaksinController extends GetxController {
       onCancel: () => Get.back(),
       onConfirm: () async {
         try {
-          final response = await NamavaksinApi().editNamaVaksinApi(
+          final response = await NamaVaksinApi().editNamaVaksinApi(
             idNamaVaksinC.text,
             fetchData.selectedIdJenisVaksin.value,
             namaC.text,

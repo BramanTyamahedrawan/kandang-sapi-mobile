@@ -1,4 +1,6 @@
 import 'package:crud_flutter_api/app/data/hewan_model.dart';
+import 'package:crud_flutter_api/app/data/jenisvaksin_model.dart';
+import 'package:crud_flutter_api/app/data/namavaksin_model.dart';
 import 'package:crud_flutter_api/app/data/peternak_model.dart';
 import 'package:crud_flutter_api/app/data/petugas_model.dart';
 
@@ -8,8 +10,10 @@ class VaksinModel {
   final PeternakModel? idPeternak;
   final HewanModel? kodeEartagNasional;
   final PetugasModel? inseminator;
-  final String? namaVaksin;
-  final String? jenisVaksin;
+  final NamaVaksinModel? namaVaksin;
+  final JenisVaksinModel? jenisVaksin;
+  final String? batchVaksin;
+  final String? vaksinKe;
   final String? tglVaksin;
 
   VaksinModel({
@@ -20,6 +24,8 @@ class VaksinModel {
     this.inseminator,
     this.namaVaksin,
     this.jenisVaksin,
+    this.batchVaksin,
+    this.vaksinKe,
     this.tglVaksin,
   });
 
@@ -36,8 +42,14 @@ class VaksinModel {
       inseminator: jsonData['petugas'] != null
           ? PetugasModel.fromJson(jsonData['petugas'])
           : null,
-      namaVaksin: jsonData['namaVaksin'] ?? "",
-      jenisVaksin: jsonData['jenisVaksin'] ?? "",
+      namaVaksin: jsonData['namaVaksin'] != null
+          ? NamaVaksinModel.fromJson(jsonData["namaVaksin"])
+          : null,
+      jenisVaksin: jsonData['jenisVaksin'] != null
+          ? JenisVaksinModel.fromJson(jsonData["jenisVaksin"])
+          : null,
+      batchVaksin: jsonData['batchVaksin'] ?? "",
+      vaksinKe: jsonData['vaksinKe'] ?? "",
       tglVaksin: jsonData['tglVaksin'] ?? "",
     );
   }

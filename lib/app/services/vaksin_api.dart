@@ -3,6 +3,7 @@ import 'package:crud_flutter_api/app/widgets/message/loading.dart';
 import 'package:crud_flutter_api/app/widgets/message/internetMessage.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 import 'dart:convert';
 
 import '../data/vaksin_model.dart';
@@ -47,27 +48,36 @@ class VaksinApi extends SharedApi {
 
 //ADD
   Future<VaksinModel?> addVaksinAPI(
-    String idVaksin,
     String peternak_id,
     String hewan_id,
     String petugas_id,
-    String namaVaksin,
-    String jenisVaksin,
+    String idNamaVaksin,
+    String idJenisVaksin,
+    String batchVaksin,
+    String vaksinKe,
     String tglVaksin,
   ) async {
     try {
+      var generateId = Uuid().v4();
       var jsonData;
       showLoading();
 
       var bodyData = {
-        'idVaksin': idVaksin,
+        'idVaksin': generateId,
         'peternak_id': peternak_id,
         'hewan_id': hewan_id,
         'petugas_id': petugas_id,
-        'namaVaksin': namaVaksin,
-        'jenisVaksin': jenisVaksin,
+        'idNamaVaksin': idNamaVaksin,
+        'idJenisVaksin': idJenisVaksin,
+        'batchVaksin': batchVaksin,
+        'vaksinKe': vaksinKe,
         'tglVaksin': tglVaksin,
       };
+
+      print("=== DEBUG: Body Data ===");
+      print(jsonEncode(bodyData)); // Debugging print
+      print("========================");
+
       var data = await http.post(
         Uri.parse('$baseUrl/vaksin'),
         headers: {
@@ -78,8 +88,6 @@ class VaksinApi extends SharedApi {
       );
       stopLoading();
       jsonData = json.decode(data.body);
-      print(data.body);
-      print("apalah");
       if (data.statusCode == 201) {
         return VaksinModel.fromJson({
           "status": 201,
@@ -87,8 +95,10 @@ class VaksinApi extends SharedApi {
           "peternak_id": jsonData['peternak_id'],
           "hewan_id": jsonData['hewan_id'],
           "petugas_id": jsonData['petugas_id'],
-          "namaVaksin": jsonData['namaVaksin'],
-          "jenisVaksin": jsonData['jenisVaksin'],
+          "idNamaVaksin": jsonData['idNamaVaksin'],
+          "idJenisVaksin": jsonData['idJenisVaksin'],
+          "batchVaksin": jsonData['batchVaksin'],
+          "vaksinKe": jsonData['vaksinKe'],
           "tglVaksin": jsonData['tglVaksin'],
         });
       } else {
@@ -107,8 +117,10 @@ class VaksinApi extends SharedApi {
     String peternak_id,
     String hewan_id,
     String petugas_id,
-    String namaVaksin,
-    String jenisVaksin,
+    String idNamaVaksin,
+    String idJenisVaksin,
+    String batchVaksin,
+    String vaksinKe,
     String tglVaksin,
   ) async {
     try {
@@ -119,8 +131,10 @@ class VaksinApi extends SharedApi {
         'peternak_id': peternak_id,
         'hewan_id': hewan_id,
         'petugas_id': petugas_id,
-        'namaVaksin': namaVaksin,
-        'jenisVaksin': jenisVaksin,
+        'idNamaVaksin': idNamaVaksin,
+        'idJenisVaksin': idJenisVaksin,
+        'batchVaksin': batchVaksin,
+        'vaksinKe': vaksinKe,
         'tglVaksin': tglVaksin,
       };
 
@@ -129,7 +143,9 @@ class VaksinApi extends SharedApi {
         headers: {...getToken(), 'Content-Type': 'application/json'},
         body: jsonEncode(bodyDataedit),
       );
-      // print(data.body);
+      print("=== DEBUG: Body Data ===");
+      print(jsonEncode(bodyDataedit)); // Debugging print
+      print("========================");
       stopLoading();
 
       jsonData = json.decode(data.body);
@@ -140,11 +156,14 @@ class VaksinApi extends SharedApi {
           "peternak_id": jsonData['peternak_id'],
           "hewan_id": jsonData['hewan_id'],
           "petugas_id": jsonData['petugas_id'],
-          "namaVaksin": jsonData['namaVaksin'],
-          "jenisVaksin": jsonData['jenisVaksin'],
+          "idNamaVaksin": jsonData['idNamaVaksin'],
+          "idJenisVaksin": jsonData['idJenisVaksin'],
+          "batchVaksin": jsonData['batchVaksin'],
+          "vaksinKe": jsonData['vaksinKe'],
           "tglVaksin": jsonData['tglVaksin'],
         });
       } else {
+        print("Error Status : ${data.statusCode}");
         return VaksinModel.fromJson({"status": data.statusCode});
       }
     } on Exception catch (_) {

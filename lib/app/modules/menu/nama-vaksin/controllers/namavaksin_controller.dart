@@ -1,4 +1,3 @@
-
 import 'package:crud_flutter_api/app/data/namavaksin_model.dart';
 import 'package:crud_flutter_api/app/services/namavaksin_api.dart';
 import 'package:crud_flutter_api/app/widgets/message/loading.dart';
@@ -28,7 +27,7 @@ class NamaVaksinController extends GetxController {
     homeScreen = false;
     update();
     showLoading();
-    posts.value = await NamavaksinApi().loadNamaVaksinAPI();
+    posts.value = await NamaVaksinApi().loadNamaVaksinAPI();
     update();
     stopLoading();
     if (posts.value.status == 200) {
@@ -48,8 +47,11 @@ class NamaVaksinController extends GetxController {
   }
 
   void searchNamaVaksin(String keyword) {
-    final List<NamaVaksinModel> filteredList = posts.value.content!.where((namavaksin) {
-      return namavaksin.idNamaVaksin!.toLowerCase().contains(keyword.toLowerCase());
+    final List<NamaVaksinModel> filteredList =
+        posts.value.content!.where((namavaksin) {
+      return namavaksin.idNamaVaksin!
+          .toLowerCase()
+          .contains(keyword.toLowerCase());
     }).toList();
 
     filteredPosts.assignAll(filteredList);

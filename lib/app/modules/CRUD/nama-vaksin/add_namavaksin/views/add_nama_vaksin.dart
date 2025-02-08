@@ -78,7 +78,7 @@ class AddNamaVaksinView extends GetView<AddNamaVaksinController> {
                             }
                           },
                           decoration: InputDecoration(
-                            labelText: "Nama Vaksin",
+                            labelText: "Jenis Vaksin",
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: const BorderSide(

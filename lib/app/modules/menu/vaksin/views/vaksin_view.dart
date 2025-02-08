@@ -20,7 +20,7 @@ class VaksinView extends GetView<VaksinController> {
           await controller.loadVaksin();
         },
         child: Scaffold(
-          backgroundColor: AppColor.primary,
+          backgroundColor: Colors.white,
           appBar: EasySearchBar(
               searchBackgroundColor: AppColor.secondary,
               elevation: 0,
@@ -51,29 +51,29 @@ class VaksinView extends GetView<VaksinController> {
                         const SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       var postData = controller.filteredPosts.value[index];
+
                       return InkWell(
-                        onTap: () => {
-                          Get.toNamed(
-                            Routes.DETAILVAKSIN,
-                            arguments: {
-                              "idVaksin": "${postData.idVaksin}",
-                              "namaPeternak":
-                                  "${postData.idPeternak?.namaPeternak}",
-                              "idPeternak":
-                                  "${postData.idPeternak?.idPeternak}",
-                              "kodeEartagNasional":
-                                  "${postData.kodeEartagNasional?.kodeEartagNasional}",
-                              "inseminator":
-                                  "${postData.inseminator?.namaPetugas}",
-                              "namaVaksin": "${postData.namaVaksin}",
-                              "jenisVaksin": "${postData.jenisVaksin}",
-                              "tglVaksin": "${postData.tglVaksin}",
-                            },
-                          ),
-                        },
+                        onTap: () => Get.toNamed(
+                          Routes.DETAILVAKSIN,
+                          arguments: {
+                            "idVaksin": postData.idVaksin ?? "",
+                            "idPeternak": postData.idPeternak?.idPeternak ?? "",
+                            "kodeEartagNasional":
+                                postData.kodeEartagNasional?.idHewan ?? "",
+                            "inseminator":
+                                postData.inseminator?.petugasId ?? "",
+                            "namaVaksin":
+                                postData.namaVaksin?.idNamaVaksin ?? "",
+                            "jenisVaksin":
+                                postData.jenisVaksin?.idJenisVaksin ?? "",
+                            "batchVaksin": postData.batchVaksin ?? "",
+                            "vaksinKe": postData.vaksinKe ?? "",
+                            "tglVaksin": postData.tglVaksin ?? "",
+                          },
+                        ),
                         borderRadius: BorderRadius.circular(8),
                         child: Container(
-                          width: MediaQuery.of(context).size.width,
+                          width: double.infinity,
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
@@ -81,7 +81,7 @@ class VaksinView extends GetView<VaksinController> {
                                 color: const Color.fromARGB(255, 0, 47, 255)
                                     .withOpacity(.2),
                                 spreadRadius: 2,
-                                blurRadius: 10, // changes position of shadow
+                                blurRadius: 10,
                               ),
                             ],
                             color: AppColor.primaryExtraSoft,
@@ -89,43 +89,40 @@ class VaksinView extends GetView<VaksinController> {
                             border: Border.all(
                                 width: 1, color: AppColor.primaryExtraSoft),
                           ),
-                          padding: const EdgeInsets.only(
-                              left: 20, top: 15, right: 29, bottom: 15),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    (postData.status == null)
-                                        ? "-"
-                                        : "No Eartag: ${postData.kodeEartagNasional?.kodeEartagNasional}",
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    (postData.status == null)
-                                        ? "-"
-                                        : "ID Vaksin: ${postData.idVaksin}",
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.normal),
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Text(
-                                    (postData.status == null)
-                                        ? "-"
-                                        : "Nama Peternak: "
-                                            "${postData.idPeternak?.namaPeternak}",
-                                    style: const TextStyle(
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      postData.status == null
+                                          ? "-"
+                                          : "ID Vaksin: ${postData.idVaksin}",
+                                      style: const TextStyle(
                                         fontSize: 14,
-                                        fontWeight: FontWeight.normal),
-                                  ),
-                                ],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      postData.status == null
+                                          ? "-"
+                                          : "No Eartag: ${postData.kodeEartagNasional?.kodeEartagNasional}",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),

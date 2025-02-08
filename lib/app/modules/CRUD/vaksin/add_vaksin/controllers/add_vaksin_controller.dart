@@ -18,14 +18,14 @@ class AddVaksinController extends GetxController {
   final formattedDate = ''.obs;
 
   TextEditingController idVaksinC = TextEditingController();
-  TextEditingController namaVaksinC = TextEditingController();
-  TextEditingController jenisVaksinC = TextEditingController();
+  TextEditingController batchVaksinC = TextEditingController();
+  TextEditingController vaksinKeC = TextEditingController();
   TextEditingController tglVaksinC = TextEditingController();
   @override
   onClose() {
     idVaksinC.dispose();
-    namaVaksinC.dispose();
-    jenisVaksinC.dispose();
+    batchVaksinC.dispose();
+    vaksinKeC.dispose();
     tglVaksinC.dispose();
   }
 
@@ -35,6 +35,8 @@ class AddVaksinController extends GetxController {
     fetchdata.fetchPeternaks();
     fetchdata.fetchHewan();
     fetchdata.fetchPetugas();
+    fetchdata.fetchJenisVaksin();
+    fetchdata.fetchNamaVaksin();
 
     fetchdata.selectedPeternakId.listen((peternakId) {
       fetchdata.filterHewanByPeternak(peternakId);
@@ -46,17 +48,32 @@ class AddVaksinController extends GetxController {
     try {
       isLoading.value = true;
 
-      if (fetchdata.selectedPeternakId.value.isEmpty) {
+      if (fetchdata.selectedPeternakId.value.isEmpty &&
+          fetchdata.selectedPeternakId.value == "") {
         throw "Pilih Peternak terlebih dahulu.";
+      }
+      if (fetchdata.selectedHewanEartag.value.isEmpty &&
+          fetchdata.selectedHewanEartag.value == "") {
+        throw "Pilih No Eartag Hewan terlebih dahulu.";
+      }
+      if (fetchdata.selectedIdNamaVaksin.value.isEmpty) {
+        throw "Pilih Vaksin terlebih dahulu.";
+      }
+      if (fetchdata.selectedIdJenisVaksin.value.isEmpty) {
+        throw "Pilih Jenis Vaksin terlebih dahulu.";
+      }
+      if (fetchdata.selectedPetugasId.value.isEmpty) {
+        throw "Pilih Petugas terlebih dahulu.";
       }
 
       vaksinModel = await VaksinApi().addVaksinAPI(
-          idVaksinC.text,
           fetchdata.selectedPeternakId.value,
           fetchdata.selectedHewanEartag.value,
           fetchdata.selectedPetugasId.value,
-          namaVaksinC.text,
-          jenisVaksinC.text,
+          fetchdata.selectedIdNamaVaksin.value,
+          fetchdata.selectedIdJenisVaksin.value,
+          batchVaksinC.text,
+          vaksinKeC.text,
           tglVaksinC.text);
 
       if (vaksinModel != null) {
