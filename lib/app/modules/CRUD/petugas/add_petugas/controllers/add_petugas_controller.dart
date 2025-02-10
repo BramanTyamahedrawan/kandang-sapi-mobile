@@ -5,7 +5,10 @@ import 'package:crud_flutter_api/app/services/petugas_api.dart';
 import 'package:crud_flutter_api/app/widgets/message/errorMessage.dart';
 import 'package:crud_flutter_api/app/widgets/message/successMessage.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../../menu/petugas/controllers/petugas_controller.dart';
 
@@ -19,12 +22,111 @@ class AddPetugasController extends GetxController {
   TextEditingController notlpC = TextEditingController();
   TextEditingController emailC = TextEditingController();
 
+  // List untuk menyimpan data provinsi dari API
+  RxList<Map<String, dynamic>> provinces = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> cities = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> districts = <Map<String, dynamic>>[].obs;
+
+  Rx<Map<String, dynamic>?> selectedProvince = Rx<Map<String, dynamic>?>(null);
+  Rx<Map<String, dynamic>?> selectedCity = Rx<Map<String, dynamic>?>(null);
+  Rx<Map<String, dynamic>?> selectedDistrict = Rx<Map<String, dynamic>?>(null);
+
+  var wilayah = "".obs; // Wilayah akan otomatis terisi
+  var selectedJob = Rxn<String>();
+
+  final List<String> jobOptions = ["Pendataan", "Vaksinasi"];
+
   @override
-  onClose() {
+  void onInit() {
+    super.onInit();
+    fetchProvinces();
+  }
+
+  @override
+  void onClose() {
     nikC.dispose();
     namaC.dispose();
     notlpC.dispose();
     emailC.dispose();
+    super.onClose();
+  }
+
+  // Memanggil provinsi
+  void fetchProvinces() async {
+  isLoading.value = true;
+  try {
+    final response = await http.get(Uri.parse(
+        "https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json"));
+    if (response.statusCode == 200) {
+      final List provincesData = json.decode(response.body);
+      provinces.value =
+          provincesData.map((item) => item as Map<String, dynamic>).toList();
+      print("Provinces loaded: ${provinces.length}"); // Debugging
+    } else {
+      print("Failed to load provinces: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("Error fetching provinces: $e");
+  } finally {
+    isLoading.value = false;
+    update(); // Tambahkan update() agar UI diperbarui
+  }
+}
+
+
+  // Memanggil kabupaten
+  void fetchCities(String provinceId) async {
+  isLoading.value = true;
+  try {
+    final response = await http.get(Uri.parse(
+        "https://www.emsifa.com/api-wilayah-indonesia/api/regencies/$provinceId.json"));
+    if (response.statusCode == 200) {
+      final List citiesData = json.decode(response.body);
+      cities.value =
+          citiesData.map((item) => item as Map<String, dynamic>).toList();
+      print("Cities loaded: ${cities.length}"); // Debugging
+    } else {
+      print("Failed to load cities: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("Error fetching cities: $e");
+  } finally {
+    isLoading.value = false;
+    update(); // Tambahkan update() agar UI diperbarui
+  }
+}
+
+  // Memanggil kecamatan
+  void fetchDistricts(String cityId) async {
+  isLoading.value = true;
+  try {
+    final response = await http.get(Uri.parse(
+        "https://www.emsifa.com/api-wilayah-indonesia/api/districts/$cityId.json"));
+    if (response.statusCode == 200) {
+      final List districtsData = json.decode(response.body);
+      districts.value =
+          districtsData.map((item) => item as Map<String, dynamic>).toList();
+      print("Districts loaded: ${districts.length}"); // Debugging
+    } else {
+      print("Failed to load districts: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("Error fetching districts: $e");
+  } finally {
+    isLoading.value = false;
+    update(); // Tambahkan update() agar UI diperbarui
+  }
+}
+
+  void updateWilayah() {
+    if (selectedProvince.value != null &&
+        selectedCity.value != null &&
+        selectedDistrict.value != null) {
+      wilayah.value =
+          "${selectedProvince.value!['name']}, ${selectedCity.value!['name']}, ${selectedDistrict.value!['name']}";
+    } else {
+      wilayah.value = "";
+    }
   }
 
   Future addUser(BuildContext context) async {
@@ -88,57 +190,3 @@ class AddPetugasController extends GetxController {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import 'package:crud_flutter_api/app/data/petugas_model.dart';
-// import 'package:crud_flutter_api/app/routes/app_pages.dart';
-// import 'package:crud_flutter_api/app/services/petugas_api.dart';
-// import 'package:flutter/widgets.dart';
-// import 'package:get/get.dart';
-
-// class AddPetugasController extends GetxController {
-//   PetugasModel? petugasModel;
-//   RxBool isLoading = false.obs;
-//   RxBool isLoadingCreateTodo = false.obs;
-//   TextEditingController nikC = TextEditingController();
-//   TextEditingController namaC = TextEditingController();
-//   TextEditingController notlpC = TextEditingController();
-//   TextEditingController emailC = TextEditingController();
-
-//   @override
-//   onClose() {
-//     nikC.dispose();
-//     namaC.dispose();
-//     notlpC.dispose();
-//     emailC.dispose();
-//   }
-
-//   Future addPost() async {
-//     update();
-//     petugasModel = await PetugasApi().addPetugasApi(nikC.text, namaC.text);
-//     if (petugasModel!.status == 200) {
-//       update();
-//       Get.offAndToNamed(Routes.HOME); //ganti route sesuai data menu
-//     } else if (petugasModel!.status == 404) {
-//       update();
-//     }
-//   }
-
-
-// }
