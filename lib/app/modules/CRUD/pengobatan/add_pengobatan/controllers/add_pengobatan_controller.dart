@@ -9,13 +9,16 @@ import 'package:crud_flutter_api/app/widgets/message/successMessage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'dart:convert';
 
 class AddPengobatanController extends GetxController {
   final FetchData fetchdata = FetchData();
 
   PengobatanModel? pengobatanModel;
   RxBool isLoading = false.obs;
+  RxList<PetugasModel> petugasList = <PetugasModel>[].obs;
   RxBool isLoadingCreateTodo = false.obs;
   final formattedDate = ''.obs;
   TextEditingController idKasusC = TextEditingController();
@@ -25,7 +28,12 @@ class AddPengobatanController extends GetxController {
   TextEditingController lokasiC = TextEditingController();
   TextEditingController dosisC = TextEditingController();
   TextEditingController sindromC = TextEditingController();
+  TextEditingController petugasC = TextEditingController();
   TextEditingController dignosaBandingC = TextEditingController();
+  TextEditingController provinsiPengobatanC = TextEditingController();
+  TextEditingController kabupatenPengobatanC = TextEditingController();
+  TextEditingController kecamatanPengobatanC = TextEditingController();
+  TextEditingController desaPengobatanC = TextEditingController();
 
   @override
   onClose() {
@@ -37,6 +45,10 @@ class AddPengobatanController extends GetxController {
     dosisC.dispose();
     sindromC.dispose();
     dignosaBandingC.dispose();
+    provinsiPengobatanC.dispose();
+    kabupatenPengobatanC.dispose();
+    kecamatanPengobatanC.dispose();
+    desaPengobatanC.dispose();
   }
 
   @override
@@ -47,7 +59,6 @@ class AddPengobatanController extends GetxController {
 
   Future addPengobatan(BuildContext context) async {
     try {
-      print(fetchdata.selectedPetugasId.value);
       isLoading.value = true;
       pengobatanModel = await PengobatanApi().addPengobatanAPI(
         idKasusC.text,
@@ -59,6 +70,10 @@ class AddPengobatanController extends GetxController {
         dosisC.text,
         sindromC.text,
         dignosaBandingC.text,
+        provinsiPengobatanC.text,
+        kabupatenPengobatanC.text,
+        kecamatanPengobatanC.text,
+        desaPengobatanC.text,
       );
 
       if (pengobatanModel != null) {

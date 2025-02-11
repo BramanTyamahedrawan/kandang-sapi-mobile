@@ -37,18 +37,19 @@ class AddKandangController extends GetxController {
   RxString longitude = ''.obs;
   RxString selectSpecies = ''.obs;
 
-  var uuid = Uuid();
-
   TextEditingController idKandangC = TextEditingController();
   TextEditingController luasC = TextEditingController();
+  TextEditingController namaKandangC = TextEditingController();
   TextEditingController kapasitasC = TextEditingController();
   TextEditingController nilaiBangunanC = TextEditingController();
+  TextEditingController jenisKandangC = TextEditingController();
   TextEditingController alamatC = TextEditingController();
+  TextEditingController latitudeC = TextEditingController();
+  TextEditingController longitudeC = TextEditingController();
   TextEditingController desaC = TextEditingController();
   TextEditingController kecamatanC = TextEditingController();
   TextEditingController kabupatenC = TextEditingController();
   TextEditingController provinsiC = TextEditingController();
-  TextEditingController jenisHewanC = TextEditingController();
 
   get selectedSpesies => null;
 
@@ -63,12 +64,15 @@ class AddKandangController extends GetxController {
     luasC.dispose();
     kapasitasC.dispose();
     nilaiBangunanC.dispose();
+    namaKandangC.dispose();
+    jenisKandangC.dispose();
     alamatC.dispose();
     desaC.dispose();
     kecamatanC.dispose();
     kabupatenC.dispose();
+    latitudeC.dispose();
+    longitudeC.dispose();
     provinsiC.dispose();
-    jenisHewanC.dispose();
     ever<File?>(fotoKandang, (_) {
       update();
     });
@@ -78,6 +82,11 @@ class AddKandangController extends GetxController {
   void onInit() {
     super.onInit();
     fetchdata.fetchPeternaks();
+    fetchdata.fetchJenisHewan();
+
+    fetchdata.selectedPeternakId.listen((peternakId) {
+      fetchdata.filterHewanByPeternak(peternakId);
+    });
   }
 
   void fetchSpesies() {
@@ -216,78 +225,91 @@ class AddKandangController extends GetxController {
     update(); // Perbarui UI setelah menghapus gambar
   }
 
+  var uuid = Uuid();
+
   Future addKandang(BuildContext context) async {
-    // Mencetak data sebelum memanggil API
-    print("Data yang akan ditambahkan:");
-    print("ID Kandang: ${idKandangC.text}");
-    print("ID Peternak: ${fetchdata.selectedPeternakId.value}");
-    print("Luas: ${luasC.text}");
-    print("Kapasitas: ${kapasitasC.text}");
-    print("Nilai Bangunan: ${nilaiBangunanC.text}");
-    print("Alamat: ${alamatC.text}");
-    print("Provinsi: ${provinsiC.text}");
-    print("Kabupaten: ${kabupatenC.text}");
-    print("Kecamatan: ${kecamatanC.text}");
-    print("Desa: ${desaC.text}");
-    print("Jenis Hewan: ${jenisHewanC.text}");
-    print("Latitude: ${latitude.value}");
-    print("Longitude: ${longitude.value}");
+    print("Mulai proses submit kandang...");
+
     try {
       isLoading.value = true;
 
-      // Mengenerate UUID untuk ID Kandang
-      idKandangC.text = uuid.v4(); // Generate UUID dan set ke idKandangC
+      // Fungsi untuk menghasilkan ID Kandang secara acak
 
-      if (idKandangC.text.isEmpty) {
-        throw "ID Kandang tidak boleh kosong.";
-      }
+      String idKandang = uuid.v4();
 
-      if (fetchdata.selectedPeternakId.value.isEmpty ?? true) {
+      // Debugging - Log semua input sebelum dikirim
+      print("ID Kandang: ${idKandang}");
+      print("Peternak ID: ${fetchdata.selectedPeternakId.value}");
+      print("Jenis Hewan ID: ${fetchdata.selectedIdJenisHewan.value}");
+      print("Nama Kandang: ${namaKandangC.text}");
+      print("Jenis Kandang: ${jenisKandangC.text}");
+      print("Luas: ${luasC.text}");
+      print("Kapasitas: ${kapasitasC.text}");
+      print("Nilai Bangunan: ${nilaiBangunanC.text}");
+      print("Alamat: ${alamatC.text}");
+      print(
+          "Latitude: ${latitudeC.text.isNotEmpty ? latitudeC.text : 'Tidak diisi'}");
+      print(
+          "Longitude: ${longitudeC.text.isNotEmpty ? longitudeC.text : 'Tidak diisi'}");
+      print("Foto Kandang: ${fotoKandang.value}");
+
+      if (fetchdata.selectedPeternakId.value.isNotEmpty &&
+          fetchdata.selectedPeternakId.value == "") {
         throw "Pilih Peternak terlebih dahulu.";
       }
 
-      File? fotoKandangFile = fotoKandang.value;
-
-      if (fotoKandangFile == null) {
-        throw "Pilih gambar Kandang terlebih dahulu.";
+      if (fetchdata.selectedIdJenisHewan.value.isEmpty &&
+          fetchdata.selectedIdJenisHewan.value == "") {
+        throw "Jenis hewan tidak boleh kosong.";
       }
 
-      if (jenisHewanC.text.isEmpty) {
-        throw "jenis hewan tidak boleh kosong.";
-      }
+      String idPeternak = fetchdata.selectedPeternakId.value;
 
+      String idJenisHewan = fetchdata.selectedIdJenisHewan.value;
+
+      // Jika gambar tidak dipilih, set sebagai `null`
+      File? selectedFotoKandang = fotoKandang.value;
+
+      String jenisKandang = jenisKandangC.text;
+
+      // Kirim data kandang ke API
+      print("Mengirim data kandang ke API..." +
+          "idKandang: $idKandang, peternakId: $idPeternak, idJenisHewan: $idJenisHewan, luas: ${luasC.text}, namaKandang: ${namaKandangC.text}, kapasitas: ${kapasitasC.text}, nilaiBangunan: ${nilaiBangunanC.text}, alamat: ${alamatC.text}, latitude: ${latitudeC.text}, longitude: ${longitudeC.text}, jenisKandang: ${jenisKandangC.text}");
       kandangModel = await KandangApi().addKandangAPI(
-        //  idKandangC.text,
-        idKandangC.text,
-        fetchdata.selectedPeternakId.value,
-        luasC.text,
+        idKandang,
+        idPeternak,
+        luasC.text, // luas
+        namaKandangC.text, // namaKandang
+        jenisKandangC.text, // jenisKandang
         kapasitasC.text,
         nilaiBangunanC.text,
         alamatC.text,
-        provinsiC.text,
-        kabupatenC.text,
-        kecamatanC.text,
-        desaC.text,
-        fotoKandangFile,
-        jenisHewan: jenisHewanC.text,
-        latitude: latitude.value,
-        longitude: longitude.value,
+        desaC.text, // desa
+        kecamatanC.text, // kecamatan
+        kabupatenC.text, // kabupaten
+        provinsiC.text, // provinsi
+        selectedFotoKandang, // Jika null, maka akan diabaikan
+        latitudeC.text.isNotEmpty ? latitudeC.text : '',
+        longitudeC.text.isNotEmpty ? longitudeC.text : '',
+        idJenisHewan, // idJenisHewan
       );
-      await updateAlamatInfo();
+
+      print("Response dari API: ${kandangModel?.status}");
 
       if (kandangModel != null) {
         if (kandangModel!.status == 201) {
-          final KandangController hewanController =
+          final KandangController kandangController =
               Get.put(KandangController());
-          hewanController.reInitialize();
+          kandangController.reInitialize();
           Get.back();
-          showSuccessMessage("Data Hewan Baru Berhasil ditambahkan");
+          showSuccessMessage("Data Kandang Baru Berhasil ditambahkan");
         } else {
           showErrorMessage(
-              "Gagal menambahkan Hewan dengan status ${kandangModel?.status}");
+              "Gagal menambahkan Data Kandang dengan status ${kandangModel?.status}");
         }
       }
     } catch (e) {
+      print("❌ Error saat submit kandang: $e");
       showCupertinoDialog(
         context: context,
         builder: (context) {

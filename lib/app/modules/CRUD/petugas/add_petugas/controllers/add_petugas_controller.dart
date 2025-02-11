@@ -14,6 +14,7 @@ class AddPetugasController extends GetxController {
   UserModel? userModel;
   RxBool isLoading = false.obs;
   RxBool isLoadingCreateTodo = false.obs;
+  TextEditingController petugasIdC = TextEditingController();
   TextEditingController nikC = TextEditingController();
   TextEditingController namaC = TextEditingController();
   TextEditingController notlpC = TextEditingController();
@@ -21,6 +22,7 @@ class AddPetugasController extends GetxController {
 
   @override
   onClose() {
+    petugasIdC.dispose();
     nikC.dispose();
     namaC.dispose();
     notlpC.dispose();
@@ -29,11 +31,11 @@ class AddPetugasController extends GetxController {
 
   Future addUser(BuildContext context) async {
     userModel = await AuthApi().addUserAPI(
+      petugasIdC.text, // id petugas
       namaC.text, // name
       nikC.text, // username
       emailC.text, // email
       nikC.text, //password
-      '2', //role peternak
     );
   }
 
@@ -41,16 +43,12 @@ class AddPetugasController extends GetxController {
     try {
       isLoading.value = true;
 
-      if (nikC.text.isEmpty) {
-        throw "NIK tidak boleh kosong.";
-      }
-
       if (namaC.text.isEmpty) {
         throw "Nama tidak boleh kosong.";
       }
 
-      petugasModel = await PetugasApi()
-          .addPetugasApi(nikC.text, namaC.text, notlpC.text, emailC.text);
+      petugasModel = await PetugasApi().addPetugasApi(
+          petugasIdC.text, nikC.text, namaC.text, notlpC.text, emailC.text);
 
       if (petugasModel != null) {
         if (petugasModel?.status == 201) {

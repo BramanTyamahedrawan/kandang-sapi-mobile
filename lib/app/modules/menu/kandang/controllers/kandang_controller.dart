@@ -68,7 +68,7 @@ class KandangController extends GetxController {
     void filterByJenisHewan(String jenisHewanC) {
       final List<KandangModel> filteredList =
           posts.value.content!.where((kandang) {
-        return kandang.jenisHewan!
+        return kandang.idJenisHewan!.idJenisHewan!
             .toLowerCase()
             .contains(jenisHewanC.toLowerCase());
       }).toList();

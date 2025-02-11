@@ -3,6 +3,7 @@ import 'package:crud_flutter_api/app/data/petugas_model.dart';
 class PengobatanModel {
   final int? status;
 
+  final String? idPengobatan;
   final String? idKasus;
   final String? tanggalPengobatan;
   final String? tanggalKasus;
@@ -12,9 +13,16 @@ class PengobatanModel {
   final String? dosis;
   final String? sindrom;
   final String? diagnosaBanding;
+  final String? provinsiPengobatan;
+  final String? kabupatenPengobatan;
+  final String? kecamatanPengobatan;
+  final String? desaPengobatan;
+
+  final String? message;
 
   PengobatanModel({
     this.status,
+    this.idPengobatan,
     this.idKasus,
     this.tanggalPengobatan,
     this.tanggalKasus,
@@ -24,11 +32,17 @@ class PengobatanModel {
     this.dosis,
     this.sindrom,
     this.diagnosaBanding,
+    this.provinsiPengobatan,
+    this.kabupatenPengobatan,
+    this.kecamatanPengobatan,
+    this.desaPengobatan,
+    this.message,
   });
 
   factory PengobatanModel.fromJson(Map<String, dynamic> jsonData) {
     return PengobatanModel(
       status: jsonData['status'] ?? 0,
+      idPengobatan: jsonData['idPengobatan'] ?? "",
       idKasus: jsonData['idKasus'] ?? "",
       tanggalPengobatan: jsonData['tanggalPengobatan'] ?? "",
       tanggalKasus: jsonData['tanggalKasus'] ?? "",
@@ -40,6 +54,11 @@ class PengobatanModel {
       dosis: jsonData['dosis'] ?? "",
       sindrom: jsonData['sindrom'] ?? "",
       diagnosaBanding: jsonData['diagnosaBanding'] ?? "",
+      provinsiPengobatan: jsonData['provinsiPengobatan'] ?? "",
+      kabupatenPengobatan: jsonData['kabupatenPengobatan'] ?? "",
+      kecamatanPengobatan: jsonData['kecamatanPengobatan'] ?? "",
+      desaPengobatan: jsonData['desaPengobatan'] ?? "",
+      message: jsonData['message'] ?? "",
     );
   }
 }

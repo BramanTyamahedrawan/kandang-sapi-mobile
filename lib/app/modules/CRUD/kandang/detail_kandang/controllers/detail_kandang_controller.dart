@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:crud_flutter_api/app/data/jenishewan_model.dart';
 import 'package:crud_flutter_api/app/data/kandang_model.dart';
 import 'package:crud_flutter_api/app/data/peternak_model.dart';
 import 'package:crud_flutter_api/app/modules/menu/kandang/controllers/kandang_controller.dart';
@@ -48,20 +49,27 @@ class DetailKandangController extends GetxController {
   TextEditingController idKandangC = TextEditingController();
   TextEditingController idPeternakC = TextEditingController();
   TextEditingController namaPeternakC = TextEditingController();
+  TextEditingController namaKandangC = TextEditingController();
+  TextEditingController jenisKandangC = TextEditingController();
   TextEditingController luasC = TextEditingController();
   TextEditingController kapasitasC = TextEditingController();
   TextEditingController nilaiBangunanC = TextEditingController();
   TextEditingController alamatC = TextEditingController();
   TextEditingController desaC = TextEditingController();
   TextEditingController kecamatanC = TextEditingController();
-  TextEditingController jenisHewanC = TextEditingController();
+  TextEditingController idJenisHewanC = TextEditingController();
+  TextEditingController jenisC = TextEditingController();
   TextEditingController kabupatenC = TextEditingController();
   TextEditingController provinsiC = TextEditingController();
+  TextEditingController latitudeC = TextEditingController();
+  TextEditingController longitudeC = TextEditingController();
 
   String originalIdKandang = "";
   String originalIdPeternak = "";
   String originalNamaPeternak = "";
   String originalLuas = "";
+  String originalJenisKandang = "";
+  String originalNamaKandang = "";
   String originalKapasitas = "";
   String originalNilaiBangunan = "";
   String originalAlamat = "";
@@ -72,13 +80,18 @@ class DetailKandangController extends GetxController {
   String originalFotoKandang = "";
   String originalLatitude = "";
   String originalLongitude = "";
-  String originaljenisHewan = "";
+  String originalIdJenisHewan = "";
+  String originaljenis = "";
+  String originalLatitudeC = "";
+  String originalLongitudeC = "";
 
   @override
   onClose() {
     idKandangC.dispose();
     idPeternakC.dispose();
     namaPeternakC.dispose();
+    namaKandangC.dispose();
+    jenisKandangC.dispose();
     luasC.dispose();
     kapasitasC.dispose();
     nilaiBangunanC.dispose();
@@ -87,7 +100,10 @@ class DetailKandangController extends GetxController {
     kecamatanC.dispose();
     kabupatenC.dispose();
     provinsiC.dispose();
-    jenisHewanC.dispose();
+    idJenisHewanC.dispose();
+    jenisC.dispose();
+    latitudeC.dispose();
+    longitudeC.dispose();
     ever<File?>(fotoKandang, (_) {
       update();
     });
@@ -98,12 +114,15 @@ class DetailKandangController extends GetxController {
     role;
     super.onInit();
     fetchdata.fetchPeternaks();
+    fetchdata.fetchJenisHewan();
     isEditing.value = false;
 
     idKandangC.text = argsData["idKandang"];
     fetchdata.selectedPeternakId.value = argsData["idPeternak"];
     idPeternakC.text = argsData["idPeternak"];
     namaPeternakC.text = argsData["namaPeternak"];
+    namaKandangC.text = argsData["namaKandang"];
+    jenisKandangC.text = argsData["jenisKandang"];
     luasC.text = argsData["luas"];
     kapasitasC.text = argsData["kapasitas"];
     nilaiBangunanC.text = argsData["nilaiBangunan"];
@@ -114,7 +133,10 @@ class DetailKandangController extends GetxController {
     provinsiC.text = argsData["provinsi"];
     latitude.value = argsData["latitude"];
     longitude.value = argsData["longitude"];
-    jenisHewanC.text = argsData["jenisHewan"];
+    idJenisHewanC.text = argsData["jenisHewan"];
+    jenisC.text = argsData["jenisHewan"];
+    latitudeC.text = argsData["latitude"];
+    longitudeC.text = argsData["longitude"];
 
     // ever(selectedPeternakId, (String? selectedId) {
     //   // Perbarui nilai nikPeternakC dan namaPeternakC berdasarkan selectedId
@@ -137,11 +159,23 @@ class DetailKandangController extends GetxController {
       update();
     });
 
+    ever(fetchdata.selectedIdJenisHewan, (String? selectedId) {
+      JenisHewanModel? selectedJenisHewan = fetchdata.jenisHewanList.firstWhere(
+          (jenisHewan) => jenisHewan.idJenisHewan == selectedId,
+          orElse: () => JenisHewanModel());
+
+      fetchdata.selectedIdJenisHewan.value =
+          selectedJenisHewan.idJenisHewan ?? argsData["idJenisHewan"];
+      update();
+    });
+
     print(argsData["fotoKandang"]);
 
     originalIdKandang = argsData["idKandang"];
     originalIdPeternak = argsData["idPeternak"];
     originalNamaPeternak = argsData["namaPeternak"];
+    originalJenisKandang = argsData["jenisKandang"];
+    originalNamaKandang = argsData["namaKandang"];
     originalLuas = argsData["luas"];
     originalKapasitas = argsData["kapasitas"];
     originalNilaiBangunan = argsData["nilaiBangunan"];
@@ -153,7 +187,10 @@ class DetailKandangController extends GetxController {
     originalFotoKandang = argsData["fotoKandang"];
     originalLatitude = argsData["latitude"];
     originalLongitude = argsData["longitude"];
-    originaljenisHewan = argsData["jenisHewan"];
+    originalIdJenisHewan = argsData["jenisHewan"];
+    originaljenis = argsData["jenisHewan"];
+    originalLatitudeC = argsData["latitude"];
+    originalLongitudeC = argsData["longitude"];
   }
 
   Future<Position> getGeoLocationPosition() async {
@@ -305,6 +342,8 @@ class DetailKandangController extends GetxController {
         fetchdata.selectedPeternakId.value = originalIdPeternak;
         namaPeternakC.text = originalNamaPeternak;
         luasC.text = originalLuas;
+        jenisKandangC.text = originalJenisKandang;
+        namaKandangC.text = originalNamaKandang;
         kapasitasC.text = originalKapasitas;
         nilaiBangunanC.text = originalNilaiBangunan;
         alamatC.text = originalAlamat;
@@ -315,6 +354,10 @@ class DetailKandangController extends GetxController {
         fotoKandang.value = null;
         latitude.value = originalLatitude;
         longitude.value = originalLongitude;
+        idJenisHewanC.text = originalIdJenisHewan;
+        jenisC.text = originaljenis;
+        latitudeC.text = originalLatitudeC;
+        longitudeC.text = originalLongitudeC;
 
         isEditing.value = false;
       },
@@ -359,7 +402,10 @@ class DetailKandangController extends GetxController {
         kandangModel = await KandangApi().editKandangApi(
           idKandangC.text,
           fetchdata.selectedPeternakId.value,
+          fetchdata.selectedIdJenisHewan.value,
 
+          namaKandangC.text,
+          jenisKandangC.text,
           luasC.text,
           kapasitasC.text,
           nilaiBangunanC.text,
@@ -370,8 +416,8 @@ class DetailKandangController extends GetxController {
           provinsiC.text,
           fotoKandang.value,
           //originalFotoKandang,
-          latitude: latitude.value,
-          longitude: longitude.value,
+          latitudeC.text,
+          longitudeC.text,
         );
 
         if (kandangModel != null && kandangModel!.status == 201) {

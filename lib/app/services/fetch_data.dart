@@ -1,5 +1,6 @@
 import 'package:crud_flutter_api/app/data/hewan_model.dart';
 import 'package:crud_flutter_api/app/data/inseminasi_model.dart';
+import 'package:crud_flutter_api/app/data/jenishewan_model.dart';
 import 'package:crud_flutter_api/app/data/jenisvaksin_model.dart';
 import 'package:crud_flutter_api/app/data/kandang_model.dart';
 import 'package:crud_flutter_api/app/data/namavaksin_model.dart';
@@ -7,6 +8,7 @@ import 'package:crud_flutter_api/app/data/peternak_model.dart';
 import 'package:crud_flutter_api/app/data/petugas_model.dart';
 import 'package:crud_flutter_api/app/services/hewan_api.dart';
 import 'package:crud_flutter_api/app/services/inseminasi_api.dart';
+import 'package:crud_flutter_api/app/services/jenishewan_api.dart';
 import 'package:crud_flutter_api/app/services/jenisvaksin_api.dart';
 import 'package:crud_flutter_api/app/services/kandang_api.dart';
 import 'package:crud_flutter_api/app/services/namavaksin_api.dart';
@@ -31,6 +33,10 @@ class FetchData {
   RxList<HewanModel> hewanList = <HewanModel>[].obs;
   RxList<HewanModel> filteredHewanList =
       <HewanModel>[].obs; // List filtered for the selected peternak
+
+  RxString selectedIdJenisHewan = ''.obs;
+  RxList<JenisHewanModel> jenisHewanList = <JenisHewanModel>[].obs;
+  RxList<JenisHewanModel> filteredJenisHewanList = <JenisHewanModel>[].obs;
 
   RxString selectedIdJenisVaksin = ''.obs;
   RxList<JenisVaksinModel> jenisVaksinList = <JenisVaksinModel>[].obs;
@@ -67,9 +73,9 @@ class FetchData {
       final PetugasListModel petugasListModel =
           await PetugasApi().loadPetugasApi();
       final List<PetugasModel> petugass = petugasListModel.content ?? [];
-      // if (petugass.isNotEmpty) {
-      //   selectedPetugasId.value = petugass.first.petugasId ?? '';
-      // }
+      if (petugass.isNotEmpty) {
+        selectedPetugasId.value = petugass.first.petugasId ?? '';
+      }
       petugasList.assignAll(petugass);
       return petugass;
     } catch (e) {
@@ -112,6 +118,23 @@ class FetchData {
     } catch (e) {
       print('Error fetching hewan: $e');
       showErrorMessage("Error fetching hewan: $e");
+      return [];
+    }
+  }
+
+  Future<List<JenisHewanModel>> fetchJenisHewan() async {
+    try {
+      final JenisHewanListModel jenisHewanListModel =
+          await JenisHewanApi().loadJenisHewanApi();
+
+      final List<JenisHewanModel> jenisHewan =
+          jenisHewanListModel.content ?? [];
+      jenisHewanList.assignAll(jenisHewan);
+
+      return jenisHewan;
+    } catch (e) {
+      print('Error fetching jenis hewan: $e');
+      showErrorMessage("Error fetching jenis hewan: $e");
       return [];
     }
   }

@@ -65,13 +65,14 @@ class PetugasApi extends SharedApi {
 //  }
 
 //ADD
-  Future<PetugasModel?> addPetugasApi(String nikPetugas, String namaPetugas,
-      String noTelp, String email) async {
+  Future<PetugasModel?> addPetugasApi(String petugasId, nikPetugas,
+      String namaPetugas, String noTelp, String email) async {
     try {
       var jsonData;
       showLoading();
 
       var bodyData = {
+        'petugasId': petugasId,
         'nikPetugas': nikPetugas,
         'namaPetugas': namaPetugas,
         'noTelp': noTelp,
@@ -90,6 +91,7 @@ class PetugasApi extends SharedApi {
       if (data.statusCode == 201) {
         return PetugasModel.fromJson({
           "status": 201,
+          "petugasId": jsonData['petugasId'],
           "nikPetugas": jsonData['nikPetugas'],
           "namaPetugas": jsonData['namaPetugas'],
           "noTelp": jsonData['noTelp'],
@@ -107,12 +109,13 @@ class PetugasApi extends SharedApi {
   }
 
 //EDIT
-  Future<PetugasModel?> editPetugasApi(String nikPetugas, String namaPetugas,
-      String noTelp, String email) async {
+  Future<PetugasModel?> editPetugasApi(String petugasId, String nikPetugas,
+      String namaPetugas, String noTelp, String email) async {
     try {
       var jsonData;
       showLoading();
       var bodyDataedit = {
+        'petugasId': nikPetugas,
         'nikPetugas': nikPetugas,
         'namaPetugas': namaPetugas,
         'noTelp': noTelp,
