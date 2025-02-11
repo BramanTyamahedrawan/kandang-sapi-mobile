@@ -100,6 +100,45 @@ class DetailPeternakView extends GetView<DetailPeternakController> {
                   ),
                 ),
               )),
+          // Obx(() => Container(
+          //       width: MediaQuery.of(context).size.width,
+          //       padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
+          //       margin: const EdgeInsets.only(bottom: 16),
+          //       decoration: BoxDecoration(
+          //         color: controller.isEditing.value
+          //             ? Colors.white
+          //             : Colors.grey[200],
+          //         borderRadius: BorderRadius.circular(8),
+          //         border:
+          //             Border.all(width: 1, color: AppColor.secondaryExtraSoft),
+          //       ),
+          //       child: TextFormField(
+          //         enabled: controller.isEditing.value,
+          //         style: const TextStyle(
+          //             fontSize: 18, fontFamily: 'poppins', color: Colors.black),
+          //         maxLines: 1,
+          //         controller: controller.idISIKHNASC,
+          //         keyboardType: TextInputType.emailAddress,
+          //         decoration: InputDecoration(
+          //           label: Text(
+          //             "ID ISIKHNAS",
+          //             style: TextStyle(
+          //               color: AppColor.secondarySoft,
+          //               fontSize: 15,
+          //             ),
+          //           ),
+          //           floatingLabelBehavior: FloatingLabelBehavior.always,
+          //           border: InputBorder.none,
+          //           hintText: "ID ISIKHNAS",
+          //           hintStyle: TextStyle(
+          //             fontSize: 15,
+          //             fontFamily: 'poppins',
+          //             fontWeight: FontWeight.w500,
+          //             color: AppColor.secondarySoft,
+          //           ),
+          //         ),
+          //       ),
+          //     )),
           Obx(() => Container(
                 width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.only(left: 14, right: 14, top: 4),

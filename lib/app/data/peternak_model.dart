@@ -1,41 +1,22 @@
-import 'dart:convert';
-
 import 'package:crud_flutter_api/app/data/petugas_model.dart';
 
 class PeternakModel {
   final String? idPeternak;
-  final String? idISIKHNAS;
-  final String? namaPeternak;
   final String? nikPeternak;
-  final String? noTelp;
-  final String? emailPeternak;
-  final String? gender;
-  final String? tanggalLahir;
-  final Map<String, dynamic>? provinsi;
-  final Map<String, dynamic>? kabupaten;
-  final Map<String, dynamic>? kecamatan;
-  final Map<String, dynamic>? desa;
-  final String? dusun;
+  final String? namaPeternak;
+  final String? idISIKHNAS;
   final String? lokasi;
   final PetugasModel? petugasPendaftar;
   final String? tanggalPendaftaran;
+
   final int? status;
 
   PeternakModel({
     this.status,
     this.idPeternak,
-    this.idISIKHNAS,
-    this.namaPeternak,
     this.nikPeternak,
-    this.noTelp,
-    this.emailPeternak,
-    this.gender,
-    this.tanggalLahir,
-    this.provinsi,
-    this.kabupaten,
-    this.kecamatan,
-    this.desa,
-    this.dusun,
+    this.namaPeternak,
+    this.idISIKHNAS,
     this.lokasi,
     this.petugasPendaftar,
     this.tanggalPendaftaran,
@@ -45,18 +26,9 @@ class PeternakModel {
     return PeternakModel(
       status: jsonData['status'] ?? 0,
       idPeternak: jsonData['idPeternak'] ?? "",
-      idISIKHNAS: jsonData['idISIKHNAS'] ?? "",
-      namaPeternak: jsonData['namaPeternak'] ?? "",
       nikPeternak: jsonData['nikPeternak'] ?? "",
-      noTelp: jsonData['noTelp'] ?? "",
-      emailPeternak: jsonData['emailPeternak'] ?? "",
-      gender: jsonData['gender'] ?? "",
-      tanggalLahir: jsonData['tanggalLahir'] ?? "",
-      provinsi: jsonData['provinsi'] ?? {}, // Simpan sebagai Map
-      kabupaten: jsonData['kabupaten'] ?? {},
-      kecamatan: jsonData['kecamatan'] ?? {},
-      desa: jsonData['desa'] ?? {},
-      dusun: jsonData['dusun'] ?? "",
+      namaPeternak: jsonData['namaPeternak'] ?? "",
+      idISIKHNAS: jsonData['idISIKHNAS'] ?? "",
       lokasi: jsonData['lokasi'] ?? "",
       petugasPendaftar: jsonData['petugas'] != null
           ? PetugasModel.fromJson(jsonData['petugas'])

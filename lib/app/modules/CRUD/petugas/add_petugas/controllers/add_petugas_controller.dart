@@ -5,9 +5,8 @@ import 'package:crud_flutter_api/app/services/petugas_api.dart';
 import 'package:crud_flutter_api/app/widgets/message/errorMessage.dart';
 import 'package:crud_flutter_api/app/widgets/message/successMessage.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../../../menu/petugas/controllers/petugas_controller.dart';
@@ -18,24 +17,17 @@ class AddPetugasController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isLoadingCreateTodo = false.obs;
   TextEditingController petugasIdC = TextEditingController();
+  RxList<Map<String, dynamic>> provinces = <Map<String, dynamic>>[].obs;
+  Rx<Map<String, dynamic>?> selectedCity = Rx<Map<String, dynamic>?>(null);
+  RxList<Map<String, dynamic>> districts = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> cities = <Map<String, dynamic>>[].obs;
+  Rx<Map<String, dynamic>?> selectedProvince = Rx<Map<String, dynamic>?>(null);
+  Rx<Map<String, dynamic>?> selectedDistrict = Rx<Map<String, dynamic>?>(null);
+  RxString wilayah = ''.obs;
   TextEditingController nikC = TextEditingController();
   TextEditingController namaC = TextEditingController();
   TextEditingController notlpC = TextEditingController();
   TextEditingController emailC = TextEditingController();
-
-  // List untuk menyimpan data provinsi dari API
-  RxList<Map<String, dynamic>> provinces = <Map<String, dynamic>>[].obs;
-  RxList<Map<String, dynamic>> cities = <Map<String, dynamic>>[].obs;
-  RxList<Map<String, dynamic>> districts = <Map<String, dynamic>>[].obs;
-
-  Rx<Map<String, dynamic>?> selectedProvince = Rx<Map<String, dynamic>?>(null);
-  Rx<Map<String, dynamic>?> selectedCity = Rx<Map<String, dynamic>?>(null);
-  Rx<Map<String, dynamic>?> selectedDistrict = Rx<Map<String, dynamic>?>(null);
-
-  var wilayah = "".obs; // Wilayah akan otomatis terisi
-  var selectedJob = Rxn<String>();
-
-  final List<String> jobOptions = ["Pendataan", "Vaksinasi"];
 
   @override
   onClose() {
@@ -181,3 +173,57 @@ class AddPetugasController extends GetxController {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import 'package:crud_flutter_api/app/data/petugas_model.dart';
+// import 'package:crud_flutter_api/app/routes/app_pages.dart';
+// import 'package:crud_flutter_api/app/services/petugas_api.dart';
+// import 'package:flutter/widgets.dart';
+// import 'package:get/get.dart';
+
+// class AddPetugasController extends GetxController {
+//   PetugasModel? petugasModel;
+//   RxBool isLoading = false.obs;
+//   RxBool isLoadingCreateTodo = false.obs;
+//   TextEditingController nikC = TextEditingController();
+//   TextEditingController namaC = TextEditingController();
+//   TextEditingController notlpC = TextEditingController();
+//   TextEditingController emailC = TextEditingController();
+
+//   @override
+//   onClose() {
+//     nikC.dispose();
+//     namaC.dispose();
+//     notlpC.dispose();
+//     emailC.dispose();
+//   }
+
+//   Future addPost() async {
+//     update();
+//     petugasModel = await PetugasApi().addPetugasApi(nikC.text, namaC.text);
+//     if (petugasModel!.status == 200) {
+//       update();
+//       Get.offAndToNamed(Routes.HOME); //ganti route sesuai data menu
+//     } else if (petugasModel!.status == 404) {
+//       update();
+//     }
+//   }
+
+
+// }

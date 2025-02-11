@@ -1,5 +1,4 @@
 import 'package:crud_flutter_api/app/utils/app_color.dart';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 // Import CupertinoAlertDialog
 
@@ -9,16 +8,10 @@ import '../controllers/add_petugas_controller.dart';
 
 class AddPetugasView extends GetView<AddPetugasController> {
   const AddPetugasView({super.key});
-
   @override
   Widget build(BuildContext context) {
-    final AddPetugasController controller = Get.find<AddPetugasController>();
-
-    // Panggil fetchProvinces saat halaman dimuat
-    controller.fetchProvinces();
-
+    Get.put(AddPetugasController());
     return Scaffold(
-      resizeToAvoidBottomInset: true,  // Menyelesaikan masalah layout dengan keyboard
       backgroundColor: const Color(0xffF7EBE1),
       appBar: AppBar(
         title: const Text(
@@ -186,194 +179,6 @@ class AddPetugasView extends GetView<AddPetugasController> {
               ),
             ),
           ),
-          // Dropdown untuk Provinsi
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-            ),
-            child: Obx(
-              () {
-                if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                return DropdownButtonFormField<Map<String, dynamic>>(
-                  decoration: InputDecoration(
-                    labelText: "Pilih Provinsi",
-                    labelStyle:
-                        TextStyle(color: AppColor.secondarySoft, fontSize: 14),
-                    border: InputBorder.none,
-                  ),
-                  value: controller.selectedProvince.value,
-                  items: controller.provinces.map((province) {
-                    return DropdownMenuItem<Map<String, dynamic>>(
-                      value: province,
-                      child:
-                          Text(province['name']), // Menampilkan nama provinsi
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    controller.selectedProvince.value = value!;
-                    controller.selectedCity.value = null; // Reset city
-                    controller.selectedDistrict.value = null; // Reset district
-                    controller.fetchCities(
-                        value['id']); // Ambil kota berdasarkan provinsi
-                  },
-                );
-              },
-            ),
-          ),
-          // Dropdown untuk Kabupaten
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-            ),
-            child: Obx(
-              () {
-                if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                return DropdownButtonFormField<Map<String, dynamic>>(
-                  decoration: InputDecoration(
-                    labelText: "Pilih Kabupaten",
-                    labelStyle:
-                        TextStyle(color: AppColor.secondarySoft, fontSize: 14),
-                    border: InputBorder.none,
-                  ),
-                  value: controller.selectedCity.value,
-                  items: controller.cities.map((city) {
-                    return DropdownMenuItem<Map<String, dynamic>>(
-                      value: city,
-                      child: Text(city['name']),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    controller.selectedCity.value = value!;
-                    controller.selectedDistrict.value = null; // Reset district
-                    controller.fetchDistricts(
-                        value['id']); // Ambil kecamatan berdasarkan kabupaten
-                  },
-                );
-              },
-            ),
-          ),
-          // Dropdown untuk Kabupaten
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-            ),
-            child: Obx(
-              () {
-                if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                return DropdownButtonFormField<Map<String, dynamic>>(
-                  decoration: InputDecoration(
-                    labelText: "Pilih Kecamatan",
-                    labelStyle:
-                        TextStyle(color: AppColor.secondarySoft, fontSize: 14),
-                    border: InputBorder.none,
-                  ),
-                  value: controller.selectedDistrict.value,
-                  items: controller.districts.map((district) {
-                    return DropdownMenuItem<Map<String, dynamic>>(
-                      value: district,
-                      child: Text(district['name']),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    controller.selectedDistrict.value = value;
-                    controller.updateWilayah(); // Update wilayah
-                  },
-                );
-              },
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-            ),
-            child: Obx(
-              () => TextField(
-                style: const TextStyle(fontSize: 14, fontFamily: 'poppins'),
-                maxLines: 1,
-                readOnly:
-                    true, // Field hanya bisa dibaca, tidak bisa diketik manual
-                controller:
-                    TextEditingController(text: controller.wilayah.value),
-                decoration: InputDecoration(
-                  label: Text(
-                    "Wilayah",
-                    style: TextStyle(
-                      color: AppColor.secondarySoft,
-                      fontSize: 14,
-                    ),
-                  ),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  border: InputBorder.none,
-                  // hintText: "Pilih Provinsi, Kabupaten, dan Kecamatan",
-                  hintStyle: TextStyle(
-                    fontSize: 14,
-                    fontFamily: 'poppins',
-                    fontWeight: FontWeight.w500,
-                    color: AppColor.secondarySoft,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-            ),
-            child: Obx(
-              () => DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  labelText: "Pilih Pekerjaan",
-                  labelStyle:
-                      TextStyle(color: AppColor.secondarySoft, fontSize: 14),
-                  border: InputBorder.none,
-                ),
-                value: controller.selectedJob.value,
-                items: controller.jobOptions.map((job) {
-                  return DropdownMenuItem<String>(
-                    value: job,
-                    child: Text(job),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  controller.selectedJob.value = value;
-                },
-              ),
-            ),
-          ),
           const SizedBox(height: 32),
           SizedBox(
             width: MediaQuery.of(context).size.width,
@@ -407,43 +212,4 @@ class AddPetugasView extends GetView<AddPetugasController> {
       ),
     );
   }
-
-//   // Fungsi untuk membuat TextField lebih modular
-//   Widget _buildTextField(TextEditingController controller, String label,
-//       String hint, TextInputType keyboardType) {
-//     return Container(
-//       width: MediaQuery.of(Get.context!).size.width,
-//       padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-//       margin: const EdgeInsets.only(bottom: 16),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(8),
-//         border: Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-//       ),
-//       child: TextField(
-//         style: const TextStyle(fontSize: 14, fontFamily: 'poppins'),
-//         maxLines: 1,
-//         controller: controller,
-//         keyboardType: keyboardType,
-//         decoration: InputDecoration(
-//           label: Text(
-//             label,
-//             style: TextStyle(
-//               color: AppColor.secondarySoft,
-//               fontSize: 14,
-//             ),
-//           ),
-//           floatingLabelBehavior: FloatingLabelBehavior.always,
-//           border: InputBorder.none,
-//           hintText: hint,
-//           hintStyle: TextStyle(
-//             fontSize: 14,
-//             fontFamily: 'poppins',
-//             fontWeight: FontWeight.w500,
-//             color: AppColor.secondarySoft,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
 }

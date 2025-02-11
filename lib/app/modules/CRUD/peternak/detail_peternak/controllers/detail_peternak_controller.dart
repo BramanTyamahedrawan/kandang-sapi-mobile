@@ -13,23 +13,18 @@ import 'package:intl/intl.dart';
 class DetailPeternakController extends GetxController {
   final FetchData fetchdata = FetchData();
 
+  //TODO: Implement DetailPostController
   final Map<String, dynamic> argsData = Get.arguments;
   PeternakModel? peternakModel;
   RxBool isLoading = false.obs;
-  // RxBool isLoadingCreateTodo = false.obs;
+  RxBool isLoadingCreateTodo = false.obs;
   RxBool isEditing = false.obs;
-  RxString selectedGender = 'Laki-laki'.obs;
   final formattedDate = ''.obs;
-  
 
   TextEditingController idPeternakC = TextEditingController();
-  TextEditingController idISIKHNASC = TextEditingController();
-  TextEditingController namaPeternakC = TextEditingController();
   TextEditingController nikPeternakC = TextEditingController();
-  TextEditingController noTelpC = TextEditingController();
-  TextEditingController emailPeternakC = TextEditingController();
-  TextEditingController tanggalLahirC = TextEditingController();
-  TextEditingController dusunC = TextEditingController();
+  TextEditingController namaPeternakC = TextEditingController();
+  TextEditingController idISIKHNASC = TextEditingController();
   TextEditingController lokasiC = TextEditingController();
   TextEditingController petugasPendaftarC = TextEditingController();
   TextEditingController tanggalPendaftaranC = TextEditingController();
@@ -43,18 +38,12 @@ class DetailPeternakController extends GetxController {
   String originalTanggalPendaftaran = "";
 
   @override
-  void onClose() {
-    super.onClose();
+  onClose() {
     idPeternakC.dispose();
-    idISIKHNASC.dispose();
-    namaPeternakC.dispose();
     nikPeternakC.dispose();
-    noTelpC.dispose();
-    emailPeternakC.dispose();
-    tanggalLahirC.dispose();
-    dusunC.dispose();
+    namaPeternakC.dispose();
+    idISIKHNASC.dispose();
     lokasiC.dispose();
-    petugasPendaftarC.dispose();
     tanggalPendaftaranC.dispose();
   }
 
@@ -70,6 +59,7 @@ class DetailPeternakController extends GetxController {
     lokasiC.text = argsData["lokasi"];
     petugasPendaftarC.text = argsData["petugas_id"];
     tanggalPendaftaranC.text = argsData["tanggalPendaftaran"];
+    // selectedPetugas.value = argsData["petugasPendaftar"];
 
     ever(fetchdata.selectedPetugasId, (String? selectedName) {
       PetugasModel? selectedPetugassss = fetchdata.petugasList.firstWhere(
@@ -77,6 +67,9 @@ class DetailPeternakController extends GetxController {
           orElse: () => PetugasModel());
       fetchdata.selectedPetugasId.value =
           selectedPetugassss.nikPetugas ?? argsData["petugas_id"];
+      // petugasPendaftarC.text =
+      //     selectedPetugassss.nikPetugas ?? argsData["petugasPendaftar"];
+      print(fetchdata.selectedPetugasId.value);
       update();
     });
 
@@ -88,6 +81,24 @@ class DetailPeternakController extends GetxController {
     originalPetugasPendaftar = argsData["petugas_id"];
     originalTanggalPendaftaran = argsData["tanggalPendaftaran"];
   }
+
+  // //GET DATA PETUGAS
+  // Future<List<PetugasModel>> fetchPetugas() async {
+  //   try {
+  //     final PetugasListModel petugasListModel =
+  //         await PetugasApi().loadPetugasApi();
+  //     final List<PetugasModel> petugass = petugasListModel.content ?? [];
+  //     if (petugass.isNotEmpty) {
+  //       selectedPetugas.value = petugass.first.nikPetugas ?? '';
+  //     }
+  //     petugasList.assignAll(petugass);
+  //     return petugass;
+  //   } catch (e) {
+  //     print('Error fetching Petugas: $e');
+  //     showErrorMessage("Error fetching Petugas: $e");
+  //     return [];
+  //   }
+  // }
 
   Future<void> tombolEdit() async {
     isEditing.value = true;
@@ -101,15 +112,18 @@ class DetailPeternakController extends GetxController {
       onCancel: () => Get.back(),
       onConfirm: () async {
         Get.back();
+        update();
+        // Reset data ke yang sebelumnya
         idPeternakC.text = originalIdPeternak;
         nikPeternakC.text = originalNikPeternak;
         namaPeternakC.text = originalNamaPeternak;
         idISIKHNASC.text = originalIdIskhnas;
         lokasiC.text = originalLokasi;
+        // selectedPetugas.value = originalPetugasPendaftar;
         petugasPendaftarC.text = originalPetugasPendaftar;
         tanggalPendaftaranC.text = originalTanggalPendaftaran;
+
         isEditing.value = false;
-        update();
       },
     );
   }
@@ -122,13 +136,17 @@ class DetailPeternakController extends GetxController {
       onConfirm: () async {
         peternakModel =
             await PeternakApi().deletePeternakAPI(argsData["idPeternak"]);
-        if (peternakModel!.status == 200) {
-          showSuccessMessage(
-              "Berhasil Hapus Peternak dengan ID: ${idPeternakC.text}");
-        } else {
-          showErrorMessage("Gagal Hapus Data Peternak ");
+        if (peternakModel != null) {
+          if (peternakModel!.status == 200) {
+            showSuccessMessage(
+                "Berhasil Hapus Peternak dengan ID: ${idPeternakC.text}");
+          } else {
+            showErrorMessage("Gagal Hapus Data Peternak ");
+          }
         }
-        Get.find<PeternakController>().reInitialize();
+        final PeternakController peternakController =
+            Get.put(PeternakController());
+        peternakController.reInitialize();
         Get.back();
         Get.back();
         update();
@@ -143,29 +161,18 @@ class DetailPeternakController extends GetxController {
       onCancel: () => Get.back(),
       onConfirm: () async {
         print(tanggalPendaftaranC.text);
-
-        List<String> koordinat = lokasiC.text.split(",");
-        String latitude = koordinat.isNotEmpty ? koordinat[0] : "";
-        String longitude = koordinat.length > 1 ? koordinat[1] : "";
-
         peternakModel = await PeternakApi().editPeternakApi(
           idPeternakC.text,
-          idISIKHNASC.text,
-          namaPeternakC.text,
           nikPeternakC.text,
-          noTelpC.text,
-          emailPeternakC.text,
-          selectedGender.value,
-          tanggalLahirC.text,
-          dusunC.text,
-          latitude,
-          longitude,
+          namaPeternakC.text,
+          idISIKHNASC.text,
+          lokasiC.text,
           fetchdata.selectedPetugasId.value,
           tanggalPendaftaranC.text,
         );
-
         isEditing.value = false;
 
+        // await PetugasApi().editPetugasApi(argsData["nikPetugas"], argsData["namaPetugas"], argsData["noTelp"],argsData["email"]);
         if (peternakModel != null) {
           if (peternakModel!.status == 201) {
             showSuccessMessage(
@@ -174,7 +181,6 @@ class DetailPeternakController extends GetxController {
             showErrorMessage("Gagal mengedit Data Peternak ");
           }
         }
-
         final PeternakController peternakController =
             Get.put(PeternakController());
         peternakController.reInitialize();
