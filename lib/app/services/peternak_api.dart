@@ -13,8 +13,6 @@ class PeternakApi extends SharedApi {
     try {
       var data =
           await http.get(Uri.parse('$baseUrl/peternak'), headers: getToken());
-      //print("hasil" + data.statusCode.toString());
-      //print(json.decode(data.body));
       if (data.statusCode == 200) {
         var jsonData = json.decode(data.body);
 
@@ -40,10 +38,16 @@ class PeternakApi extends SharedApi {
 //ADD
   Future<PeternakModel?> addPeternakAPI(
       String idPeternak,
-      String nikPeternak,
-      String namaPeternak,
       String idISIKHNAS,
-      String lokasi,
+      String namaPeternak,
+      String nikPeternak,
+      String noTelp,
+      String emailPeternak,
+      String gender,
+      String tanggalLahir,
+      String dusun,
+      String latitude,
+      String longitude,
       String petugas_id,
       String tanggalPendaftaran) async {
     try {
@@ -52,10 +56,15 @@ class PeternakApi extends SharedApi {
 
       var bodyData = {
         'idPeternak': idPeternak,
-        'nikPeternak': nikPeternak,
-        'namaPeternak': namaPeternak,
         'idISIKHNAS': idISIKHNAS,
-        'lokasi': lokasi,
+        'namaPeternak': namaPeternak,
+        'nikPeternak': nikPeternak,
+        'noTelp': noTelp,
+        'emailPeternak': emailPeternak,
+        'gender': gender,
+        'tanggalLahir': tanggalLahir,
+        'dusun': dusun,
+        'lokasi': '$latitude,$longitude',
         'petugas_id': petugas_id,
         'tanggalPendaftaran': tanggalPendaftaran
       };
@@ -70,16 +79,23 @@ class PeternakApi extends SharedApi {
         },
         body: jsonEncode(bodyData),
       );
+
       stopLoading();
       jsonData = json.decode(data.body);
+
       if (data.statusCode == 201) {
         print('Response Data: $jsonData');
         return PeternakModel.fromJson({
           "status": 201,
           "idPeternak": jsonData['idPeternak'],
-          "nikPeternak": jsonData['nikPeternak'],
-          "namaPeternak": jsonData['namaPeternak'],
           "idISIKHNAS": jsonData['idISIKHNAS'],
+          "namaPeternak": jsonData['namaPeternak'],
+          "nikPeternak": jsonData['nikPeternak'],
+          "noTelp": jsonData['noTelp'],
+          "emailPeternak": jsonData['emailPeternak'],
+          "gender": jsonData['gender'],
+          "tanggalLahir": jsonData['tanggalLahir'],
+          "dusun": jsonData['dusun'],
           "lokasi": jsonData['lokasi'],
           "petugas_id": jsonData['petugas_id'],
           "tanggalPendaftaran": jsonData['tanggalPendaftaran'],
@@ -95,13 +111,69 @@ class PeternakApi extends SharedApi {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getProvinsi() async {
+    try {
+      var response = await http.get(Uri.parse('$baseUrl/provinsi'));
+      if (response.statusCode == 200) {
+        return List<Map<String, dynamic>>.from(json.decode(response.body));
+      }
+    } catch (e) {
+      print("Error fetching provinsi: $e");
+    }
+    return [];
+  }
+
+  Future<List<Map<String, dynamic>>> getKabupaten(String idProvinsi) async {
+    try {
+      var response =
+          await http.get(Uri.parse('$baseUrl/kabupaten/$idProvinsi'));
+      if (response.statusCode == 200) {
+        return List<Map<String, dynamic>>.from(json.decode(response.body));
+      }
+    } catch (e) {
+      print("Error fetching kabupaten: $e");
+    }
+    return [];
+  }
+
+  Future<List<Map<String, dynamic>>> getKecamatan(String idKabupaten) async {
+    try {
+      var response =
+          await http.get(Uri.parse('$baseUrl/kecamatan/$idKabupaten'));
+      if (response.statusCode == 200) {
+        return List<Map<String, dynamic>>.from(json.decode(response.body));
+      }
+    } catch (e) {
+      print("Error fetching kecamatan: $e");
+    }
+    return [];
+  }
+
+  Future<List<Map<String, dynamic>>> getDesa(String idKecamatan) async {
+    try {
+      var response = await http.get(Uri.parse('$baseUrl/desa/$idKecamatan'));
+      if (response.statusCode == 200) {
+        return List<Map<String, dynamic>>.from(json.decode(response.body));
+      }
+    } catch (e) {
+      print("Error fetching desa: $e");
+    }
+    return [];
+  }
+
 //EDIT
   Future<PeternakModel?> editPeternakApi(
       String idPeternak,
-      String nikPeternak,
-      String namaPeternak,
       String idISIKHNAS,
-      String lokasi,
+      String namaPeternak,
+      String nikPeternak,
+      String noTelp,
+      String emailPeternak,
+      String gender,
+      String tanggalLahir,
+      String dusun,
+      String latitude,
+      String longitude,
       String petugas_id,
       String tanggalPendaftaran) async {
     try {
@@ -109,10 +181,15 @@ class PeternakApi extends SharedApi {
       showLoading();
       var bodyDataedit = {
         'idPeternak': idPeternak,
-        'nikPeternak': nikPeternak,
-        'namaPeternak': namaPeternak,
         'idISIKHNAS': idISIKHNAS,
-        'lokasi': lokasi,
+        'namaPeternak': namaPeternak,
+        'nikPeternak': nikPeternak,
+        'noTelp': noTelp,
+        'emailPeternak': emailPeternak,
+        'gender': gender,
+        'tanggalLahir': tanggalLahir,
+        'dusun': dusun,
+        'lokasi': '$latitude,$longitude',
         'petugas_id': petugas_id,
         'tanggalPendaftaran': tanggalPendaftaran
       };
@@ -130,9 +207,14 @@ class PeternakApi extends SharedApi {
         return PeternakModel.fromJson({
           "status": 201,
           "idPeternak": jsonData['idPeternak'],
-          "nikPeternak": jsonData['nikPeternak'],
-          "namaPeternak": jsonData['namaPeternak'],
           "idISIKHNAS": jsonData['idISIKHNAS'],
+          "namaPeternak": jsonData['namaPeternak'],
+          "nikPeternak": jsonData['nikPeternak'],
+          "noTelp": jsonData['noTelp'],
+          "emailPeternak": jsonData['emailPeternak'],
+          "gender": jsonData['gender'],
+          "tanggalLahir": jsonData['tanggalLahir'],
+          "dusun": jsonData['dusun'],
           "lokasi": jsonData['lokasi'],
           "petugas_id": jsonData['petugas_id'],
           "tanggalPendaftaran": jsonData['tanggalPendaftaran'],

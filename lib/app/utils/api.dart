@@ -1,9 +1,6 @@
 import 'package:get_storage/get_storage.dart';
 
 class SharedApi {
-  // String imageUrl = "http://192.168.2.243:8081/downloadFile/";
-  // String baseUrl = "http://192.168.2.243:8081/api";
-
   // String imageUrl = "http://192.168.0.108:8081/api/";
   // String baseUrl = "http://192.168.0.108:8081/api";
 
