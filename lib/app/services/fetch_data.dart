@@ -36,7 +36,6 @@ class FetchData {
 
   RxString selectedIdJenisHewan = ''.obs;
   RxList<JenisHewanModel> jenisHewanList = <JenisHewanModel>[].obs;
-  RxList<JenisHewanModel> filteredJenisHewanList = <JenisHewanModel>[].obs;
 
   RxString selectedIdJenisVaksin = ''.obs;
   RxList<JenisVaksinModel> jenisVaksinList = <JenisVaksinModel>[].obs;
@@ -94,7 +93,7 @@ class FetchData {
         selectedKandangId.value = kandangs.first.idKandang ?? '';
       }
       kandangList.assignAll(kandangs);
-      filterKandangByPeternak(selectedPeternakId.value); // Apply initial filter
+
       return kandangs;
     } catch (e) {
       print('Error fetching kandangs: $e');
@@ -124,17 +123,17 @@ class FetchData {
 
   Future<List<JenisHewanModel>> fetchJenisHewan() async {
     try {
+      print("🔄 Memulai fetch jenis hewan...");
+
       final JenisHewanListModel jenisHewanListModel =
           await JenisHewanApi().loadJenisHewanApi();
-
       final List<JenisHewanModel> jenisHewan =
           jenisHewanListModel.content ?? [];
-      jenisHewanList.assignAll(jenisHewan);
 
+      jenisHewanList.assignAll(jenisHewan);
       return jenisHewan;
     } catch (e) {
-      print('Error fetching jenis hewan: $e');
-      showErrorMessage("Error fetching jenis hewan: $e");
+      print("❌ Error fetching jenis hewan: $e");
       return [];
     }
   }

@@ -6,6 +6,9 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gmaps;
+import 'package:latlong2/latlong.dart' as latlong2;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/add_kandang_controller.dart';
 
@@ -42,7 +45,7 @@ class AddKandangView extends GetView<AddKandangController> {
         padding: const EdgeInsets.all(20),
         physics: const BouncingScrollPhysics(),
         children: [
-          _buildFormCard(),
+          _buildFormCard(context),
           // const SizedBox(height: 20),
           // _buildImageSection(),
           // const SizedBox(height: 20),
@@ -55,31 +58,45 @@ class AddKandangView extends GetView<AddKandangController> {
   }
 
   Widget _buildSubmitButton() {
-    return ElevatedButton(
-      onPressed: () async {
-        if (controller.isLoading.value) {
-          print("Masih loading, tetap jalankan submit.");
-        }
-        await controller.addKandang(Get.context!);
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xff132137),
-        padding: const EdgeInsets.symmetric(vertical: 18),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Center(
+      child: SizedBox(
+        width: 200, // Lebar tombol, bisa disesuaikan
+        child: ElevatedButton.icon(
+          onPressed: controller.isLoading.value
+              ? null
+              : () async {
+                  await controller.addKandang(Get.context!);
+                },
+          icon: controller.isLoading.value
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : const Icon(Icons.add_circle_outline, color: Colors.white),
+          label: Obx(() => Text(
+                controller.isLoading.value ? "Memproses..." : "Tambah Kandang",
+                style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              )),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xff132137), // Warna utama
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 4,
+          ),
+        ),
       ),
-      child: Obx(() => controller.isLoading.value
-          ? const CircularProgressIndicator(color: Colors.white)
-          : const Text(
-              "Tambah Kandang",
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            )),
     );
   }
 
-  Widget _buildFormCard() {
+  Widget _buildFormCard(BuildContext context) {
     return Card(
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -105,12 +122,17 @@ class AddKandangView extends GetView<AddKandangController> {
             _buildTextField(
                 controller.nilaiBangunanC, "Nilai Bangunan", Icons.attach_money,
                 prefixText: "Rp. "),
-            _buildTextField(controller.alamatC, "Alamat", Icons.location_on),
-            _buildTextField(controller.latitudeC, "Latitude", Icons.gps_fixed),
-            _buildTextField(
-                controller.longitudeC, "Longitude", Icons.gps_fixed),
+            _buildPickLocationButton(context),
+            const SizedBox(height: 16),
+            _buildLatitudeField(controller),
+            _buildLongitudeField(controller),
+            _buildAlamatField(controller),
+            _buildProvinsiField(controller),
+            _buildKabupatenField(controller),
+            _buildKecamatanField(controller),
+            _buildDesaField(controller),
             _buildImageSection(),
-            _buildLocationSection(),
+            const SizedBox(height: 16),
             _buildSubmitButton(),
           ],
         ),
@@ -316,40 +338,187 @@ class AddKandangView extends GetView<AddKandangController> {
     );
   }
 
-  Widget _buildLocationSection() {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Titik Koordinat",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            Obx(() => Text(controller.strLatLong.value,
-                style: const TextStyle(fontSize: 14))),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12))),
-              onPressed: () async {
-                controller.loading.value = true;
-                Position position = await controller.getGeoLocationPosition();
-                controller.strLatLong.value =
-                    '${position.latitude}, ${position.longitude}';
-                await controller.getAddressFromLongLat(position);
-                controller.loading.value = false;
-              },
-              child: Obx(() => controller.loading.value
-                  ? const Center(child: CircularProgressIndicator())
-                  : const Text("Tagging Lokasi")),
-            ),
-          ],
+  Widget _buildPickLocationButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () => controller.openMapDialog(context),
+      icon: const Icon(Icons.map, color: Colors.white),
+      label: const Text("Pilih Lokasi di Peta",
+          style: TextStyle(color: Colors.white)),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+
+  // Input untuk Latitude (bisa diedit manual)
+  Widget _buildAlamatField(AddKandangController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: controller.alamatC,
+        onChanged: (value) {
+          controller.manualAlamatEdited.value =
+              true; // Tandai bahwa alamat diedit manual
+        },
+        keyboardType: TextInputType.text,
+        style: const TextStyle(
+            fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+        decoration: InputDecoration(
+          labelText: "Alamat",
+          labelStyle:
+              TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+          prefixIcon: const Icon(Icons.location_on, color: Colors.green),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.green.shade700, width: 1.5),
+          ),
         ),
       ),
     );
   }
+
+  Widget _buildLatitudeField(AddKandangController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: controller.latitudeC,
+        keyboardType: TextInputType.number,
+        onChanged: (value) {
+          controller.latitude.value = value; // Sinkronisasi manual
+        },
+        style: const TextStyle(
+            fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+        decoration: InputDecoration(
+          labelText: "Latitude",
+          labelStyle:
+              TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+          prefixIcon: const Icon(Icons.gps_fixed, color: Colors.blue),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.blue.shade700, width: 1.5),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLongitudeField(AddKandangController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: controller.longitudeC,
+        keyboardType: TextInputType.number,
+        onChanged: (value) {
+          controller.longitude.value = value; // Sinkronisasi manual
+        },
+        style: const TextStyle(
+            fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+        decoration: InputDecoration(
+          labelText: "Longitude",
+          labelStyle:
+              TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+          prefixIcon: const Icon(Icons.gps_fixed, color: Colors.blue),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.blue.shade700, width: 1.5),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Widget _buildProvinsiField(AddKandangController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: GetBuilder<AddKandangController>(builder: (controller) {
+      return TextField(
+        controller: controller.provinsiC,
+        decoration: InputDecoration(
+          labelText: "Provinsi",
+          prefixIcon: const Icon(Icons.map, color: Colors.purple),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }),
+  );
+}
+
+Widget _buildKabupatenField(AddKandangController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: GetBuilder<AddKandangController>(builder: (controller) {
+      return TextField(
+        controller: controller.kabupatenC,
+        decoration: InputDecoration(
+          labelText: "Kabupaten/Kota",
+          prefixIcon: const Icon(Icons.location_city, color: Colors.orange),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }),
+  );
+}
+
+Widget _buildKecamatanField(AddKandangController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: GetBuilder<AddKandangController>(builder: (controller) {
+      return TextField(
+        controller: controller.kecamatanC,
+        decoration: InputDecoration(
+          labelText: "Kecamatan",
+          prefixIcon: const Icon(Icons.business, color: Colors.blue),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }),
+  );
+}
+
+Widget _buildDesaField(AddKandangController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: GetBuilder<AddKandangController>(builder: (controller) {
+      return TextField(
+        controller: controller.desaC,
+        decoration: InputDecoration(
+          labelText: "Desa",
+          prefixIcon: const Icon(Icons.villa, color: Colors.green),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }),
+  );
 }
