@@ -8,6 +8,7 @@ class KandangModel {
   final String? namaKandang;
   final String? kapasitas;
   final String? nilaiBangunan;
+  final String? jenisKandang;
   final String? alamat;
   final String? provinsi;
   final String? kabupaten;
@@ -16,8 +17,7 @@ class KandangModel {
   final String? fotoKandang;
   final String? latitude;
   final String? longitude;
-  final JenisHewanModel? jenisHewan;
-
+  final JenisHewanModel? idJenisHewan;
   final int? status;
 
   KandangModel({
@@ -28,6 +28,7 @@ class KandangModel {
     this.luas,
     this.kapasitas,
     this.nilaiBangunan,
+    this.jenisKandang,
     this.alamat,
     this.desa,
     this.kecamatan,
@@ -36,7 +37,7 @@ class KandangModel {
     this.fotoKandang,
     this.latitude,
     this.longitude,
-    this.jenisHewan,
+    this.idJenisHewan,
   });
 
   factory KandangModel.fromJson(Map<String, dynamic> jsonData) {
@@ -58,7 +59,8 @@ class KandangModel {
       fotoKandang: jsonData['file_path'] ?? "",
       latitude: jsonData['latitude'] ?? "",
       longitude: jsonData['longitude'] ?? "",
-      jenisHewan: jsonData['jenisHewan'] != null
+      jenisKandang: jsonData['jenisKandang'] ?? "",
+      idJenisHewan: jsonData['jenisHewan'] != null
           ? JenisHewanModel.fromJson(jsonData['jenisHewan'])
           : null,
     );

@@ -1,10 +1,11 @@
 import 'package:crud_flutter_api/app/utils/api.dart';
+import 'package:crud_flutter_api/app/data/pengobatan_model.dart';
 import 'package:crud_flutter_api/app/widgets/message/loading.dart';
+import 'package:crud_flutter_api/app/widgets/message/errorMessage.dart';
 import 'package:crud_flutter_api/app/widgets/message/internetMessage.dart';
+import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import '../data/pengobatan_model.dart';
 
 class PengobatanApi extends SharedApi {
   // Login API
@@ -41,27 +42,37 @@ class PengobatanApi extends SharedApi {
     String idKasus,
     String tanggalPengobatan,
     String tanggalKasus,
-    String petugas_id,
+    String petugasId,
     String namaInfrastruktur,
     String lokasi,
     String dosis,
     String sindrom,
     String dignosaBanding,
+    String provinsiPengobatan,
+    String kabupatenPengobatan,
+    String kecamatanPengobatan,
+    String desaPengobatan,
   ) async {
     try {
+      var generatedId = Uuid().v4();
       var jsonData;
       showLoading();
 
       var bodyData = {
+        'idPengobatan': generatedId,
         'idKasus': idKasus,
         'tanggalPengobatan': tanggalPengobatan,
         'tanggalKasus': tanggalKasus,
-        'petugas_id': petugas_id,
+        'petugasId': petugasId,
         'namaInfrastruktur': namaInfrastruktur,
         'lokasi': lokasi,
         'dosis': dosis,
         'sindrom': sindrom,
         'diagnosaBanding': dignosaBanding,
+        'provinsiPengobatan': provinsiPengobatan,
+        'kabupatenPengobatan': kabupatenPengobatan,
+        'kecamatanPengobatan': kecamatanPengobatan,
+        'desaPengobatan': desaPengobatan,
       };
       var data = await http.post(
         Uri.parse('$baseUrl/pengobatan'),
@@ -76,6 +87,7 @@ class PengobatanApi extends SharedApi {
       if (data.statusCode == 201) {
         return PengobatanModel.fromJson({
           "status": 201,
+          "idPengobatan": jsonData['idPengobatan'],
           "idKasus": jsonData['idKasus'],
           "tanggalPengobatan": jsonData['tanggalPengobatan'],
           "tanggalKasus": jsonData['tanggalKasus'],
@@ -85,11 +97,16 @@ class PengobatanApi extends SharedApi {
           "dosis": jsonData['dosis'],
           "sindrom": jsonData['sindrom'],
           "diagnosaBanding": jsonData['dignosaBanding'],
+          "provinsiPengobatan": jsonData['provinsiPengobatan'],
+          "kabupatenPengobatan": jsonData['kabupatenPengobatan'],
+          "kecamatanPengobatan": jsonData['kecamatanPengobatan'],
+          "desaPengobatan": jsonData['desaPengobatan'],
         });
       } else {
-        return null; // return PengobatanModel.fromJson({"status": data.statusCode});
+        showErrorMessage(jsonData['message']);
+        return PengobatanModel.fromJson({"status": data.statusCode});
       }
-    } on Exception catch (_) {
+    } catch (e) {
       stopLoading();
       showInternetMessage("Periksa koneksi internet anda");
       return PengobatanModel.fromJson({"status": 404});
@@ -98,15 +115,20 @@ class PengobatanApi extends SharedApi {
 
 //EDIT
   Future<PengobatanModel?> editPengobatanApi(
+    String idPengobatan,
     String idKasus,
     String tanggalPengobatan,
     String tanggalKasus,
-    String petugas_id,
+    String petugasId,
     String namaInfrastruktur,
     String lokasi,
     String dosis,
     String sindrom,
     String dignosaBanding,
+    String provinsiPengobatan,
+    String kabupatenPengobatan,
+    String kecamatanPengobatan,
+    String desaPengobatan,
   ) async {
     try {
       var jsonData;
@@ -115,20 +137,24 @@ class PengobatanApi extends SharedApi {
         'idKasus': idKasus,
         'tanggalPengobatan': tanggalPengobatan,
         'tanggalKasus': tanggalKasus,
-        'petugas_id': petugas_id,
+        'petugasId': petugasId,
         'namaInfrastruktur': namaInfrastruktur,
         'lokasi': lokasi,
         'dosis': dosis,
         'sindrom': sindrom,
         'diagnosaBanding': dignosaBanding,
+        'provinsiPengobatan': provinsiPengobatan,
+        'kabupatenPengobatan': kabupatenPengobatan,
+        'kecamatanPengobatan': kecamatanPengobatan,
+        'desaPengobatan': desaPengobatan,
       };
 
       var data = await http.put(
-        Uri.parse('$baseUrl/pengobatan/$idKasus'),
+        Uri.parse('$baseUrl/pengobatan/$idPengobatan'),
         headers: {...getToken(), 'Content-Type': 'application/json'},
         body: jsonEncode(bodyDataedit),
       );
-      // print(data.body);
+      print(data.body);
       stopLoading();
 
       jsonData = json.decode(data.body);
@@ -144,8 +170,13 @@ class PengobatanApi extends SharedApi {
           "dosis": jsonData['dosis'],
           "sindrom": jsonData['sindrom'],
           "diagnosaBanding": jsonData['dignosaBanding'],
+          "provinsiPengobatan": jsonData['provinsiPengobatan'],
+          "kabupatenPengobatan": jsonData['kabupatenPengobatan'],
+          "kecamatanPengobatan": jsonData['kecamatanPengobatan'],
+          "desaPengobatan": jsonData['desaPengobatan'],
         });
       } else {
+        showErrorMessage(jsonData['message']);
         return PengobatanModel.fromJson({"status": data.statusCode});
       }
     } on Exception catch (_) {
@@ -156,12 +187,12 @@ class PengobatanApi extends SharedApi {
   }
 
 //DELETE
-  Future<PengobatanModel?> deletePengobatanAPI(String idKasus) async {
+  Future<PengobatanModel?> deletePengobatanAPI(String idPengobatan) async {
     try {
       var jsonData;
       showLoading();
       var data = await http.delete(
-        Uri.parse('$baseUrl/pengobatan/$idKasus'),
+        Uri.parse('$baseUrl/pengobatan/$idPengobatan'),
         headers: getToken(),
       );
       stopLoading();
@@ -176,6 +207,7 @@ class PengobatanApi extends SharedApi {
         // Kirim variabel postData ke dalam fungsi PengobatanModel.fromJson
         return PengobatanModel.fromJson({"status": 200});
       } else {
+        showErrorMessage(jsonData['message']);
         return PengobatanModel.fromJson({"status": data.statusCode});
       }
     } on Exception catch (_) {

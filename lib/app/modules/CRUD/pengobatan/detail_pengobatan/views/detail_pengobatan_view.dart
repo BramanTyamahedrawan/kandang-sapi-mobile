@@ -1,29 +1,24 @@
 import 'package:crud_flutter_api/app/data/petugas_model.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/pengobatan/detail_pengobatan/controllers/detail_pengobatan_controller.dart';
-import 'package:crud_flutter_api/app/utils/app_color.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
 class DetailPengobatanView extends GetView<DetailPengobatanController> {
   const DetailPengobatanView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.primary,
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text(
           'Detail Pengobatan',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back), // Ikon panah kembali
-          onPressed: () {
-            Navigator.of(context).pop(); // Aksi saat tombol diklik
-          },
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           IconButton(
@@ -37,456 +32,206 @@ class DetailPengobatanView extends GetView<DetailPengobatanController> {
             icon: Obx(() {
               return Icon(
                 controller.isEditing.value ? Icons.close : Icons.edit,
+                color: Colors.white,
               );
             }),
           ),
         ],
-        backgroundColor: const Color(0xff132137),
-        elevation: 0,
-        centerTitle: true,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: 1,
-            color: AppColor.secondaryExtraSoft,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xff7B1FA2), Color(0xff512DA8)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
         ),
+        centerTitle: true,
+        elevation: 4,
+        shadowColor: Colors.black26,
       ),
-      body: ListView(
-        shrinkWrap: true,
-        physics: const BouncingScrollPhysics(),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        children: [
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.grey[200]
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: false,
-                  style: const TextStyle(
-                      fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  autofocus: true,
-                  controller: controller.idKasusC,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "ID Kasus",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "ID Kasus",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                  ),
-                ),
-              )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: controller.isEditing.value,
-                  style: const TextStyle(
-                      fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  autofocus: true,
-                  controller: controller.namaInfrastrukturC,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "Nama Infrastuktur",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "Nama Infrastuktur",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                  ),
-                ),
-              )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: controller.isEditing.value,
-                  style: const TextStyle(
-                      fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  autofocus: true,
-                  controller: controller.dosisC,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "Dosis",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "Dosis",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                  ),
-                ),
-              )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: controller.isEditing.value,
-                  style: const TextStyle(
-                      fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  autofocus: true,
-                  controller: controller.sindromC,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "Sindrom",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "Sindrom",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                  ),
-                ),
-              )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: controller.isEditing.value,
-                  style: const TextStyle(
-                      fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  autofocus: true,
-                  controller: controller.diagnosaBandingC,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "Diagnosa banding",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "Diagnosa banding",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                  ),
-                ),
-              )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: controller.isEditing.value,
-                  style: const TextStyle(
-                      fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  autofocus: true,
-                  controller: controller.lokasiC,
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "Lokasi",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "Lokasi",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                  ),
-                ),
-              )),
-          Obx(
-            () => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "Nama Petugas ",
-                                style: TextStyle(
-                                  color: Colors.black, // Warna teks utama
-                                  fontSize: 12,
-                                ),
-                              ),
-                              TextSpan(
-                                text:
-                                    "(klik edit untuk mengganti nama petugas)",
-                                style: TextStyle(
-                                  color: Colors.red, // Warna teks miring
-                                  fontStyle:
-                                      FontStyle.italic, // Membuat teks miring
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          print(controller.fetchData.selectedPetugasId.value);
-                        },
-                        child: controller.isEditing.value
-                            ? DropdownButton<String>(
-                                value: controller
-                                    .fetchData.selectedPetugasId.value,
-                                items: controller.fetchData.petugasList
-                                    .map((PetugasModel petugass) {
-                                  print(controller
-                                      .fetchData.selectedPetugasId.value);
-                                  return DropdownMenuItem<String>(
-                                    value: petugass.nikPetugas ?? '',
-                                    child: Text(petugass.namaPetugas ?? ''),
-                                  );
-                                }).toList(),
-                                onChanged: (String? selectedId) {
-                                  controller.fetchData.selectedPetugasId.value =
-                                      selectedId ?? '';
-                                },
-                                hint: const Text('Pilih Petugas'),
-                              )
-                            : TextField(
-                                controller: controller.namaPetugasC,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: 'poppins',
-                                  color: Colors.black,
-                                ),
-                                decoration: const InputDecoration(
-                                  // labelText: 'ID Peternak',
-                                  border: InputBorder.none,
-                                ),
-                                readOnly: true,
-                              ),
-                      ),
-                    ])),
-          ),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextField(
-                  enabled: controller.isEditing.value,
-                  style: const TextStyle(
-                      fontSize: 14, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  controller: controller.tanggalKasusC,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    icon: Icon(Icons.calendar_today),
-                    labelText: "Tanggal Kasus",
-                  ),
-                  readOnly: true,
-                  onTap: () => controller.tanggalKasus(context),
-                ),
-              )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextField(
-                  enabled: controller.isEditing.value,
-                  style: const TextStyle(
-                      fontSize: 14, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  controller: controller.tanggalPengobatanC,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    icon: Icon(Icons.calendar_today),
-                    labelText: "Tanggal Pengobatan",
-                  ),
-                  readOnly: true,
-                  onTap: () => controller.tanggalPengobatan(context),
-                ),
-              )),
-          Obx(() {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (controller.isEditing.value)
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildCard(
+              child: Column(
+                children: [
+                  _buildTextField(controller, controller.idKasusC, "ID Kasus",
+                      Icons.assignment,
+                      isEnabled: false),
+                  _buildTextField(controller, controller.namaInfrastrukturC,
+                      "Nama Infrastruktur", Icons.business),
+                  _buildTextField(controller, controller.dosisC, "Dosis",
+                      Icons.local_pharmacy,
+                      maxLines: 3),
+                  _buildTextField(controller, controller.sindromC, "Sindrom",
+                      Icons.health_and_safety),
+                  _buildTextField(controller, controller.diagnosaBandingC,
+                      "Diagnosa Banding", Icons.medical_services),
+                  _buildTextField(controller, controller.lokasiC, "Lokasi",
+                      Icons.location_on),
+                  _buildDropdownPetugas(),
+                  _buildDatePicker(controller.tanggalKasusC, "Tanggal Kasus",
+                      context, controller.tanggalKasus),
+                  _buildDatePicker(
+                      controller.tanggalPengobatanC,
+                      "Tanggal Pengobatan",
+                      context,
+                      controller.tanggalPengobatan),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   ElevatedButton(
-                    onPressed: () {
-                      controller.editPengobatan();
-                    },
+                    onPressed: controller.isEditing.value
+                        ? () => controller.editPengobatan()
+                        : null,
                     style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(120, 55),
-                      backgroundColor: const Color(0xff132137),
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 20),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                       ),
+                      backgroundColor: controller.isEditing.value
+                          ? const Color(0xff7B1FA2)
+                          : Colors.grey,
                     ),
                     child: const Text(
-                      'Edit post',
+                      'Simpan Perubahan',
                       style: TextStyle(
-                        fontSize: 16,
-                        fontFamily: 'poppins',
-                        color: Colors.white,
-                      ),
-                    ),
-                    // ... Other button properties
-                  )
-                else
-                  ElevatedButton(
-                    onPressed: () {
-                      controller.deletePengobatan();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(120, 55),
-                      backgroundColor: const Color(0xff132137),
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: Text(
-                      'Delete post',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontFamily: 'poppins',
-                        color: AppColor.primaryExtraSoft,
-                      ),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
                   ),
-              ],
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () => controller.deletePengobatan(),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                    child: const Text(
+                      'Hapus Data',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCard({required Widget child}) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 8,
+      color: Colors.white,
+      shadowColor: Colors.black26,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: child,
+      ),
+    );
+  }
+
+  Widget _buildTextField(DetailPengobatanController controller,
+      TextEditingController textController, String label, IconData icon,
+      {int maxLines = 1, bool isEnabled = true}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: textController,
+        maxLines: maxLines,
+        enabled: controller.isEditing.value && isEnabled,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon, color: Colors.purple),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          filled: true,
+          fillColor: isEnabled ? Colors.grey[200] : Colors.grey[300],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDatePicker(TextEditingController controller, String label,
+      BuildContext context, Function onTap) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: controller,
+        readOnly: true,
+        enabled: this.controller.isEditing.value,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: const Icon(Icons.calendar_today, color: Colors.purple),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          filled: true,
+          fillColor: Colors.grey[200],
+        ),
+        onTap: () => onTap(context),
+      ),
+    );
+  }
+
+  Widget _buildDropdownPetugas() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Nama Petugas",
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+          Obx(() {
+            // Pastikan nilai terpilih ada di dalam daftar petugasList
+            bool isValid = controller.fetchData.petugasList.any((p) =>
+                p.nikPetugas == controller.fetchData.selectedPetugasId.value);
+
+            return DropdownButtonFormField<String>(
+              value: isValid
+                  ? controller.fetchData.selectedPetugasId.value
+                  : null, // Set null jika tidak ada yang cocok
+              items:
+                  controller.fetchData.petugasList.map((PetugasModel petugas) {
+                return DropdownMenuItem<String>(
+                  value: petugas.nikPetugas,
+                  child: Text(petugas.namaPetugas ?? '',
+                      style:
+                          const TextStyle(fontSize: 14, fontFamily: 'poppins')),
+                );
+              }).toList(),
+              onChanged: controller.isEditing.value
+                  ? (String? newValue) {
+                      if (newValue != null) {
+                        controller.fetchData.selectedPetugasId.value = newValue;
+                      }
+                    }
+                  : null,
+              decoration: InputDecoration(
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                filled: true,
+                fillColor: Colors.grey[200],
+              ),
             );
-          })
+          }),
         ],
       ),
     );

@@ -1,55 +1,43 @@
 import 'dart:io';
-
+import 'package:crud_flutter_api/app/data/jenishewan_model.dart';
 import 'package:crud_flutter_api/app/data/peternak_model.dart';
 import 'package:crud_flutter_api/app/utils/app_color.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
-
 import 'package:get/get.dart';
-
+import 'package:geolocator/geolocator.dart';
 import '../controllers/detail_kandang_controller.dart';
 
 class DetailKandangView extends GetView<DetailKandangController> {
   const DetailKandangView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF7EBE1),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
-          'Detail Data Kandang',
-          style: TextStyle(
-            color: Colors.white,
-          ),
+          'Detail Kandang',
+          style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ), // Ikon panah kembali
-          onPressed: () {
-            Navigator.of(context).pop(); // Aksi saat tombol diklik
-          },
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           Visibility(
             visible: controller.role != 'ROLE_PETERNAK',
             child: IconButton(
               onPressed: () {
-                if (controller.isEditing.value) {
-                  controller.tutupEdit();
-                } else {
-                  controller.tombolEdit();
-                }
+                controller.isEditing.value
+                    ? controller.tutupEdit()
+                    : controller.tombolEdit();
               },
               icon: Obx(
-                () {
-                  return Icon(
-                    controller.isEditing.value ? Icons.close : Icons.edit,
-                    color: Colors.white,
-                  );
-                },
+                () => Icon(
+                  controller.isEditing.value ? Icons.close : Icons.edit,
+                ),
               ),
             ),
           ),
@@ -67,838 +55,456 @@ class DetailKandangView extends GetView<DetailKandangController> {
         ),
       ),
       body: ListView(
-        shrinkWrap: true,
-        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(20),
+        physics: const BouncingScrollPhysics(),
         children: [
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.grey[200]
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: false,
-                  style: const TextStyle(
-                      fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  controller: controller.idKandangC,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "ID Kandang",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "ID Kandang",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                  ),
-                ),
-              )),
-          Obx(
-            () => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
-                        child: Text(
-                          "Id Peternak",
-                          style: TextStyle(
-                            color: AppColor.secondarySoft,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          print(controller.fetchdata.selectedPeternakId.value);
-                        },
-                        child: controller.isEditing.value
-                            ? DropdownButton<String>(
-                                value: controller
-                                    .fetchdata.selectedPeternakId.value,
-                                items: controller.fetchdata.peternakList
-                                    .map((PeternakModel peternak) {
-                                  return DropdownMenuItem<String>(
-                                    value: peternak.idPeternak ?? '',
-                                    child: Text(peternak.namaPeternak ?? ''),
-                                  );
-                                }).toList(),
-                                onChanged: (String? selectedId) {
-                                  // Update selectedPeternakId
-                                  controller.fetchdata.selectedPeternakId
-                                      .value = selectedId ?? '';
-
-                                  // Update nikPeternakC and namaPeternakC based on selectedPeternakId
-                                  PeternakModel selectedPeternak = controller
-                                      .fetchdata.peternakList
-                                      .firstWhere(
-                                    (peternak) =>
-                                        peternak.idPeternak == selectedId,
-                                    orElse: () =>
-                                        PeternakModel(), // Default value if not found
-                                  );
-
-                                  controller.idPeternakC.text =
-                                      selectedPeternak.idPeternak ?? '';
-                                },
-                                hint: const Text('Pilih Peternak'),
-                              )
-                            : TextField(
-                                controller: controller.namaPeternakC,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: 'poppins',
-                                  color: Colors.black,
-                                ),
-                                decoration: const InputDecoration(
-                                  // labelText: 'ID Peternak',
-                                  border: InputBorder.none,
-                                ),
-                                readOnly: true,
-                              ),
-                      ),
-                    ])),
-          ),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.grey[200]
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: false,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontFamily: 'poppins',
-                    color: Colors.black,
-                  ),
-                  maxLines: 1,
-                  controller: controller.idPeternakC,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "ID Peternak",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "ID Peternak",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                  ),
-                ),
-              )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.grey[200]
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: false,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontFamily: 'poppins',
-                    color: Colors.black,
-                  ),
-                  maxLines: 1,
-                  controller: controller.jenisHewanC,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "Jenis Hewan",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "Jenis Hewan",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                  ),
-                ),
-              )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: controller.isEditing.value,
-                  style: const TextStyle(
-                      fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  controller: controller.luasC,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "Luas Kandang",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "Luas Kandang",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                    suffixText: 'm²',
-                    suffixStyle: const TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'poppins',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: controller.isEditing.value,
-                  style: const TextStyle(
-                      fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  controller: controller.kapasitasC,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "Kapasitas",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "Kapasitas",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                  ),
-                ),
-              )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: controller.isEditing.value,
-                  style: const TextStyle(
-                      fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  controller: controller.nilaiBangunanC,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                      label: Text(
-                        "Nilai Bangunan",
-                        style: TextStyle(
-                          color: AppColor.secondarySoft,
-                          fontSize: 15,
-                        ),
-                      ),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: InputBorder.none,
-                      hintText: "Nilai Bangunan",
-                      hintStyle: TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'poppins',
-                        fontWeight: FontWeight.w500,
-                        color: AppColor.secondarySoft,
-                      ),
-                      prefixText: "Rp. ",
-                      prefixStyle: const TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'poppins',
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      )),
-                ),
-              )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: TextFormField(
-                  enabled: controller.isEditing.value,
-                  style: const TextStyle(
-                      fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-                  maxLines: 1,
-                  controller: controller.alamatC,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    label: Text(
-                      "Alamat",
-                      style: TextStyle(
-                        color: AppColor.secondarySoft,
-                        fontSize: 15,
-                      ),
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    border: InputBorder.none,
-                    hintText: "Alamat",
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.secondarySoft,
-                    ),
-                  ),
-                ),
-              )),
-          // Obx(() => Container(
-          //       width: MediaQuery.of(context).size.width,
-          //       padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-          //       margin: const EdgeInsets.only(bottom: 16),
-          //       decoration: BoxDecoration(
-          //         color: controller.isEditing.value
-          //             ? Colors.white
-          //             : Colors.grey[200],
-          //         borderRadius: BorderRadius.circular(8),
-          //         border:
-          //             Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-          //       ),
-          //       child: TextFormField(
-          //         enabled: controller.isEditing.value,
-          //         style: const TextStyle(
-          //             fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-          //         maxLines: 1,
-          //         controller: controller.desaC,
-          //         keyboardType: TextInputType.emailAddress,
-          //         decoration: InputDecoration(
-          //           label: Text(
-          //             "Desa",
-          //             style: TextStyle(
-          //               color: AppColor.secondarySoft,
-          //               fontSize: 15,
-          //             ),
-          //           ),
-          //           floatingLabelBehavior: FloatingLabelBehavior.always,
-          //           border: InputBorder.none,
-          //           hintText: "Desa",
-          //           hintStyle: TextStyle(
-          //             fontSize: 15,
-          //             fontFamily: 'poppins',
-          //             fontWeight: FontWeight.w500,
-          //             color: AppColor.secondarySoft,
-          //           ),
-          //         ),
-          //       ),
-          //     )),
-          // Obx(() => Container(
-          //       width: MediaQuery.of(context).size.width,
-          //       padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-          //       margin: const EdgeInsets.only(bottom: 16),
-          //       decoration: BoxDecoration(
-          //         color: controller.isEditing.value
-          //             ? Colors.white
-          //             : Colors.grey[200],
-          //         borderRadius: BorderRadius.circular(8),
-          //         border:
-          //             Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-          //       ),
-          //       child: TextFormField(
-          //         enabled: controller.isEditing.value,
-          //         style: const TextStyle(
-          //             fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-          //         maxLines: 1,
-          //         controller: controller.kecamatanC,
-          //         keyboardType: TextInputType.emailAddress,
-          //         decoration: InputDecoration(
-          //           label: Text(
-          //             "Kecamatan",
-          //             style: TextStyle(
-          //               color: AppColor.secondarySoft,
-          //               fontSize: 15,
-          //             ),
-          //           ),
-          //           floatingLabelBehavior: FloatingLabelBehavior.always,
-          //           border: InputBorder.none,
-          //           hintText: "Kecamatan",
-          //           hintStyle: TextStyle(
-          //             fontSize: 15,
-          //             fontFamily: 'poppins',
-          //             fontWeight: FontWeight.w500,
-          //             color: AppColor.secondarySoft,
-          //           ),
-          //         ),
-          //       ),
-          //     )),
-          // Obx(() => Container(
-          //       width: MediaQuery.of(context).size.width,
-          //       padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-          //       margin: const EdgeInsets.only(bottom: 16),
-          //       decoration: BoxDecoration(
-          //         color: controller.isEditing.value
-          //             ? Colors.white
-          //             : Colors.grey[200],
-          //         borderRadius: BorderRadius.circular(8),
-          //         border:
-          //             Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-          //       ),
-          //       child: TextFormField(
-          //         enabled: controller.isEditing.value,
-          //         style: const TextStyle(
-          //             fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-          //         maxLines: 1,
-          //         controller: controller.kabupatenC,
-          //         keyboardType: TextInputType.emailAddress,
-          //         decoration: InputDecoration(
-          //           label: Text(
-          //             "Kabupaten",
-          //             style: TextStyle(
-          //               color: AppColor.secondarySoft,
-          //               fontSize: 15,
-          //             ),
-          //           ),
-          //           floatingLabelBehavior: FloatingLabelBehavior.always,
-          //           border: InputBorder.none,
-          //           hintText: "Kabupaten",
-          //           hintStyle: TextStyle(
-          //             fontSize: 15,
-          //             fontFamily: 'poppins',
-          //             fontWeight: FontWeight.w500,
-          //             color: AppColor.secondarySoft,
-          //           ),
-          //         ),
-          //       ),
-          //     )),
-          // Obx(() => Container(
-          //       width: MediaQuery.of(context).size.width,
-          //       padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-          //       margin: const EdgeInsets.only(bottom: 16),
-          //       decoration: BoxDecoration(
-          //         color: controller.isEditing.value
-          //             ? Colors.white
-          //             : Colors.grey[200],
-          //         borderRadius: BorderRadius.circular(8),
-          //         border:
-          //             Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-          //       ),
-          //       child: TextFormField(
-          //         enabled: controller.isEditing.value,
-          //         style: const TextStyle(
-          //             fontSize: 18, fontFamily: 'poppins', color: Colors.black),
-          //         maxLines: 1,
-          //         controller: controller.provinsiC,
-          //         keyboardType: TextInputType.emailAddress,
-          //         decoration: InputDecoration(
-          //           label: Text(
-          //             "Provinsi",
-          //             style: TextStyle(
-          //               color: AppColor.secondarySoft,
-          //               fontSize: 15,
-          //             ),
-          //           ),
-          //           floatingLabelBehavior: FloatingLabelBehavior.always,
-          //           border: InputBorder.none,
-          //           hintText: "Provinsi",
-          //           hintStyle: TextStyle(
-          //             fontSize: 15,
-          //             fontFamily: 'poppins',
-          //             fontWeight: FontWeight.w500,
-          //             color: AppColor.secondarySoft,
-          //           ),
-          //         ),
-          //       ),
-          //     )),
-          Obx(() => Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(left: 14, right: 14, top: 4),
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: controller.isEditing.value
-                      ? Colors.white
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border:
-                      Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-                ),
-                child: Stack(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        if (controller.isEditing.value) {
-                          controller
-                              .pickImage(true); // Fungsi untuk memilih gambar
-                        }
-                      },
-                      child: Obx(() {
-                        // Gunakan nilai fotoKandang dari controller
-                        File? selectedImage = controller.fotoKandang.value;
-                        if (selectedImage != null) {
-                          // Jika ada gambar yang dipilih, tampilkan menggunakan Image.file
-                          return Image.file(
-                            selectedImage,
-                            fit: BoxFit.fill,
-                          );
-                        } else {
-                          // Jika tidak ada gambar yang dipilih, tampilkan menggunakan Image.network
-                          return Image.network(
-                            '${controller.sharedApi.imageUrl + 'kandang/'}${controller.argsData["fotoKandang"]}',
-                            fit: BoxFit.fill,
-                          );
-                        }
-                      }),
-                    ),
-                    if (controller.isEditing.value)
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            controller.pickImage(
-                                false); // Fungsi untuk memilih gambar
-                          },
-                        ),
-                      ),
-                  ],
-                ),
-              )),
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: Obx(
-              () => Visibility(
-                visible: controller.isEditing.value,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      "Titik Kordinat",
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
-                    GestureDetector(
-                      child: Text(controller.strLatLong.value),
-                      onLongPress: () {
-                        Clipboard.setData(
-                            ClipboardData(text: controller.strLatLong.value));
-                        final snackBar = SnackBar(
-                          content: const Text("LatLong berhasil disalin!"),
-                          backgroundColor: Colors.green,
-                          action: SnackBarAction(
-                            textColor: Colors.white,
-                            label: "tutup",
-                            onPressed: () {},
-                          ),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      },
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    const Text(
-                      "alamat",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                      child: GestureDetector(
-                        child: Text(controller.strAlamat.value),
-                        onLongPress: () {
-                          Clipboard.setData(
-                              ClipboardData(text: controller.strAlamat.value));
-                          final snackBar = SnackBar(
-                            content: const Text("Alamat Berhasil Disalin!"),
-                            backgroundColor: (Colors.green),
-                            action: SnackBarAction(
-                              textColor: Colors.white,
-                              label: "Tutup",
-                              onPressed: () {},
-                            ),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    controller.loading.value
-                        ? const Center(child: CircularProgressIndicator())
-                        : ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.green),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                  side: const BorderSide(color: Colors.green),
-                                ),
-                              ),
-                            ),
-                            onPressed: () async {
-                              try {
-                                // Mengubah status loading menjadi true untuk menunjukkan bahwa proses sedang berlangsung
-                                controller.loading.value = true;
-
-                                // Mendapatkan posisi geolokasi
-                                Position position =
-                                    await controller.getGeoLocationPosition();
-
-                                // Mengubah status loading menjadi false setelah mendapatkan posisi
-                                controller.loading.value = false;
-
-                                // Memperbarui nilai strLatLong dengan koordinat yang didapatkan
-                                controller.strLatLong.value =
-                                    '${position.latitude}, ${position.longitude}';
-
-                                // Mendapatkan alamat dari koordinat
-                                if (controller.isEditing.value) {
-                                  await controller.updateAlamatInfo();
-                                }
-
-                                // Mendapatkan alamat dari koordinat
-                                await controller
-                                    .getAddressFromLongLat(position);
-                              } catch (e) {
-                                // Handle error jika terjadi kesalahan
-                                print('Error in onPressed: $e');
-                                controller.loading.value =
-                                    false; // Pastikan status loading diubah kembali jika terjadi kesalahan
-                              }
-                            },
-                            child: controller.loading.value
-                                ? const Center(
-                                    child: CircularProgressIndicator())
-                                : const Text('Tagging Lokasi')),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-//AND DELETE
-          Obx(
-            () {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (controller.isEditing.value)
-                    ElevatedButton(
-                      onPressed: () {
-                        controller.editKandang();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(120, 55),
-                        backgroundColor: const Color(0xff132137),
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'Edit post',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: 'poppins',
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  if (!controller.isEditing.value &&
-                      controller.role != 'ROLE_PETERNAK')
-                    ElevatedButton(
-                      onPressed: () {
-                        controller.deleteKandang();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(120, 55),
-                        backgroundColor: const Color(0xff132137),
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        'Delete post',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: 'poppins',
-                          color: AppColor.warning,
-                        ),
-                      ),
-                    ),
-                ],
-              );
-            },
-          ),
+          _buildFormCard(context),
         ],
       ),
     );
   }
+
+  Widget _buildFormCard(BuildContext context) {
+    return Card(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDropdownPeternak(),
+            const SizedBox(height: 16),
+            _buildTextField(
+                controller.namaKandangC, "Nama Kandang", Icons.home),
+            _buildDropdownJenisHewan(),
+            const SizedBox(height: 16),
+            _buildTextField(
+                controller.jenisKandangC, "Jenis Kandang", Icons.home),
+            _buildTextField(controller.luasC, "Luas Kandang", Icons.straighten,
+                suffixText: "m²"),
+            _buildTextField(controller.kapasitasC, "Kapasitas", Icons.people),
+            _buildTextField(
+                controller.nilaiBangunanC, "Nilai Bangunan", Icons.attach_money,
+                prefixText: "Rp. "),
+            _buildPickLocationButton(context),
+            const SizedBox(height: 16),
+            _buildLatitudeField(controller),
+            _buildLongitudeField(controller),
+            _buildAlamatField(controller),
+            _buildProvinsiField(controller),
+            _buildKabupatenField(controller),
+            _buildKecamatanField(controller),
+            _buildDesaField(controller),
+            _buildImageSection(),
+            const SizedBox(height: 16),
+            _buildActionButtons(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownPeternak() {
+    return Obx(
+      () => DropdownSearch<PeternakModel>(
+        popupProps: PopupProps.menu(showSearchBox: true),
+        selectedItem: controller.fetchdata.peternakList.firstWhere(
+          (peternak) =>
+              peternak.idPeternak ==
+              controller.fetchdata.selectedPeternakId.value,
+          orElse: () =>
+              PeternakModel(idPeternak: "", namaPeternak: "Pilih Peternak"),
+        ),
+        itemAsString: (PeternakModel peternak) =>
+            peternak.namaPeternak ?? "Tanpa Nama",
+        onChanged: (PeternakModel? newValue) {
+          if (newValue != null) {
+            controller.fetchdata.selectedPeternakId.value =
+                newValue.idPeternak ?? "";
+          }
+        },
+        items: controller.fetchdata.peternakList,
+        dropdownDecoratorProps: DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            labelText: "Peternak",
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 183, 190, 196), width: 2),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 183, 190, 196), width: 0.5),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 218, 13, 6), width: 1),
+            ),
+            labelStyle: TextStyle(
+              fontSize: 14,
+              fontFamily: 'poppins',
+              fontWeight: FontWeight.w600,
+              color: AppColor.secondarySoft,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownJenisHewan() {
+    return Obx(
+      () {
+        // Pastikan list tidak null dan tidak kosong
+        if (controller.fetchdata.jenisHewanList.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        // Cari item yang dipilih dengan null safety
+        JenisHewanModel selectedItem;
+        try {
+          selectedItem = controller.fetchdata.jenisHewanList.firstWhere(
+            (jenisHewan) =>
+                jenisHewan.idJenisHewan ==
+                controller.fetchdata.selectedIdJenisHewan.value,
+            orElse: () => controller.fetchdata.jenisHewanList.first,
+          );
+        } catch (e) {
+          selectedItem =
+              JenisHewanModel(idJenisHewan: "", jenis: "Pilih Jenis Hewan");
+        }
+
+        return DropdownSearch<JenisHewanModel>(
+          popupProps: PopupProps.menu(showSearchBox: true),
+          selectedItem: selectedItem,
+          itemAsString: (JenisHewanModel jenisHewan) =>
+              jenisHewan.jenis ?? "Tanpa Jenis",
+          onChanged: (JenisHewanModel? newValue) {
+            if (newValue != null) {
+              controller.fetchdata.selectedIdJenisHewan.value =
+                  newValue.idJenisHewan ?? "";
+              print("Selected ID changed to: ${newValue.idJenisHewan}");
+            }
+          },
+          items: controller.fetchdata.jenisHewanList,
+          dropdownDecoratorProps: DropDownDecoratorProps(
+            dropdownSearchDecoration: InputDecoration(
+              labelText: "Jenis Hewan",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 183, 190, 196), width: 2),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 183, 190, 196), width: 0.5),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 218, 13, 6), width: 1),
+              ),
+              labelStyle: TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'poppins',
+                  fontWeight: FontWeight.w600,
+                  color: AppColor.secondarySoft),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTextField(
+      TextEditingController textController, String label, IconData icon,
+      {String? suffixText, String? prefixText}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: textController,
+        style: const TextStyle(
+            fontSize: 14,
+            fontFamily: 'poppins',
+            fontWeight: FontWeight.w500,
+            color: Colors.black),
+        decoration: InputDecoration(
+          labelText: label,
+          suffixText: suffixText,
+          prefixText: prefixText,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide:
+                BorderSide(color: Color.fromARGB(255, 183, 190, 196), width: 2),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+                color: Color.fromARGB(255, 183, 190, 196), width: 0.5),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide:
+                BorderSide(color: Color.fromARGB(255, 218, 13, 6), width: 1),
+          ),
+          labelStyle: TextStyle(
+              fontSize: 14,
+              fontFamily: 'poppins',
+              fontWeight: FontWeight.w600,
+              color: AppColor.secondarySoft),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageSection() {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 5,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            const Text("Gambar Kandang",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            Obx(() {
+              File? selectedImage = controller.fotoKandang.value;
+              return selectedImage != null
+                  ? Image.file(selectedImage,
+                      height: 150, width: double.infinity, fit: BoxFit.cover)
+                  : Container(
+                      height: 150,
+                      width: double.infinity,
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.image,
+                          size: 50, color: Colors.grey));
+            }),
+            const SizedBox(height: 10),
+            ElevatedButton.icon(
+              onPressed: () => controller.pickImage(false),
+              icon: const Icon(Icons.add_a_photo),
+              label: const Text('Pilih Gambar'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPickLocationButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () => controller.openMapDialog(context),
+      icon: const Icon(Icons.map, color: Colors.white),
+      label: const Text("Pilih Lokasi di Peta",
+          style: TextStyle(color: Colors.white)),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+
+  // Input untuk Latitude (bisa diedit manual)
+  Widget _buildAlamatField(DetailKandangController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: controller.alamatC,
+        onChanged: (value) {
+          controller.manualAlamatEdited.value =
+              true; // Tandai bahwa alamat diedit manual
+        },
+        keyboardType: TextInputType.text,
+        style: const TextStyle(
+            fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+        decoration: InputDecoration(
+          labelText: "Alamat",
+          labelStyle:
+              TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+          prefixIcon: const Icon(Icons.location_on, color: Colors.green),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.green.shade700, width: 1.5),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLatitudeField(DetailKandangController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: controller.latitudeC,
+        keyboardType: TextInputType.number,
+        onChanged: (value) {
+          controller.latitude.value = value; // Sinkronisasi manual
+        },
+        style: const TextStyle(
+            fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+        decoration: InputDecoration(
+          labelText: "Latitude",
+          labelStyle:
+              TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+          prefixIcon: const Icon(Icons.gps_fixed, color: Colors.blue),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.blue.shade700, width: 1.5),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLongitudeField(DetailKandangController controller) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: controller.longitudeC,
+        keyboardType: TextInputType.number,
+        onChanged: (value) {
+          controller.longitude.value = value; // Sinkronisasi manual
+        },
+        style: const TextStyle(
+            fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+        decoration: InputDecoration(
+          labelText: "Longitude",
+          labelStyle:
+              TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+          prefixIcon: const Icon(Icons.gps_fixed, color: Colors.blue),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.blue.shade700, width: 1.5),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            if (controller.isEditing.value) {
+              controller.editKandang();
+            } else {
+              controller.isEditing.value = true;
+            }
+          },
+          child: Text(controller.isEditing.value ? 'Simpan' : 'Edit'),
+        ),
+        if (controller.isEditing.value)
+          ElevatedButton(
+            onPressed: () {
+              controller.isEditing.value = false;
+            },
+            child: const Text('Batal'),
+          ),
+      ],
+    );
+  }
 }
 
+Widget _buildProvinsiField(DetailKandangController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: GetBuilder<DetailKandangController>(builder: (controller) {
+      return TextField(
+        controller: controller.provinsiC,
+        decoration: InputDecoration(
+          labelText: "Provinsi",
+          prefixIcon: const Icon(Icons.map, color: Colors.purple),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }),
+  );
+}
 
+Widget _buildKabupatenField(DetailKandangController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: GetBuilder<DetailKandangController>(builder: (controller) {
+      return TextField(
+        controller: controller.kabupatenC,
+        decoration: InputDecoration(
+          labelText: "Kabupaten/Kota",
+          prefixIcon: const Icon(Icons.location_city, color: Colors.orange),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }),
+  );
+}
 
+Widget _buildKecamatanField(DetailKandangController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: GetBuilder<DetailKandangController>(builder: (controller) {
+      return TextField(
+        controller: controller.kecamatanC,
+        decoration: InputDecoration(
+          labelText: "Kecamatan",
+          prefixIcon: const Icon(Icons.business, color: Colors.blue),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }),
+  );
+}
 
-
-//               Obx(() => Container(
-//   width: MediaQuery.of(context).size.width,
-//   padding: EdgeInsets.only(left: 14, right: 14, top: 4),
-//   margin: EdgeInsets.only(bottom: 16),
-//   decoration: BoxDecoration(
-//     color: controller.isEditing.value ? Colors.white : Colors.grey[200],
-//     borderRadius: BorderRadius.circular(8),
-//     border: Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-//   ),
-//   child: Stack(
-//     children: [
-//       GestureDetector(
-//         onTap: () {
-//           if (controller.isEditing.value) {
-//             controller.pickImage(); // Fungsi untuk memilih gambar
-//           }
-//         },
-//         child: Image.network(
-//           '${controller.sharedApi.imageUrl}${controller.argsData["fotoKandang"]}',
-//           fit: BoxFit.fill,
-//         ),
-//       ),
-//       if (controller.isEditing.value)
-//         Positioned(
-//           bottom: 0,
-//           right: 0,
-//           child: IconButton(
-//             icon: Icon(Icons.edit),
-//             onPressed: () {
-//               controller.pickImage(); // Fungsi untuk memilih gambar
-//             },
-//           ),
-//         ),
-//     ],
-//   ),
-// )),
-
-// Fungsi untuk memilih gambar dari galeri atau kamera
-// Future<void> _pickImage() async {
-//   final pickedFile = await ImagePicker().getImage(
-//     source: ImageSource.gallery, // Ganti dengan ImageSource.camera jika ingin dari kamera
-//   );
-
-//   if (pickedFile != null) {
-//     // Lakukan sesuatu dengan gambar yang dipilih
-//     // Misalnya, simpan path gambar di state controller
-//     controller.fotoKandang.value = File(pickedFile.path);
-//   }
-// },
-          // Obx(() => Container(
-          //     width: MediaQuery.of(context).size.width,
-          //     padding: EdgeInsets.only(left: 14, right: 14, top: 4),
-          //     margin: EdgeInsets.only(bottom: 16),
-          //     decoration: BoxDecoration(
-          //       color: controller.isEditing.value
-          //           ? Colors.white
-          //           : Colors.grey[200],
-          //       borderRadius: BorderRadius.circular(8),
-          //       border:
-          //           Border.all(width: 1, color: AppColor.secondaryExtraSoft),
-          //     ),
-          //     child: Image.network(
-          //       '${controller.sharedApi.imageUrl}${controller.argsData["fotoKandang"]}',
-          //       fit: BoxFit.fill,
-          //     ))),
+Widget _buildDesaField(DetailKandangController controller) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: GetBuilder<DetailKandangController>(builder: (controller) {
+      return TextField(
+        controller: controller.desaC,
+        decoration: InputDecoration(
+          labelText: "Desa",
+          prefixIcon: const Icon(Icons.villa, color: Colors.green),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }),
+  );
+}

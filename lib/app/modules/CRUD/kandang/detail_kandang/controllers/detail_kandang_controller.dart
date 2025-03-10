@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:crud_flutter_api/app/data/jenishewan_model.dart';
 import 'package:crud_flutter_api/app/data/kandang_model.dart';
 import 'package:crud_flutter_api/app/data/peternak_model.dart';
 import 'package:crud_flutter_api/app/modules/menu/kandang/controllers/kandang_controller.dart';
@@ -20,13 +21,18 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gmaps;
+import 'package:latlong2/latlong.dart' as latlong2;
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailKandangController extends GetxController {
   final box = GetStorage();
   String? get role => box.read('role');
   final FetchData fetchdata = Get.put(FetchData());
   final KandangController kandangController = Get.put(KandangController());
-  //TODO: Implement DetailPostController
+
   final Map<String, dynamic> argsData = Get.arguments;
   KandangModel? kandangModel;
   RxBool isLoading = false.obs;
@@ -36,32 +42,57 @@ class DetailKandangController extends GetxController {
   SharedApi sharedApi = SharedApi();
   RxBool loading = false.obs;
   RxString selectedPeternakIdInEditMode = ''.obs;
+  RxString selectedJenisHewanIdInEditMode = ''.obs;
 
   RxString strLatLong =
       'belum mendapatkan lat dan long, silakan tekan tombol'.obs;
   RxString strAlamat = 'mencari lokasi..'.obs;
+  RxString selcetedProvinsi = ''.obs;
+  RxString selcetedKabupaten = ''.obs;
+  RxString selcetedKecamatan = ''.obs;
+  RxString selcetedDesa = ''.obs;
   RxString latitude = ''.obs;
   RxString longitude = ''.obs;
+  RxString selectSpecies = ''.obs;
+  gmaps.LatLng? selectedLocation;
+  Rx<gmaps.Marker> marker = gmaps.Marker(
+    markerId: const gmaps.MarkerId("selected-location"),
+    position: gmaps.LatLng(-6.2088, 106.8456), // Default Jakarta
+  ).obs;
+  RxBool manualAlamatEdited =
+      false.obs; // Menandai apakah user sudah edit manual
+  RxString alamatLengkap = ''.obs;
+  RxString provinsi = "".obs;
+  RxString kabupaten = "".obs;
+  RxString kecamatan = "".obs;
+  RxString desa = "".obs;
 
   Rx<File?> fotoKandang = Rx<File?>(null);
 
   TextEditingController idKandangC = TextEditingController();
   TextEditingController idPeternakC = TextEditingController();
   TextEditingController namaPeternakC = TextEditingController();
+  TextEditingController namaKandangC = TextEditingController();
+  TextEditingController jenisKandangC = TextEditingController();
   TextEditingController luasC = TextEditingController();
   TextEditingController kapasitasC = TextEditingController();
   TextEditingController nilaiBangunanC = TextEditingController();
   TextEditingController alamatC = TextEditingController();
   TextEditingController desaC = TextEditingController();
   TextEditingController kecamatanC = TextEditingController();
-  TextEditingController jenisHewanC = TextEditingController();
+  TextEditingController idJenisHewanC = TextEditingController();
+  TextEditingController jenisC = TextEditingController();
   TextEditingController kabupatenC = TextEditingController();
   TextEditingController provinsiC = TextEditingController();
+  TextEditingController latitudeC = TextEditingController();
+  TextEditingController longitudeC = TextEditingController();
 
   String originalIdKandang = "";
   String originalIdPeternak = "";
   String originalNamaPeternak = "";
   String originalLuas = "";
+  String originalJenisKandang = "";
+  String originalNamaKandang = "";
   String originalKapasitas = "";
   String originalNilaiBangunan = "";
   String originalAlamat = "";
@@ -72,13 +103,18 @@ class DetailKandangController extends GetxController {
   String originalFotoKandang = "";
   String originalLatitude = "";
   String originalLongitude = "";
-  String originaljenisHewan = "";
+  String originalIdJenisHewan = "";
+  String originaljenis = "";
+  String originalLatitudeC = "";
+  String originalLongitudeC = "";
 
   @override
   onClose() {
     idKandangC.dispose();
     idPeternakC.dispose();
     namaPeternakC.dispose();
+    namaKandangC.dispose();
+    jenisKandangC.dispose();
     luasC.dispose();
     kapasitasC.dispose();
     nilaiBangunanC.dispose();
@@ -87,7 +123,10 @@ class DetailKandangController extends GetxController {
     kecamatanC.dispose();
     kabupatenC.dispose();
     provinsiC.dispose();
-    jenisHewanC.dispose();
+    idJenisHewanC.dispose();
+    jenisC.dispose();
+    latitudeC.dispose();
+    longitudeC.dispose();
     ever<File?>(fotoKandang, (_) {
       update();
     });
@@ -97,34 +136,33 @@ class DetailKandangController extends GetxController {
   void onInit() {
     role;
     super.onInit();
+
     fetchdata.fetchPeternaks();
+    fetchdata.fetchJenisHewan();
+
     isEditing.value = false;
 
-    idKandangC.text = argsData["idKandang"];
-    fetchdata.selectedPeternakId.value = argsData["idPeternak"];
-    idPeternakC.text = argsData["idPeternak"];
-    namaPeternakC.text = argsData["namaPeternak"];
-    luasC.text = argsData["luas"];
-    kapasitasC.text = argsData["kapasitas"];
-    nilaiBangunanC.text = argsData["nilaiBangunan"];
-    alamatC.text = argsData["alamat"];
-    desaC.text = argsData["desa"];
-    kecamatanC.text = argsData["kecamatan"];
-    kabupatenC.text = argsData["kabupaten"];
-    provinsiC.text = argsData["provinsi"];
-    latitude.value = argsData["latitude"];
-    longitude.value = argsData["longitude"];
-    jenisHewanC.text = argsData["jenisHewan"];
+    if (Get.arguments != null) {
+      fetchdata.selectedIdJenisHewan.value = argsData["idJenisHewan"] ?? "";
+    }
 
-    // ever(selectedPeternakId, (String? selectedId) {
-    //   // Perbarui nilai nikPeternakC dan namaPeternakC berdasarkan selectedId
-    //   PeternakModel? selectedPeternak = peternakList.firstWhere(
-    //       (peternak) => peternak.idPeternak == selectedId,
-    //       orElse: () => PeternakModel());
-    //   namaPeternakC.text =
-    //       selectedPeternak.namaPeternak ?? argsData["idPeternak"];
-    //   update();
-    // });
+    idKandangC.text = argsData["idKandang"];
+    fetchdata.selectedPeternakId.value = argsData["idPeternak"] ?? "";
+    idPeternakC.text = argsData["idPeternak"] ?? "";
+    namaPeternakC.text = argsData["namaPeternak"] ?? "";
+    namaKandangC.text = argsData["namaKandang"] ?? "";
+    jenisKandangC.text = argsData["jenisKandang"] ?? "";
+    jenisC.text = argsData["jenis"] ?? "";
+    luasC.text = argsData["luas"] ?? "";
+    kapasitasC.text = argsData["kapasitas"] ?? "";
+    nilaiBangunanC.text = argsData["nilaiBangunan"] ?? "";
+    alamatC.text = argsData["alamat"] ?? "";
+    desaC.text = argsData["desa"] ?? "";
+    kecamatanC.text = argsData["kecamatan"] ?? "";
+    kabupatenC.text = argsData["kabupaten"] ?? "";
+    provinsiC.text = argsData["provinsi"] ?? "";
+    latitudeC.text = argsData["latitude"] ?? "";
+    longitudeC.text = argsData["longitude"] ?? "";
 
     ever(fetchdata.selectedPeternakId, (String? selectedId) {
       // Perbarui nilai nikPeternakC dan namaPeternakC berdasarkan selectedId
@@ -137,11 +175,30 @@ class DetailKandangController extends GetxController {
       update();
     });
 
+    ever(fetchdata.selectedIdJenisHewan, (String? selectedId) {
+      if (selectedId != null) {
+        // Tambahkan null check
+        JenisHewanModel? selectedJenisHewan =
+            fetchdata.jenisHewanList.firstWhere(
+          (jenisHewan) => jenisHewan.idJenisHewan == selectedId,
+          orElse: () => JenisHewanModel(),
+        );
+
+        fetchdata.selectedIdJenisHewan.value =
+            selectedJenisHewan.idJenisHewan ?? argsData["idJenisHewan"] ?? "";
+      }
+      update();
+    });
+
+    print("✅ ID Jenis Hewan Terpilih: ${fetchdata.selectedIdJenisHewan.value}");
+
     print(argsData["fotoKandang"]);
 
     originalIdKandang = argsData["idKandang"];
     originalIdPeternak = argsData["idPeternak"];
     originalNamaPeternak = argsData["namaPeternak"];
+    originalJenisKandang = argsData["jenisKandang"];
+    originalNamaKandang = argsData["namaKandang"];
     originalLuas = argsData["luas"];
     originalKapasitas = argsData["kapasitas"];
     originalNilaiBangunan = argsData["nilaiBangunan"];
@@ -153,20 +210,18 @@ class DetailKandangController extends GetxController {
     originalFotoKandang = argsData["fotoKandang"];
     originalLatitude = argsData["latitude"];
     originalLongitude = argsData["longitude"];
-    originaljenisHewan = argsData["jenisHewan"];
+    originalLatitudeC = argsData["latitude"];
+    originalLongitudeC = argsData["longitude"];
   }
 
-  Future<Position> getGeoLocationPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    //location service not enabled, don't continue
+  Future<void> getGeoLocationPosition() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       await Geolocator.openLocationSettings();
       return Future.error('Location service Not Enabled');
     }
-    permission = await Geolocator.checkPermission();
+
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -174,55 +229,244 @@ class DetailKandangController extends GetxController {
       }
     }
 
-    //permission denied forever
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-        'Location permission denied forever, we cannot access',
-      );
+      return Future.error('Location permission denied forever');
     }
-    //continue accessing the position of device
-    return await Geolocator.getCurrentPosition(
+
+    loading.value = true;
+    Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
+
+    latitude.value = position.latitude.toString();
+    longitude.value = position.longitude.toString();
+    strLatLong.value =
+        'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
+    selectedLocation = gmaps.LatLng(position.latitude, position.longitude);
+
+    // Update marker sesuai lokasi saat ini
+    marker.value = gmaps.Marker(
+      markerId: const gmaps.MarkerId("selected-location"),
+      position: selectedLocation!,
+      draggable: true,
+    );
+
+    loading.value = false;
+  }
+
+  void openMapDialog(BuildContext context) async {
+    // Ambil lokasi saat ini
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    // Gunakan lokasi saat ini jika tidak ada input sebelumnya
+    double lat = latitudeC.text.isNotEmpty
+        ? double.parse(latitudeC.text)
+        : position.latitude;
+    double lon = longitudeC.text.isNotEmpty
+        ? double.parse(longitudeC.text)
+        : position.longitude;
+
+    latlong2.LatLng selectedPosition = latlong2.LatLng(lat, lon);
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      "Pilih Lokasi",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 400,
+                    width: double.infinity,
+                    child: FlutterMap(
+                      options: MapOptions(
+                        initialCenter: selectedPosition,
+                        initialZoom: 15.0,
+                        onTap: (tapPosition, latlong2.LatLng latLng) async {
+                          setState(() {
+                            selectedPosition = latLng;
+                          });
+
+                          // **AMBIL ALAMAT DARI KOORDINAT YANG DIPILIH**
+                          List<Placemark> placemarks =
+                              await placemarkFromCoordinates(
+                            selectedPosition.latitude,
+                            selectedPosition.longitude,
+                          );
+
+                          if (placemarks.isNotEmpty) {
+                            Placemark place = placemarks.first;
+
+                            String provinsi = place.administrativeArea ?? "";
+                            String kabupaten =
+                                place.subAdministrativeArea ?? "";
+                            String kecamatan = place.locality ?? "";
+                            String desa = place.subLocality ?? "";
+
+                            if (!manualAlamatEdited.value) {
+                              alamatC.text =
+                                  "$provinsi, $kabupaten, $kecamatan, $desa";
+                              provinsiC.text = provinsi;
+                              kabupatenC.text = kabupaten;
+                              kecamatanC.text = kecamatan;
+                              desaC.text = desa;
+                            }
+                          }
+
+                          // **UPDATE LAT & LONG**
+                          latitude.value = selectedPosition.latitude.toString();
+                          longitude.value =
+                              selectedPosition.longitude.toString();
+                          latitudeC.text = selectedPosition.latitude.toString();
+                          longitudeC.text =
+                              selectedPosition.longitude.toString();
+                        },
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: selectedPosition,
+                              width: 40.0,
+                              height: 40.0,
+                              child: const Icon(
+                                Icons.location_on,
+                                color: Colors.red,
+                                size: 40.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text("Batal"),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // **PASTIKAN SEMUA DATA TERSIMPAN SAAT TEKAN "OK"**
+                            latitude.value =
+                                selectedPosition.latitude.toString();
+                            longitude.value =
+                                selectedPosition.longitude.toString();
+                            latitudeC.text =
+                                selectedPosition.latitude.toString();
+                            longitudeC.text =
+                                selectedPosition.longitude.toString();
+                            Navigator.pop(context);
+                          },
+                          child: const Text("OK"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getFormattedAddress(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+
+        String provinsi = place.administrativeArea ?? "";
+        String kabupaten = place.subAdministrativeArea ?? "";
+        String kecamatan = place.locality ?? "";
+        String desa = place.subLocality ?? "";
+
+        String formattedAddress = "$provinsi, $kabupaten, $kecamatan, $desa";
+
+        // **Update alamat, meskipun sudah diedit manual**
+        alamatC.text = formattedAddress;
+        strAlamat.value = formattedAddress;
+        manualAlamatEdited.value = false; // Reset flag setelah peta digunakan
+      }
+    } catch (e) {
+      print("Error mendapatkan alamat: $e");
+    }
+  }
+
+  Future<void> updateAlamatDariPeta(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+
+        // Set alamat lengkap
+        alamatC.text =
+            "${place.administrativeArea}, ${place.subAdministrativeArea}, ${place.locality}, ${place.subLocality}";
+
+        // Update provinsi, kabupaten, kecamatan, desa
+        provinsiC.text = place.administrativeArea ?? "";
+        kabupatenC.text = place.subAdministrativeArea ?? "";
+        kecamatanC.text = place.locality ?? "";
+        desaC.text = place.subLocality ?? "";
+
+        // Perbarui GetX state untuk memastikan UI di-refresh
+        update();
+      }
+    } catch (e) {
+      print("❌ Gagal mendapatkan alamat: $e");
+    }
   }
 
   //getAddress
   Future<void> getAddressFromLongLat(Position position) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
-    print(placemarks);
 
-    Placemark place = placemarks[0];
+    if (placemarks.isNotEmpty) {
+      Placemark place = placemarks.first;
 
-    latitude.value = position.latitude.toString();
-    longitude.value = position.longitude.toString();
+      provinsi.value = place.administrativeArea ?? "";
+      kabupaten.value = place.subAdministrativeArea ?? "";
+      kecamatan.value = place.locality ?? "";
+      desa.value = place.subLocality ?? "";
 
-    strAlamat.value =
-        '${place.subAdministrativeArea}, ${place.subLocality}, ${place.locality}, '
-        '${place.postalCode}, ${place.country}, ${place.administrativeArea}';
-  }
-
-  // Fungsi untuk mendapatkan alamat dari geolocation dan mengupdate nilai provinsi, kabupaten, kecamatan, dan desa
-  Future<void> updateAlamatInfo() async {
-    try {
-      isLoading.value = true;
-
-      // Mendapatkan posisi geolokasi
-      Position position = await getGeoLocationPosition();
-
-      // Mendapatkan alamat dari geolokasi
-      await getAddressFromLongLat(position);
-
-      // Mengupdate nilai provinsi, kabupaten, kecamatan, dan desa berdasarkan alamat
-      provinsiC.text = getAlamatInfo(5); //benar 5
-      kabupatenC.text = getAlamatInfo(0); //benar 0
-      kecamatanC.text = getAlamatInfo(2); //benar 2
-      desaC.text = getAlamatInfo(1); //benar 1
-    } catch (e) {
-      print('Error updating alamat info: $e');
-      showErrorMessage("Error updating alamat info: $e");
-    } finally {
-      isLoading.value = false;
+      // **Hanya update alamat jika user belum mengedit manual**
+      if (!manualAlamatEdited.value) {
+        alamatC.text =
+            "${provinsi.value}, ${kabupaten.value}, ${kecamatan.value}, ${desa.value}";
+        provinsiC.text = provinsi.value;
+        kabupatenC.text = kabupaten.value;
+        kecamatanC.text = kecamatan.value;
+        desaC.text = desa.value;
+      }
     }
   }
 
@@ -287,6 +531,7 @@ class DetailKandangController extends GetxController {
   Future<void> tombolEdit() async {
     isEditing.value = true;
     selectedPeternakIdInEditMode.value = fetchdata.selectedPeternakId.value;
+    selectedJenisHewanIdInEditMode.value = fetchdata.selectedIdJenisHewan.value;
     refresh();
     update();
     update();
@@ -305,6 +550,10 @@ class DetailKandangController extends GetxController {
         fetchdata.selectedPeternakId.value = originalIdPeternak;
         namaPeternakC.text = originalNamaPeternak;
         luasC.text = originalLuas;
+        jenisKandangC.text = originalJenisKandang;
+        fetchdata.selectedIdJenisHewan.value = originalIdJenisHewan;
+        jenisC.text = originaljenis;
+        namaKandangC.text = originalNamaKandang;
         kapasitasC.text = originalKapasitas;
         nilaiBangunanC.text = originalNilaiBangunan;
         alamatC.text = originalAlamat;
@@ -315,6 +564,8 @@ class DetailKandangController extends GetxController {
         fotoKandang.value = null;
         latitude.value = originalLatitude;
         longitude.value = originalLongitude;
+        latitudeC.text = originalLatitudeC;
+        longitudeC.text = originalLongitudeC;
 
         isEditing.value = false;
       },
@@ -359,7 +610,10 @@ class DetailKandangController extends GetxController {
         kandangModel = await KandangApi().editKandangApi(
           idKandangC.text,
           fetchdata.selectedPeternakId.value,
+          fetchdata.selectedIdJenisHewan.value,
 
+          namaKandangC.text,
+          jenisKandangC.text,
           luasC.text,
           kapasitasC.text,
           nilaiBangunanC.text,
@@ -370,12 +624,13 @@ class DetailKandangController extends GetxController {
           provinsiC.text,
           fotoKandang.value,
           //originalFotoKandang,
-          latitude: latitude.value,
-          longitude: longitude.value,
+          latitudeC.text,
+          longitudeC.text,
         );
 
         if (kandangModel != null && kandangModel!.status == 201) {
-          await updateAlamatInfo();
+          await updateAlamatDariPeta(
+              double.parse(latitudeC.text), double.parse(longitudeC.text));
           isEditing.value = false;
           showSuccessMessage(
               "Berhasil mengedit Kandang dengan ID: ${idKandangC.text}");

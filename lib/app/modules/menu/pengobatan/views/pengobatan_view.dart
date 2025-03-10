@@ -18,7 +18,7 @@ class PengobatanView extends GetView<PengobatanController> {
           await controller.loadPengobatan();
         },
         child: Scaffold(
-          backgroundColor: AppColor.primary,
+          backgroundColor: Colors.white,
           appBar: EasySearchBar(
               searchBackgroundColor: AppColor.secondary,
               elevation: 0,
@@ -54,6 +54,7 @@ class PengobatanView extends GetView<PengobatanController> {
                           Get.toNamed(
                             Routes.DETAILPENGOBATAN,
                             arguments: {
+                              "idPengobatan": "${postData.idPengobatan}",
                               "idKasus": "${postData.idKasus}",
                               "tanggalPengobatan":
                                   "${postData.tanggalPengobatan}",
@@ -66,6 +67,13 @@ class PengobatanView extends GetView<PengobatanController> {
                               "dosis": "${postData.dosis}",
                               "sindrom": "${postData.sindrom}",
                               "diagnosaBanding": "${postData.diagnosaBanding}",
+                              "provinsiPengobatan":
+                                  "${postData.provinsiPengobatan}",
+                              "kabupatenPengobatan":
+                                  "${postData.kabupatenPengobatan}",
+                              "kecamatanPengobatan":
+                                  "${postData.kecamatanPengobatan}",
+                              "desaPengobatan": "${postData.desaPengobatan}",
                             },
                           ),
                         },
@@ -79,7 +87,7 @@ class PengobatanView extends GetView<PengobatanController> {
                                 color: const Color.fromARGB(255, 0, 47, 255)
                                     .withOpacity(.2),
                                 spreadRadius: 2,
-                                blurRadius: 10, // changes position of shadow
+                                blurRadius: 10,
                               ),
                             ],
                             color: AppColor.primaryExtraSoft,
@@ -87,41 +95,56 @@ class PengobatanView extends GetView<PengobatanController> {
                             border: Border.all(
                                 width: 1, color: AppColor.primaryExtraSoft),
                           ),
-                          padding: const EdgeInsets.only(
-                              left: 20, top: 15, right: 29, bottom: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          padding: const EdgeInsets.all(15),
+                          child: Wrap(
+                            alignment: WrapAlignment.start,
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    (postData.status == null)
-                                        ? "-"
-                                        : "ID Kasus: ${postData.idKasus}",
+                                    "ID Pengobatan: ${postData.idPengobatan ?? '-'}",
                                     style: const TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
+                                  const SizedBox(height: 4),
                                   Text(
-                                    (postData.status == null)
-                                        ? "-"
-                                        : "Nama Petugas: ${postData.namaPetugas?.namaPetugas}",
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.normal),
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Text(
-                                    (postData.status == null)
-                                        ? "-"
-                                        : "Sindrom: "
-                                            "${postData.sindrom}",
+                                    "ID Kasus: ${postData.idKasus ?? '-'}",
                                     style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.normal),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Nama Petugas: ${postData.namaPetugas?.namaPetugas ?? '-'}",
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Sindrom: ${postData.sindrom ?? '-'}",
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Infrastruktur: ${postData.namaInfrastruktur ?? '-'}",
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.normal),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
@@ -157,128 +180,3 @@ class PengobatanView extends GetView<PengobatanController> {
     );
   }
 }
-
-// class PengobatanView extends GetView<PengobatanController> {
-//   const PengobatanView({Key? key}) : super(key: key);
-//   @override
-//   Widget build(BuildContext context) {
-//     return GetBuilder<PengobatanController>(
-//       builder: (controller) => RefreshIndicator(
-//         onRefresh: () => controller.refreshPengobatan(),
-//         child: AutoLoad(
-//           onInit: () async {
-//             await controller.loadPengobatan();
-//           },
-//           child: Scaffold(
-//             appBar: AppBar(
-//               title: Text(
-//                 'Semua Data',
-//                 style: TextStyle(
-//                   color: AppColor.secondaryExtraSoft,
-//                 ),
-//               ),
-//               backgroundColor: Color(0xff132137),
-//               elevation: 0,
-//               centerTitle: true,
-//               bottom: PreferredSize(
-//                 preferredSize: Size.fromHeight(1),
-//                 child: Container(
-//                   width: MediaQuery.of(context).size.width,
-//                   height: 1,
-//                   color: AppColor.secondaryExtraSoft,
-//                 ),
-//               ),
-//             ),
-//             body: _buildPengobatanListView(controller),
-//             floatingActionButton: Padding(
-//               padding: const EdgeInsets.only(bottom: 16.0),
-//               child: FloatingActionButton(
-//                 onPressed: () {
-//                   Get.toNamed(Routes.ADDPENGOBATAN);
-//                 },
-//                 child: Icon(Icons.add),
-//                 backgroundColor: Color(0xff132137),
-//               ),
-//             ),
-//             floatingActionButtonLocation:
-//                 FloatingActionButtonLocation.centerFloat,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildPengobatanListView(PengobatanController controller) {
-//     if (controller.posts == null) {
-//       return Center(
-//         child: CircularProgressIndicator(),
-//       );
-//     } else if (controller.posts!.status == 200) {
-//       if (controller.posts!.content!.isEmpty) {
-//         return EmptyView();
-//       } else {
-//         return ListView.separated(
-//           itemCount: controller.posts!.content!.length,
-//           // shrinkWrap: true,
-//           physics: BouncingScrollPhysics(),
-//           separatorBuilder: (context, index) => SizedBox(height: 16),
-//           itemBuilder: (context, index) {
-//             var postData = controller.posts!.content![index];
-//             return InkWell(
-//               onTap: () => {
-//                 Get.toNamed(
-//                   Routes.DETAILPENGOBATAN,
-//                   arguments: {
-//                     "idKasus": "${postData.idKasus}",
-//                     "tanggalPengobatan": "${postData.tanggalPengobatan}",
-//                     "tanggalKasus": "${postData.tanggalKasus}",
-//                     "namaPetugas": "${postData.namaPetugas}",
-//                     "namaInfrastruktur": "${postData.namaInfrastruktur}",
-//                     "lokasi": "${postData.lokasi}",
-//                     "dosis": "${postData.dosis}",
-//                     "sindrom": "${postData.sindrom}",
-//                     "diagnosaBanding": "${postData.diagnosaBanding}",
-//                   },
-//                 ),
-//               },
-//               borderRadius: BorderRadius.circular(8),
-//               child: Container(
-//                 width: MediaQuery.of(context).size.width,
-//                 decoration: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(8),
-//                   border: Border.all(
-//                     width: 1,
-//                     color: AppColor.primaryExtraSoft,
-//                   ),
-//                 ),
-//                 padding:
-//                     EdgeInsets.only(left: 24, top: 20, right: 29, bottom: 20),
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: [
-//                     Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         Text(
-//                           (postData.status == null)
-//                               ? "-"
-//                               : "Id Kasus : ${postData.idKasus} ${postData.tanggalKasus}",
-//                           style: TextStyle(fontSize: 18),
-//                         ),
-//                         Text((postData.status == null)
-//                             ? "-"
-//                             : "${postData.diagnosaBanding}"),
-//                       ],
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             );
-//           },
-//         );
-//       }
-//     } else {
-//       return NoData();
-//     }
-//   }
-// }

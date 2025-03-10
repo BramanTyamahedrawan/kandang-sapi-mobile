@@ -15,11 +15,13 @@ class DetailPetugasController extends GetxController {
   RxBool isLoadingCreateTodo = false.obs;
   RxBool isEditing = false.obs;
 
+  String originalPetugasId = "";
   String originalNik = "";
   String originalNama = "";
   String originalTlp = "";
   String originalEmail = "";
 
+  TextEditingController petugasIdC = TextEditingController();
   TextEditingController nikC = TextEditingController();
   TextEditingController namaC = TextEditingController();
   TextEditingController tlpC = TextEditingController();
@@ -27,6 +29,7 @@ class DetailPetugasController extends GetxController {
 
   @override
   onClose() {
+    petugasIdC.dispose();
     nikC.dispose();
     namaC.dispose();
     tlpC.dispose();
@@ -38,12 +41,14 @@ class DetailPetugasController extends GetxController {
     super.onInit();
 
     // Buat Detail Data
+    petugasIdC.text = argsData["petugasId"];
     nikC.text = argsData["nikPetugas"];
     namaC.text = argsData["namaPetugas"];
     tlpC.text = argsData["noTelp"];
     emailC.text = argsData["email"];
 
     // Buat batal edit
+    originalPetugasId = argsData["petugasId"];
     originalNik = argsData["nikPetugas"];
     originalNama = argsData["namaPetugas"];
     originalTlp = argsData["noTelp"];
@@ -64,6 +69,7 @@ class DetailPetugasController extends GetxController {
         Get.back();
         update();
         // Reset data ke yang sebelumnya
+        petugasIdC.text = originalPetugasId;
         nikC.text = originalNik;
         namaC.text = originalNama;
         tlpC.text = originalTlp;
@@ -80,11 +86,11 @@ class DetailPetugasController extends GetxController {
       onCancel: () => Get.back(),
       onConfirm: () async {
         petugasModel =
-            await PetugasApi().deletePetugasApi(argsData["nikPetugas"]);
+            await PetugasApi().deletePetugasApi(argsData["petugasId"]);
 
         if (petugasModel?.status == 200) {
           showSuccessMessage(
-              "Berhasil Hapus Data Petugas dengan ID: ${nikC.text}");
+              "Berhasil Hapus Data Petugas dengan ID: ${petugasIdC.text}");
         } else {
           showErrorMessage("Gagal Hapus Data Petugas");
         }
@@ -107,8 +113,8 @@ class DetailPetugasController extends GetxController {
       onConfirm: () async {
         Get.back(); // close modal
         update();
-        petugasModel = await PetugasApi()
-            .editPetugasApi(nikC.text, namaC.text, tlpC.text, emailC.text);
+        petugasModel = await PetugasApi().editPetugasApi(
+            petugasIdC.text, nikC.text, namaC.text, tlpC.text, emailC.text);
         isEditing.value = false;
       },
     );

@@ -111,7 +111,11 @@ class JenisHewanApi extends SharedApi {
     try {
       var jsonData;
       showLoading();
-      var bodyDataedit = {'jenis': jenis, 'deskripsi': deskripsi};
+      var bodyDataedit = {
+        'idJenisHewan': idJenisHewan,
+        'jenis': jenis,
+        'deskripsi': deskripsi
+      };
 
       var data = await http.put(
         Uri.parse('$baseUrl/jenishewan/$idJenisHewan'),
@@ -127,6 +131,7 @@ class JenisHewanApi extends SharedApi {
         // print(jsonData);
         return JenisHewanModel.fromJson({
           "status": 201,
+          "idJenisHewan": jsonData['idJenisHewan'],
           "jenis": jsonData['jenis'],
           "deskripsi": jsonData['deskripsi'],
         });

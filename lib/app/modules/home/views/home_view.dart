@@ -216,33 +216,39 @@ class HomeView extends GetView<HomeController> {
                   if (controller.posts1.value.content != null &&
                       controller.posts3.value.content != null) {
                     markersTernak = controller.posts1.value.content!.map((n) {
+                      // Validasi koordinat
+                      double lat = double.tryParse(n.latitude ?? '') ?? 00.0;
+                      double lng = double.tryParse(n.longitude ?? '') ?? 00.0;
+
+                      // Batasi nilai latitude antara -90 dan 90
+                      lat = lat.clamp(-90.0, 90.0);
+
+                      // Batasi nilai longitude antara -180 dan 180
+                      lng = lng.clamp(-180.0, 180.0);
+
                       return Marker(
                         width: 15.0,
                         height: 15.0,
-                        point: LatLng(
-                          double.tryParse(n.latitude ?? '') ?? 00.0,
-                          double.tryParse(n.longitude ?? '') ?? 00.0,
-                        ),
+                        point: LatLng(lat, lng),
                         child: Container(
-                          child: Image.asset(
-                            'assets/images/cow.png', // Ganti dengan path ke gambar Anda
-                          ),
+                          child: Image.asset('assets/images/cow.png'),
                         ),
                       );
                     }).toList();
 
                     markersKandang = controller.posts3.value.content!.map((n) {
+                      double lat = double.tryParse(n.latitude ?? '') ?? 00.0;
+                      double lng = double.tryParse(n.longitude ?? '') ?? 00.0;
+
+                      lat = lat.clamp(-90.0, 90.0);
+                      lng = lng.clamp(-180.0, 180.0);
+
                       return Marker(
                         width: 15,
                         height: 15,
-                        point: LatLng(
-                          double.tryParse(n.latitude ?? '') ?? 00.0,
-                          double.tryParse(n.longitude ?? '') ?? 00.0,
-                        ),
+                        point: LatLng(lat, lng),
                         child: Container(
-                          child: Image.asset(
-                            'assets/images/house.png', // Ganti dengan path ke gambar Anda
-                          ),
+                          child: Image.asset('assets/images/house.png'),
                         ),
                       );
                     }).toList();
