@@ -1,23 +1,24 @@
 //import 'package:crud_flutter_api/app/data/hewan_model.dart';
+import 'package:crud_flutter_api/app/data/jenishewan_model.dart';
 import 'package:crud_flutter_api/app/data/peternak_model.dart';
 import 'package:crud_flutter_api/app/data/kandang_model.dart';
 import 'package:crud_flutter_api/app/data/petugas_model.dart';
+import 'package:crud_flutter_api/app/data/rumpunhewan_model.dart';
+import 'package:crud_flutter_api/app/data/tujuanpemeliharaan_model.dart';
 
 class HewanModel {
   final String? idHewan;
   final String? kodeEartagNasional;
   final String? noKartuTernak;
-  final String? provinsi;
-  final String? kabupaten;
-  final String? kecamatan;
-  final String? desa;
-  final String? alamat;
-
+  final String? idIsikhnasTernak;
+  final JenisHewanModel? jenisHewan;
+  final RumpunHewanModel? rumpunHewan;
+  final TujuanPemeliharaanModel? tujuanPemeliharaan;
   final PeternakModel? idPeternak;
   final KandangModel? idKandang;
-
-  final String? spesies;
   final String? sex;
+  final String? tempatLahir;
+  final String? tanggalLahir;
   final String? umur;
   final String? identifikasiHewan;
   final PetugasModel? petugasPendaftar;
@@ -25,7 +26,6 @@ class HewanModel {
   final String? fotoHewan;
   final String? latitude;
   final String? longitude;
-
   final int? status;
 
   HewanModel({
@@ -33,14 +33,14 @@ class HewanModel {
     this.status,
     this.kodeEartagNasional,
     this.noKartuTernak,
-    this.provinsi,
-    this.kabupaten,
-    this.kecamatan,
-    this.desa,
-    this.alamat,
+    this.idIsikhnasTernak,
+    this.jenisHewan,
+    this.rumpunHewan,
+    this.tujuanPemeliharaan,
     this.idPeternak,
     this.idKandang,
-    this.spesies,
+    this.tanggalLahir,
+    this.tempatLahir,
     this.sex,
     this.umur,
     this.identifikasiHewan,
@@ -56,18 +56,25 @@ class HewanModel {
       status: jsonData['status'] ?? 0,
       idHewan: jsonData['idHewan'] ?? "",
       kodeEartagNasional: jsonData['kodeEartagNasional'] ?? "",
-      alamat: jsonData['alamat'] ?? "",
-      provinsi: jsonData['provinsi'] ?? "",
-      kabupaten: jsonData['kabupaten'] ?? "",
-      kecamatan: jsonData['kecamatan'] ?? "",
-      desa: jsonData['desa'] ?? "",
+      noKartuTernak: jsonData['noKartuTernak'] ?? "",
+      idIsikhnasTernak: jsonData['idIsikhnasTernak'] ?? "",
+      jenisHewan: jsonData['jenisHewan'] != null
+          ? JenisHewanModel.fromJson(jsonData['jenisHewan'])
+          : null,
+      rumpunHewan: jsonData['rumpunHewan'] != null
+          ? RumpunHewanModel.fromJson(jsonData['rumpunHewan'])
+          : null,
+      tujuanPemeliharaan: jsonData['tujuanPemeliharaan'] != null
+          ? TujuanPemeliharaanModel.fromJson(jsonData['tujuanPemeliharaan'])
+          : null,
       idPeternak: jsonData['peternak'] != null
           ? PeternakModel.fromJson(jsonData['peternak'])
           : null,
       idKandang: jsonData['kandang'] != null
           ? KandangModel.fromJson(jsonData['kandang'])
           : null,
-      spesies: jsonData['spesies'] ?? "",
+      tanggalLahir: jsonData['tanggalLahir'] ?? "",
+      tempatLahir: jsonData['tempatLahir'] ?? "",
       sex: jsonData['sex'] ?? "",
       umur: jsonData['umur'] ?? "",
       identifikasiHewan: jsonData['identifikasiHewan'] ?? "",
@@ -76,8 +83,6 @@ class HewanModel {
           : null,
       tanggalTerdaftar: jsonData['tanggalTerdaftar'] ?? "",
       fotoHewan: jsonData['file_path'] ?? "",
-      latitude: jsonData['latitude'] ?? "",
-      longitude: jsonData['longitude'] ?? "",
     );
   }
 }

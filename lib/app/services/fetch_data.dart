@@ -1,5 +1,8 @@
+import 'package:crud_flutter_api/app/data/RumpunHewan_model.dart';
+import 'package:crud_flutter_api/app/data/TujuanPemeliharaan_model.dart';
 import 'package:crud_flutter_api/app/data/hewan_model.dart';
 import 'package:crud_flutter_api/app/data/inseminasi_model.dart';
+import 'package:crud_flutter_api/app/data/jenishewan_model.dart';
 import 'package:crud_flutter_api/app/data/jenisvaksin_model.dart';
 import 'package:crud_flutter_api/app/data/kandang_model.dart';
 import 'package:crud_flutter_api/app/data/namavaksin_model.dart';
@@ -7,11 +10,14 @@ import 'package:crud_flutter_api/app/data/peternak_model.dart';
 import 'package:crud_flutter_api/app/data/petugas_model.dart';
 import 'package:crud_flutter_api/app/services/hewan_api.dart';
 import 'package:crud_flutter_api/app/services/inseminasi_api.dart';
+import 'package:crud_flutter_api/app/services/jenishewan_api.dart';
 import 'package:crud_flutter_api/app/services/jenisvaksin_api.dart';
 import 'package:crud_flutter_api/app/services/kandang_api.dart';
 import 'package:crud_flutter_api/app/services/namavaksin_api.dart';
 import 'package:crud_flutter_api/app/services/peternak_api.dart';
 import 'package:crud_flutter_api/app/services/petugas_api.dart';
+import 'package:crud_flutter_api/app/services/rumpunhewan_api.dart';
+import 'package:crud_flutter_api/app/services/tujuanpemeliharaan_api.dart';
 import 'package:crud_flutter_api/app/widgets/message/errorMessage.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
@@ -35,6 +41,20 @@ class FetchData {
   RxString selectedIdJenisVaksin = ''.obs;
   RxList<JenisVaksinModel> jenisVaksinList = <JenisVaksinModel>[].obs;
   RxList<JenisVaksinModel> filteredJenisVaksinList = <JenisVaksinModel>[].obs;
+
+  RxString selectedIdJenisHewan = ''.obs;
+  RxList<JenisHewanModel> jenisHewanList = <JenisHewanModel>[].obs;
+  RxList<JenisHewanModel> filteredJenisHewanList = <JenisHewanModel>[].obs;
+
+  RxString selectedIdRumpunHewan = ''.obs;
+  RxList<RumpunHewanModel> rumpunHewanList = <RumpunHewanModel>[].obs;
+  RxList<RumpunHewanModel> filteredRumpunHewanList = <RumpunHewanModel>[].obs;
+
+  RxString selectedIdTujuanPemeliharaan = ''.obs;
+  RxList<TujuanPemeliharaanModel> tujuanPemeliharaanList =
+      <TujuanPemeliharaanModel>[].obs;
+  RxList<TujuanPemeliharaanModel> filteredTujuanPemeliharaanList =
+      <TujuanPemeliharaanModel>[].obs;
 
   RxString selectedIdNamaVaksin = ''.obs;
   RxList<NamaVaksinModel> namaVaksinList = <NamaVaksinModel>[].obs;
@@ -81,14 +101,18 @@ class FetchData {
 
   Future<List<KandangModel>> fetchKandangs() async {
     try {
-      final KandangListModel kandangListModel =
-          await KandangApi().loadKandangApi();
+      final response = await KandangApi().loadKandangApi();
+
+      final KandangListModel kandangListModel = response;
       final List<KandangModel> kandangs = kandangListModel.content ?? [];
+
       if (kandangs.isNotEmpty) {
         selectedKandangId.value = kandangs.first.idKandang ?? '';
       }
+
       kandangList.assignAll(kandangs);
-      filterKandangByPeternak(selectedPeternakId.value); // Apply initial filter
+      filterKandangByPeternak(selectedPeternakId.value);
+
       return kandangs;
     } catch (e) {
       print('Error fetching kandangs: $e');
@@ -127,6 +151,48 @@ class FetchData {
     } catch (e) {
       print('Error fetching jenis: $e');
       showErrorMessage("Error fetching jenis vaksin: $e");
+    }
+  }
+
+  Future<void> fetchJenisHewan() async {
+    try {
+      final JenisHewanListModel jenisHewanListModel =
+          await JenisHewanApi().loadJenisHewanApi();
+
+      final List<JenisHewanModel> jenis = jenisHewanListModel.content ?? [];
+      jenisHewanList.assignAll(jenis);
+      filteredJenisHewanList.assignAll(jenis);
+    } catch (e) {
+      print('Error fetching jenis: $e');
+      showErrorMessage("Error fetching jenis hewan: $e");
+    }
+  }
+
+  Future<void> fetchRumpunHewan() async {
+    try {
+      final RumpunHewanListModel rumpunHewanListModel =
+          await RumpunHewanApi().loadRumpunHewanApi();
+      final List<RumpunHewanModel> rumpun = rumpunHewanListModel.content ?? [];
+      rumpunHewanList.assignAll(rumpun);
+      filteredRumpunHewanList.assignAll(rumpun);
+    } catch (e) {
+      print('Error fetching tujuan pemeliharaan: $e');
+      showErrorMessage("Error fetching tujuan pemeliharaan: $e");
+    }
+  }
+
+  Future<void> fetchTujuanPemeliharaan() async {
+    try {
+      final TujuanPemeliharaanListModel tujuanPemeliharaanListModel =
+          await TujuanPemeliharaanApi().loadTujuanPemeliharaanApi();
+
+      final List<TujuanPemeliharaanModel> tujuan =
+          tujuanPemeliharaanListModel.content ?? [];
+      tujuanPemeliharaanList.assignAll(tujuan);
+      filteredTujuanPemeliharaanList.assignAll(tujuan);
+    } catch (e) {
+      print('Error fetching tujuan: $e');
+      showErrorMessage("Error fetching tujuan pemeliharaan: $e");
     }
   }
 
@@ -195,14 +261,6 @@ class FetchData {
 
 //FILTER KANDANG
   void filterKandangByPeternak(String peternakId) {
-    // print('Peternak ID selected: $peternakId');
-    // print('Total Kandang before filter: ${kandangList.length}');
-
-    // kandangList.forEach((kandang) {
-    //   print(
-    //       'kandang ID: ${kandang.idKandang}, Peternak ID: ${kandang.idPeternak?.idPeternak}');
-    // });
-
     // Filter hewan berdasarkan peternak ID
     filteredKandangList.value = kandangList.where((kandang) {
       return kandang.idPeternak?.idPeternak == peternakId;

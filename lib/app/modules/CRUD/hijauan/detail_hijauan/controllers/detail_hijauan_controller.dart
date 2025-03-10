@@ -502,29 +502,29 @@ class DetailHijauanController extends GetxController {
           // Jika tidak ada perubahan pada foto, gunakan foto lama
           fotoHewan.value = File(originalfotoHewan);
         }
-        hewanModel = await HewanApi().editHewanApi(
-          kodeEartagNasionalC.text,
-          noKartuTernakC.text,
-          provinsiC.text,
-          kabupatenC.text,
-          kecamatanC.text,
-          desaC.text,
-          alamat.value = strAlamat.value,
-          // namaPeternakC.text
-          fetchdata.selectedPeternakId.value,
-          fetchdata.selectedKandangId.value,
-          // nikPeternakC.text,
-          selectedSpesies.value,
-          selectedGender.value,
+        // hewanModel = await HewanApi().editHewanApi(
+        //   kodeEartagNasionalC.text,
+        //   noKartuTernakC.text,
+        //   provinsiC.text,
+        //   kabupatenC.text,
+        //   kecamatanC.text,
+        //   desaC.text,
+        //   alamat.value = strAlamat.value,
+        //   // namaPeternakC.text
+        //   fetchdata.selectedPeternakId.value,
+        //   fetchdata.selectedKandangId.value,
+        //   // nikPeternakC.text,
+        //   selectedSpesies.value,
+        //   selectedGender.value,
 
-          umurC.text,
-          identifikasiHewanC.text,
-          fetchdata.selectedPetugasId.value,
-          tanggalTerdaftarC.text,
-          fotoHewan.value,
-          latitude: latitude.value,
-          longitude: longitude.value,
-        );
+        //   umurC.text,
+        //   identifikasiHewanC.text,
+        //   fetchdata.selectedPetugasId.value,
+        //   tanggalTerdaftarC.text,
+        //   fotoHewan.value,
+        //   latitude: latitude.value,
+        //   longitude: longitude.value,
+        // );
 
         if (hewanModel != null && hewanModel!.status == 201) {
           // Jika tagging berhasil, update data dan reset isEditing

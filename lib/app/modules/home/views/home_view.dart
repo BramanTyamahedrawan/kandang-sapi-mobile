@@ -251,6 +251,10 @@ class HomeView extends GetView<HomeController> {
                     ...markersTernak,
                     ...markersKandang
                   ];
+                  List<Marker> validMarkers = allMarkers.where((marker) {
+                    return marker.point.latitude >= -90.0 &&
+                        marker.point.latitude <= 90.0;
+                  }).toList();
 
                   return FlutterMap(
                     options: const MapOptions(
@@ -287,26 +291,26 @@ class HomeView extends GetView<HomeController> {
                             alignment: Alignment.center,
                             padding: const EdgeInsets.all(50),
                             maxZoom: 15,
-                            markers: allMarkers,
+                            markers: validMarkers,
                             popupOptions: PopupOptions(
                               popupBuilder:
                                   (BuildContext context, Marker marker) {
-                                HewanModel?
-                                    hewan; // Deklarasikan di luar try-catch
+                                // HewanModel?
+                                //     hewan; // Deklarasikan di luar try-catch
                                 KandangModel? kandang;
-                                try {
-                                  hewan = controller.posts1.value.content
-                                      ?.firstWhere(
-                                    (item) =>
-                                        item.latitude ==
-                                            marker.point.latitude.toString() &&
-                                        item.longitude ==
-                                            marker.point.longitude.toString(),
-                                    orElse: () => HewanModel(),
-                                  );
-                                } catch (e) {
-                                  print("Error saat mencari data hewan: $e");
-                                }
+                                // try {
+                                //   hewan = controller.posts1.value.content
+                                //       ?.firstWhere(
+                                //     (item) =>
+                                //         item.latitude ==
+                                //             marker.point.latitude.toString() &&
+                                //         item.longitude ==
+                                //             marker.point.longitude.toString(),
+                                //     orElse: () => HewanModel(),
+                                //   );
+                                // } catch (e) {
+                                //   print("Error saat mencari data hewan: $e");
+                                // }
                                 // try {
                                 //   if (controller.posts1.value.content != null &&
                                 //       controller
@@ -358,27 +362,27 @@ class HomeView extends GetView<HomeController> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        if (hewan?.kodeEartagNasional !=
-                                            null) // Tampilkan data hewan jika ada
-                                          ListTile(
-                                            leading: const Icon(Icons.pets),
-                                            title: Text(
-                                              '${hewan?.kodeEartagNasional ?? ''}'
-                                              '\n'
-                                              '${hewan?.idPeternak?.namaPeternak ?? ''}'
-                                              '\n'
-                                              '${hewan?.spesies ?? ''}'
-                                              '\n'
-                                              '${hewan?.desa ?? ''}',
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                              maxLines: 5,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
+                                        // if (hewan?.kodeEartagNasional !=
+                                        //     null) // Tampilkan data hewan jika ada
+                                        //   ListTile(
+                                        //     leading: const Icon(Icons.pets),
+                                        //     title: Text(
+                                        //       '${hewan?.kodeEartagNasional ?? ''}'
+                                        //       '\n'
+                                        //       '${hewan?.idPeternak?.namaPeternak ?? ''}'
+                                        //       '\n',
+                                        //       // '${hewan?.spesies ?? ''}'
+                                        //       // '\n'
+                                        //       // '${hewan?.desa ?? ''}',
+                                        //       style: const TextStyle(
+                                        //         fontSize: 16,
+                                        //         fontWeight: FontWeight.bold,
+                                        //       ),
+                                        //       textAlign: TextAlign.center,
+                                        //       maxLines: 5,
+                                        //       overflow: TextOverflow.ellipsis,
+                                        //     ),
+                                        //   ),
                                         if (kandang?.idPeternak?.namaPeternak !=
                                             null) // Tampilkan data kandang jika ada
                                           ListTile(
@@ -418,124 +422,124 @@ class HomeView extends GetView<HomeController> {
                           ),
                         ),
                       ),
-                      // PopupMarkerLayer(
-                      //   options: PopupMarkerLayerOptions(
-                      //     markers: allMarkers,
-                      //     popupController: controller.popupLayerController,
-                      //     popupDisplayOptions: PopupDisplayOptions(
-                      //       builder: (BuildContext context, Marker marker) {
-                      //         HewanModel?
-                      //             hewan; // Deklarasikan di luar try-catch
-                      //         KandangModel? kandang;
-                      //         try {
-                      //           hewan =
-                      //               controller.posts1.value.content?.firstWhere(
-                      //             (item) =>
-                      //                 item.latitude ==
-                      //                     marker.point.latitude.toString() &&
-                      //                 item.longitude ==
-                      //                     marker.point.longitude.toString(),
-                      //             orElse: () => HewanModel(),
-                      //           );
-                      //         } catch (e) {
-                      //           print("Error saat mencari data hewan: $e");
-                      //         }
-                      //         // try {
-                      //         //   if (controller.posts1.value.content != null &&
-                      //         //       controller
-                      //         //           .posts1.value.content!.isNotEmpty) {
-                      //         //     // Dapatkan data hewan dari indeks yang sesuai
-                      //         //     hewan = controller.posts1.value.content!
-                      //         //         .firstWhere(
-                      //         //             (item) =>
-                      //         //                 item.latitude ==
-                      //         //                     marker.point.latitude
-                      //         //                         .toString() &&
-                      //         //                 item.longitude ==
-                      //         //                     marker.point.longitude
-                      //         //                         .toString(),
-                      //         //             orElse: () =>
-                      //         //                 HewanModel()); // Mengembalikan null jika tidak ditemukan
-                      //         //   }
-                      //         // } catch (e) {
-                      //         //   print("Error saat mencari data: $e");
-                      //         // }
-                      //         // Dapatkan data kandang dari indeks yang sesuai
-                      //         try {
-                      //           kandang =
-                      //               controller.posts3.value.content?.firstWhere(
-                      //             (item) =>
-                      //                 item.latitude ==
-                      //                     marker.point.latitude.toString() &&
-                      //                 item.longitude ==
-                      //                     marker.point.longitude.toString(),
-                      //             orElse: () => KandangModel(),
-                      //           );
-                      //         } catch (e) {
-                      //           print("Error saat mencari data kandang: $e");
-                      //         }
-                      //         // final kandang =
-                      //         //     controller.posts3.value.content!.firstWhere(
-                      //         //   (item) =>
-                      //         //       item.latitude ==
-                      //         //           marker.point.latitude.toString() &&
-                      //         //       item.longitude ==
-                      //         //           marker.point.longitude.toString(),
-                      //         //   orElse: () =>
-                      //         //       KandangModel(), // Asumsikan ada model KandangModel
-                      //         // );
+                      PopupMarkerLayer(
+                        options: PopupMarkerLayerOptions(
+                          markers: allMarkers,
+                          popupController: controller.popupLayerController,
+                          popupDisplayOptions: PopupDisplayOptions(
+                            builder: (BuildContext context, Marker marker) {
+                              HewanModel?
+                                  hewan; // Deklarasikan di luar try-catch
+                              KandangModel? kandang;
+                              try {
+                                hewan =
+                                    controller.posts1.value.content?.firstWhere(
+                                  (item) =>
+                                      item.latitude ==
+                                          marker.point.latitude.toString() &&
+                                      item.longitude ==
+                                          marker.point.longitude.toString(),
+                                  orElse: () => HewanModel(),
+                                );
+                              } catch (e) {
+                                print("Error saat mencari data hewan: $e");
+                              }
+                              // try {
+                              //   if (controller.posts1.value.content != null &&
+                              //       controller
+                              //           .posts1.value.content!.isNotEmpty) {
+                              //     // Dapatkan data hewan dari indeks yang sesuai
+                              //     hewan = controller.posts1.value.content!
+                              //         .firstWhere(
+                              //             (item) =>
+                              //                 item.latitude ==
+                              //                     marker.point.latitude
+                              //                         .toString() &&
+                              //                 item.longitude ==
+                              //                     marker.point.longitude
+                              //                         .toString(),
+                              //             orElse: () =>
+                              //                 HewanModel()); // Mengembalikan null jika tidak ditemukan
+                              //   }
+                              // } catch (e) {
+                              //   print("Error saat mencari data: $e");
+                              // }
+                              // Dapatkan data kandang dari indeks yang sesuai
+                              try {
+                                kandang =
+                                    controller.posts3.value.content?.firstWhere(
+                                  (item) =>
+                                      item.latitude ==
+                                          marker.point.latitude.toString() &&
+                                      item.longitude ==
+                                          marker.point.longitude.toString(),
+                                  orElse: () => KandangModel(),
+                                );
+                              } catch (e) {
+                                print("Error saat mencari data kandang: $e");
+                              }
+                              // final kandang =
+                              //     controller.posts3.value.content!.firstWhere(
+                              //   (item) =>
+                              //       item.latitude ==
+                              //           marker.point.latitude.toString() &&
+                              //       item.longitude ==
+                              //           marker.point.longitude.toString(),
+                              //   orElse: () =>
+                              //       KandangModel(), // Asumsikan ada model KandangModel
+                              // );
 
-                      //         // Tampilkan informasi yang relevan dalam popup
-                      //         return Card(
-                      //           child: IntrinsicWidth(
-                      //             child: Column(
-                      //               mainAxisSize: MainAxisSize.min,
-                      //               children: [
-                      //                 if (hewan?.kodeEartagNasional !=
-                      //                     null) // Tampilkan data hewan jika ada
-                      //                   ListTile(
-                      //                     leading: const Icon(Icons.pets),
-                      //                     title: Text(
-                      //                       '${hewan?.kodeEartagNasional ?? ''}'
-                      //                       '\n'
-                      //                       '${hewan?.peternak_id?.namaPeternak ?? ''}'
-                      //                       '\n'
-                      //                       '${hewan?.spesies ?? ''}'
-                      //                       '\n'
-                      //                       '${hewan?.desa ?? ''}',
-                      //                       style: const TextStyle(
-                      //                         fontSize: 16,
-                      //                         fontWeight: FontWeight.bold,
-                      //                       ),
-                      //                       textAlign: TextAlign.center,
-                      //                       maxLines: 5,
-                      //                       overflow: TextOverflow.ellipsis,
-                      //                     ),
-                      //                   ),
-                      //                 if (kandang?.peternak_id?.namaPeternak !=
-                      //                     null) // Tampilkan data kandang jika ada
-                      //                   ListTile(
-                      //                     leading: const Icon(Icons.home),
-                      //                     title: Text(
-                      //                       kandang?.peternak_id?.namaPeternak ??
-                      //                           '',
-                      //                       style: const TextStyle(
-                      //                         fontSize: 16,
-                      //                         fontWeight: FontWeight.bold,
-                      //                       ),
-                      //                       textAlign: TextAlign.center,
-                      //                       maxLines: 1,
-                      //                       overflow: TextOverflow.ellipsis,
-                      //                     ),
-                      //                   ),
-                      //               ],
-                      //             ),
-                      //           ),
-                      //         );
-                      //       },
-                      //     ),
-                      //   ),
-                      // ),
+                              // Tampilkan informasi yang relevan dalam popup
+                              return Card(
+                                child: IntrinsicWidth(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (hewan?.kodeEartagNasional !=
+                                          null) // Tampilkan data hewan jika ada
+                                        ListTile(
+                                          leading: const Icon(Icons.pets),
+                                          title: Text(
+                                            '${hewan?.kodeEartagNasional ?? ''}'
+                                            '\n',
+                                            // '${hewan?.peternak_id?.namaPeternak ?? ''}'
+                                            // '\n'
+                                            // '${hewan?.spesies ?? ''}'
+                                            // '\n'
+                                            // '${hewan?.desa ?? ''}',
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 5,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      if (kandang?.idPeternak?.namaPeternak !=
+                                          null) // Tampilkan data kandang jika ada
+                                        ListTile(
+                                          leading: const Icon(Icons.home),
+                                          title: Text(
+                                            kandang?.idPeternak?.namaPeternak ??
+                                                '',
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                       // FutureBuilder<List<List<LatLng>>>(
                       //   future: controller.someFunction(),
                       //   builder: (context, snapshot) {

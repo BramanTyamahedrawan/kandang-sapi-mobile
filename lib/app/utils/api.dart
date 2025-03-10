@@ -4,11 +4,11 @@ class SharedApi {
   // String imageUrl = "http://192.168.2.243:8081/downloadFile/";
   // String baseUrl = "http://192.168.2.243:8081/api";
 
-  // String imageUrl = "http://192.168.0.108:8081/api/";
-  // String baseUrl = "http://192.168.0.108:8081/api";
+  // String imageUrl = "http://192.168.18.217:8081/api/";
+  // String baseUrl = "http://192.168.18.217:8081/api";
 
-  String imageUrl = "http://192.168.1.9:8081/api/";
-  String baseUrl = "http://192.168.1.9:8081/api";
+  String imageUrl = "http://192.168.3.87:8081/api/";
+  String baseUrl = "http://192.168.3.87:8081/api";
 
   // String imageUrl = "http://114.9.13.243:8081/downloadFile/";
   // String baseUrl = "http://114.9.13.243:8081/api";

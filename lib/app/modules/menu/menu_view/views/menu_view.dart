@@ -22,8 +22,11 @@ class MainMenuView extends GetView<MainMenuController> {
         backgroundColor: const Color(0xff132137), // Warna latar belakang AppBar
         elevation: 0.0,
       ),
+      backgroundColor: Colors.white,
       body: Container(
         color: Colors.white,
+        width: double.infinity, // Memastikan warna mengisi layar
+        height: double.infinity, // Memastikan warna mengisi layar
         child: SingleChildScrollView(
           child: Padding(
             padding:

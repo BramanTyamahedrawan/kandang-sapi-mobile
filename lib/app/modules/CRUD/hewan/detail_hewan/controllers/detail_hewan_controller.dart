@@ -2,9 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:crud_flutter_api/app/data/hewan_model.dart';
-import 'package:crud_flutter_api/app/data/kandang_model.dart';
-import 'package:crud_flutter_api/app/data/peternak_model.dart';
-import 'package:crud_flutter_api/app/data/petugas_model.dart';
 import 'package:crud_flutter_api/app/modules/menu/hewan/controllers/hewan_controller.dart';
 import 'package:crud_flutter_api/app/services/fetch_data.dart';
 import 'package:crud_flutter_api/app/services/hewan_api.dart';
@@ -14,8 +11,6 @@ import 'package:crud_flutter_api/app/widgets/message/errorMessage.dart';
 import 'package:crud_flutter_api/app/widgets/message/successMessage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -27,107 +22,70 @@ class DetailHewanController extends GetxController {
   String? get role => box.read('role');
   final FetchData fetchdata = FetchData();
   final HewanController hewanController = Get.put(HewanController());
-  //TODO: Implement DetailPostController
+
   final Map<String, dynamic> argsData = Get.arguments;
   HewanModel? hewanModel;
   RxBool isLoading = false.obs;
   RxBool isEditing = false.obs;
   final formattedDate = ''.obs;
   final formattedDate1 = ''.obs;
-  RxString alamat = ''.obs;
   RxBool isLoadingCreateTodo = false.obs;
   RxString selectedGender = ''.obs;
-  RxString selectedSpesies = ''.obs;
-  // RxString selectedPeternakId = ''.obs;
-  // RxList<PeternakModel> peternakList = <PeternakModel>[].obs;
-  // RxString selectedPetugasId = ''.obs;
-  // RxList<PetugasModel> petugasList = <PetugasModel>[].obs;
-  // RxString selectedKandangId = ''.obs;
-  // RxList<KandangModel> kandangList = <KandangModel>[].obs;
   SharedApi sharedApi = SharedApi();
   RxString selectedPeternakIdInEditMode = ''.obs;
+  RxString selectedKandangIdInEditMode = ''.obs;
+  RxString selectedPetugasIdInEditMode = ''.obs;
+  RxString selectedIdJenisHewanInEditMode = ''.obs;
+  RxString selectedIdRumpunHewanInEditMode = ''.obs;
+  RxString selectedIdTujuanPemeliharaanInEditMode = ''.obs;
 
   List<String> genders = ["Jantan", "Betina"];
-  List<String> spesies = [
-    "Banteng",
-    "Domba",
-    "Kambing",
-    "Sapi",
-    "Sapi Brahman",
-    "Sapi Brangus",
-    "Sapi Limosin",
-    "Sapi fh",
-    "Sapi Perah",
-    "Sapi PO",
-    "Sapi Simental"
-  ];
 
-  RxString strLatLong =
-      'belum mendapatkan lat dan long, silakan tekan tombol'.obs;
-  RxString strAlamat = 'mencari lokasi..'.obs;
+  // RxString strLatLong =
+  //     'belum mendapatkan lat dan long, silakan tekan tombol'.obs;
+  // RxString strAlamat = 'mencari lokasi..'.obs;
   RxBool loading = false.obs;
-  RxString latitude = ''.obs;
-  RxString longitude = ''.obs;
+  // RxString latitude = ''.obs;
+  // RxString longitude = ''.obs;
   Rx<File?> fotoHewan = Rx<File?>(null);
 
+  TextEditingController idHewanC = TextEditingController();
   TextEditingController kodeEartagNasionalC = TextEditingController();
   TextEditingController noKartuTernakC = TextEditingController();
-  TextEditingController provinsiC = TextEditingController();
-  TextEditingController kabupatenC = TextEditingController();
-  TextEditingController kecamatanC = TextEditingController();
-  TextEditingController desaC = TextEditingController();
-  TextEditingController namaPeternakC = TextEditingController();
-  TextEditingController idPeternakC = TextEditingController();
-  TextEditingController idKandagC = TextEditingController();
-  TextEditingController nikPeternakC = TextEditingController();
-  TextEditingController spesiesC = TextEditingController();
-  TextEditingController sexC = TextEditingController();
+  TextEditingController idIsikhnasHewanC = TextEditingController();
   TextEditingController umurC = TextEditingController();
+  TextEditingController tempatLahirC = TextEditingController();
+  TextEditingController tanggalLahirC = TextEditingController();
   TextEditingController identifikasiHewanC = TextEditingController();
-  TextEditingController petugasPendaftarC = TextEditingController();
   TextEditingController tanggalTerdaftarC = TextEditingController();
-  TextEditingController alamatC = TextEditingController();
 
   String originalEartag = "";
-  String originalKartuTernak = "";
-  String originalProvinsi = "";
-  String originalKabupaten = "";
-  String originalKecamatan = "";
-  String originalDesa = "";
-  String originalAlamat = "";
-  String originalNamaPeternak = "";
-  String originalIdPeternak = "";
+  String originalNoKartuTernak = "";
+  String originalIdIsikhnasTernak = "";
+  String originalIdJenisHewan = "";
+  String originalIdRumpunHewan = "";
+  String originalIdTujuanPemeliharaan = "";
   String originalIdKandang = "";
-  String originalNikPeternak = "";
-  String originalSpesies = "";
+  String originalIdPetugas = "";
+  String originalIdPeternak = "";
+  String originalTempatLahir = "";
+  String originalTanggalLahir = "";
   String originalSex = "";
   String originalUmur = "";
   String originalIdentifikasi = "";
-  String originalPetugas = "";
   String originalTanggal = "";
   String originalfotoHewan = "";
-  String originalLatitude = "";
-  String originalLongitude = "";
 
   @override
   onClose() {
     kodeEartagNasionalC.dispose();
-    noKartuTernakC.dispose();
-    provinsiC.dispose();
-    kabupatenC.dispose();
-    kecamatanC.dispose();
-    desaC.dispose();
-    namaPeternakC.dispose();
-    idPeternakC.dispose();
-    idKandagC.dispose();
-    nikPeternakC.dispose();
-    spesiesC.dispose();
-    sexC.dispose();
+    noKartuTernakC.dispose(); //
+    idIsikhnasHewanC.dispose();
     umurC.dispose();
+    tempatLahirC.dispose();
+    tanggalLahirC.dispose();
     identifikasiHewanC.dispose();
-    petugasPendaftarC.dispose();
     tanggalTerdaftarC.dispose();
-    alamatC.dispose();
     ever<File?>(fotoHewan, (_) {
       update();
     });
@@ -138,9 +96,14 @@ class DetailHewanController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    // Fetch Data
     fetchdata.fetchPeternaks();
     fetchdata.fetchPetugas();
     fetchdata.fetchKandangs();
+    fetchdata.fetchJenisHewan();
+    fetchdata.fetchRumpunHewan();
+    fetchdata.fetchTujuanPemeliharaan();
 
     fetchdata.selectedPeternakId.listen((peternakId) {
       fetchdata.filterHewanByPeternak(peternakId);
@@ -148,187 +111,216 @@ class DetailHewanController extends GetxController {
     });
 
     role;
-
-    selectedSpesies(argsData["spesies_hewan_detail"]);
-    selectedGender(argsData["kelamin_hewan_detail"]);
     isEditing.value = false;
-    //print(fotoHewanC);
-    kodeEartagNasionalC.text = argsData["eartag_hewan_detail"];
-    noKartuTernakC.text = argsData["kartu_hewan_detail"];
-    provinsiC.text = argsData["provinsi_hewan_detail"];
-    kabupatenC.text = argsData["kabupaten_hewan_detail"];
-    kecamatanC.text = argsData["kecamatan_hewan_detail"];
-    desaC.text = argsData["desa_hewan_detail"];
-    alamat.value = argsData["alamat_hewan_detail"];
-    alamatC.text = argsData["alamat_hewan_detail"];
-    //namaPeternakC.text = argsData["nama_peternak_hewan_detail"];
-    idPeternakC.text = argsData["id_peternak_hewan_detail"];
-    idKandagC.text = argsData["id_kandang_hewan_detail"];
-    //selectedKandangId.value = argsData["id_kandang_hewan_detail"];
-    //nikPeternakC.text = argsData["nik_hewan_detail"];
-    spesiesC.text = argsData["spesies_hewan_detail"];
-    sexC.text = argsData["kelamin_hewan_detail"];
-    umurC.text = argsData["umur_hewan_detail"];
-    identifikasiHewanC.text = argsData["identifikasi_hewan_detail"];
-    petugasPendaftarC.text = argsData["petugas_terdaftar_hewan_detail"];
-    //selectedPetugasId.value = argsData["tanggal_terdaftar_hewan_detail"];
-    tanggalTerdaftarC.text = argsData["tanggal_terdaftar_hewan_detail"];
-    latitude.value = argsData["latitude_hewan_detail"];
-    longitude.value = argsData["longitude_hewan_detail"];
-    //fotoHewanC.text = argsData["foto_hewan_detail"];
-    //fotoHewan.value = File(argsData["foto_hewan_detail"]);
-    // Tambahkan listener untuk selectedPeternakId
-    ever(fetchdata.selectedPeternakId, (String? selectedId) {
-      // Perbarui nilai nikPeternakC dan namaPeternakC berdasarkan selectedId
-      PeternakModel? selectedPeternak = fetchdata.peternakList.firstWhere(
-          (peternak) => peternak.idPeternak == selectedId,
-          orElse: () => PeternakModel());
-      nikPeternakC.text =
-          selectedPeternak.nikPeternak ?? argsData["nik_hewan_detail"];
-      namaPeternakC.text = selectedPeternak.namaPeternak ??
-          argsData["nama_peternak_hewan_detail"];
-      update();
+
+    final idPeternak = argsData["id_peternak_hewan_detail"] ?? '';
+    final idKandang = argsData["id_kandang_hewan_detail"] ?? '';
+    final idJenisHewan = argsData["id_jenishewan_detail"] ?? '';
+    final idRumpunHewan = argsData["id_rumpun_detail"] ?? '';
+    final idTujuanPemeliharaan = argsData["id_tujuanpemeliharaan_detail"] ?? '';
+    final idPetugas = argsData["petugas_terdaftar_hewan_detail"] ?? '';
+
+    idHewanC.text = argsData["idHewan"] ?? '';
+    kodeEartagNasionalC.text = argsData["eartag_hewan_detail"] ?? '';
+    noKartuTernakC.text = argsData["kartu_hewan_detail"] ?? '';
+    idIsikhnasHewanC.text = argsData["id_isikhnas_detail"] ?? '';
+    genders.val(argsData["kelamin_hewan_detail"] ?? '');
+    umurC.text = argsData["umur_hewan_detail"] ?? '';
+    tempatLahirC.text = argsData["tempat_lahir_detail"] ?? '';
+    tanggalLahirC.text = argsData["tanggal_lahir_detail"] ?? '';
+    identifikasiHewanC.text = argsData["identifikasi_hewan_detail"] ?? '';
+    tanggalTerdaftarC.text = argsData["tanggal_terdaftar_hewan_detail"] ?? '';
+
+    originalIdPeternak = idPeternak;
+    originalIdKandang = idKandang;
+    originalIdJenisHewan = idJenisHewan;
+    originalIdRumpunHewan = idRumpunHewan;
+    originalIdTujuanPemeliharaan = idTujuanPemeliharaan;
+    originalIdPetugas = idPetugas;
+    originalSex = argsData["kelamin_hewan_detail"] ?? '';
+
+    // Validasi id Peternak
+    fetchdata.fetchPeternaks().then((_) {
+      if (idPeternak.isNotEmpty) {
+        bool isValid = fetchdata.peternakList
+            .any((peternaks) => peternaks.idPeternak == idPeternak);
+        if (isValid) {
+          fetchdata.selectedPeternakId.value = idPeternak;
+        } else {
+          print("Id Peternak dari args data tidak ditemukan");
+        }
+      } else {
+        print("Id Peternak kosong");
+      }
     });
 
-    ever(fetchdata.selectedPetugasId, (String? selectedName) {
-      // Perbarui nilai nikPeternakC dan namaPeternakC berdasarkan selectedId
-      PetugasModel? selectedPetugassss = fetchdata.petugasList.firstWhere(
-          (petugas) => petugas.nikPetugas == selectedName,
-          orElse: () => PetugasModel());
-      fetchdata.selectedPetugasId.value = selectedPetugassss.nikPetugas ??
-          argsData["petugas_terdaftar_hewan_detail"];
-      // petugasPendaftarC.text = selectedPetugassss.namaPetugas ??
-      //     argsData["petugas_terdaftar_hewan_detail"];
-      // print(selectedPetugasId.value);
-      update();
+    // Validasi id Kandang
+    fetchdata.fetchKandangs().then((_) {
+      if (idKandang.isNotEmpty) {
+        bool isValid = fetchdata.kandangList
+            .any((kandangs) => kandangs.idKandang == idKandang);
+        if (isValid) {
+          fetchdata.selectedKandangId.value = idKandang;
+        } else {
+          print("Id Kandang dari args data tidak ditemukan");
+        }
+      } else {
+        print("Id Kandang kosong");
+      }
     });
 
-    ever(fetchdata.selectedKandangId, (String? selectedids) {
-      // Perbarui nilai nikPeternakC dan namaPeternakC berdasarkan selectedId
-      KandangModel? selectedKandangsss = fetchdata.kandangList.firstWhere(
-          (kandang) => kandang.idKandang == selectedids,
-          orElse: () => KandangModel());
-      fetchdata.selectedKandangId.value =
-          selectedKandangsss.idKandang ?? argsData["id_kandang_hewan_detail"];
-      // namaPeternakC.text = selectedPetugassss.namaPetugas ??
-      //     argsData["nama_peternak_hewan_detail"];
-      // print(selectedKandangId.value);
-      update();
+    // Validasi id Jenis Hewan
+    fetchdata.fetchJenisHewan().then((_) {
+      if (idJenisHewan.isNotEmpty) {
+        bool isValid = fetchdata.jenisHewanList
+            .any((jenisHewans) => jenisHewans.idJenisHewan == idJenisHewan);
+        if (isValid) {
+          fetchdata.selectedIdJenisHewan.value = idJenisHewan;
+        } else {
+          print("Id Jenis Hewan dari args data tidak ditemukan");
+        }
+      } else {
+        print("Id Jenis Hewan kosong");
+      }
     });
 
-    print(argsData["foto_hewan_detail"]);
-    print(argsData["spesies_hewan_detail"]);
+    // Validasi id Rumpun Hewan
+    fetchdata.fetchRumpunHewan().then((_) {
+      if (idRumpunHewan.isNotEmpty) {
+        bool isValid = fetchdata.rumpunHewanList
+            .any((rumpunHewans) => rumpunHewans.idRumpunHewan == idRumpunHewan);
+        if (isValid) {
+          fetchdata.selectedIdRumpunHewan.value = idRumpunHewan;
+        } else {
+          print("Id Rumpun Hewan dari args data tidak ditemukan");
+        }
+      } else {
+        print("Id Rumpun Hewan kosong");
+      }
+    });
 
-    originalEartag = argsData["eartag_hewan_detail"];
-    originalKartuTernak = argsData["kartu_hewan_detail"];
-    originalProvinsi = argsData["provinsi_hewan_detail"];
-    originalKabupaten = argsData["kabupaten_hewan_detail"];
-    originalKecamatan = argsData["kecamatan_hewan_detail"];
-    originalDesa = argsData["desa_hewan_detail"];
-    originalAlamat = argsData["alamat_hewan_detail"];
-    originalNamaPeternak = argsData["nama_peternak_hewan_detail"];
-    originalIdPeternak = argsData["id_peternak_hewan_detail"];
-    originalIdKandang = argsData["id_kandang_hewan_detail"];
-    originalNikPeternak = argsData["nik_hewan_detail"];
-    originalSpesies = argsData["spesies_hewan_detail"];
-    originalSex = argsData["kelamin_hewan_detail"];
-    originalUmur = argsData["umur_hewan_detail"];
-    originalIdentifikasi = argsData["identifikasi_hewan_detail"];
-    originalPetugas = argsData["petugas_terdaftar_hewan_detail"];
-    originalTanggal = argsData["tanggal_terdaftar_hewan_detail"];
-    originalfotoHewan = argsData["foto_hewan_detail"];
-    originalLatitude = argsData["latitude_hewan_detail"];
-    originalLongitude = argsData["longitude_hewan_detail"];
+    // Validasi id Tujuan Pemeliharaan
+    fetchdata.fetchTujuanPemeliharaan().then((_) {
+      if (idTujuanPemeliharaan.isNotEmpty) {
+        bool isValid = fetchdata.tujuanPemeliharaanList.any(
+            (tujuanPemeliharaans) =>
+                tujuanPemeliharaans.idTujuanPemeliharaan ==
+                idTujuanPemeliharaan);
+        if (isValid) {
+          fetchdata.selectedIdTujuanPemeliharaan.value = idTujuanPemeliharaan;
+        } else {
+          print("Id Tujuan Pemeliharaan dari args data tidak ditemukan");
+        }
+      } else {
+        print("Id Tujuan Pemeliharaan kosong");
+      }
+    });
+
+    // Validasi id Petugas
+    fetchdata.fetchPetugas().then((_) {
+      if (idPetugas.isNotEmpty) {
+        bool isValid = fetchdata.petugasList
+            .any((petugas) => petugas.petugasId == idPetugas);
+        if (isValid) {
+          fetchdata.selectedPetugasId.value = idPetugas;
+        } else {
+          print("Id Petugas terdaftar dari args data tidak ditemukan");
+        }
+      } else {
+        print("Id Petugas terdaftar kosong");
+      }
+    });
+
     update();
   }
 
-  Future<Position> getGeoLocationPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+//   Future<Position> getGeoLocationPosition() async {
+//     bool serviceEnabled;
+//     LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    //location service not enabled, don't continue
-    if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      return Future.error('Location service Not Enabled');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permission denied');
-      }
-    }
+//     serviceEnabled = await Geolocator.isLocationServiceEnabled();
+//     //location service not enabled, don't continue
+//     if (!serviceEnabled) {
+//       await Geolocator.openLocationSettings();
+//       return Future.error('Location service Not Enabled');
+//     }
+//     permission = await Geolocator.checkPermission();
+//     if (permission == LocationPermission.denied) {
+//       permission = await Geolocator.requestPermission();
+//       if (permission == LocationPermission.denied) {
+//         return Future.error('Location permission denied');
+//       }
+//     }
 
-    //permission denied forever
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-        'Location permission denied forever, we cannot access',
-      );
-    }
-    //continue accessing the position of device
-    return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-  }
+//     //permission denied forever
+//     if (permission == LocationPermission.deniedForever) {
+//       return Future.error(
+//         'Location permission denied forever, we cannot access',
+//       );
+//     }
+//     //continue accessing the position of device
+//     return await Geolocator.getCurrentPosition(
+//       desiredAccuracy: LocationAccuracy.high,
+//     );
+//   }
 
-  //getAddress
-  Future<void> getAddressFromLongLat(Position position) async {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
-    print(placemarks);
+//   //getAddress
+//   Future<void> getAddressFromLongLat(Position position) async {
+//     List<Placemark> placemarks =
+//         await placemarkFromCoordinates(position.latitude, position.longitude);
+//     print(placemarks);
 
-    Placemark place = placemarks[0];
+//     Placemark place = placemarks[0];
 
-    latitude.value = position.latitude.toString();
-    longitude.value = position.longitude.toString();
+//     latitude.value = position.latitude.toString();
+//     longitude.value = position.longitude.toString();
 
-    // String subLocality = place.subLocality ?? '';
-    // String locality = place.locality ?? '';
-    // String administrativeArea = place.administrativeArea ?? '';
+//     // String subLocality = place.subLocality ?? '';
+//     // String locality = place.locality ?? '';
+//     // String administrativeArea = place.administrativeArea ?? '';
 
-    // String desiredAddress = '$subLocality $locality $administrativeArea';
+//     // String desiredAddress = '$subLocality $locality $administrativeArea';
 
-    // strAlamat.value = desiredAddress.trim();
+//     // strAlamat.value = desiredAddress.trim();
 
-    strAlamat.value =
-        '${place.subAdministrativeArea}, ${place.subLocality}, ${place.locality}, '
-        '${place.postalCode}, ${place.country}, ${place.administrativeArea}';
-  }
+//     strAlamat.value =
+//         '${place.subAdministrativeArea}, ${place.subLocality}, ${place.locality}, '
+//         '${place.postalCode}, ${place.country}, ${place.administrativeArea}';
+//   }
 
-  // Fungsi untuk mendapatkan alamat dari geolocation dan mengupdate nilai provinsi, kabupaten, kecamatan, dan desa
-  Future<void> updateAlamatInfo() async {
-    try {
-      isLoading.value = true;
+//   // Fungsi untuk mendapatkan alamat dari geolocation dan mengupdate nilai provinsi, kabupaten, kecamatan, dan desa
+//   Future<void> updateAlamatInfo() async {
+//     try {
+//       isLoading.value = true;
 
-      // Mendapatkan posisi geolokasi
-      Position position = await getGeoLocationPosition();
+//       // Mendapatkan posisi geolokasi
+//       Position position = await getGeoLocationPosition();
 
-      // Mendapatkan alamat dari geolokasi
-      await getAddressFromLongLat(position);
+//       // Mendapatkan alamat dari geolokasi
+//       await getAddressFromLongLat(position);
 
-      // Mengupdate nilai provinsi, kabupaten, kecamatan, dan desa berdasarkan alamat
-      provinsiC.text = getAlamatInfo(5); //benar 5
-      kabupatenC.text = getAlamatInfo(0); //benar 0
-      kecamatanC.text = getAlamatInfo(2); //benar 2
-      desaC.text = getAlamatInfo(1); //benar 1
-    } catch (e) {
-      print('Error updating alamat info: $e');
-      showErrorMessage("Error updating alamat info: $e");
-    } finally {
-      isLoading.value = false;
-    }
-  }
+//       // Mengupdate nilai provinsi, kabupaten, kecamatan, dan desa berdasarkan alamat
+//       provinsiC.text = getAlamatInfo(5); //benar 5
+//       kabupatenC.text = getAlamatInfo(0); //benar 0
+//       kecamatanC.text = getAlamatInfo(2); //benar 2
+//       desaC.text = getAlamatInfo(1); //benar 1
+//     } catch (e) {
+//       print('Error updating alamat info: $e');
+//       showErrorMessage("Error updating alamat info: $e");
+//     } finally {
+//       isLoading.value = false;
+//     }
+//   }
 
-// Fungsi untuk mendapatkan informasi alamat berdasarkan index
-  String getAlamatInfo(int index) {
-    List<String> alamatInfo = strAlamat.value.split(', ');
-    if (index < alamatInfo.length) {
-      return alamatInfo[index];
-    } else {
-      return '';
-    }
-  }
+// // Fungsi untuk mendapatkan informasi alamat berdasarkan index
+//   String getAlamatInfo(int index) {
+//     List<String> alamatInfo = strAlamat.value.split(', ');
+//     if (index < alamatInfo.length) {
+//       return alamatInfo[index];
+//     } else {
+//       return '';
+//     }
+//   }
 
   /// Fungsi untuk memilih gambar dari galeri
   Future<void> pickImage(bool fromCamera) async {
@@ -424,27 +416,22 @@ class DetailHewanController extends GetxController {
         update();
         // Reset data ke yang sebelumnya
         kodeEartagNasionalC.text = originalEartag;
-        noKartuTernakC.text = originalKartuTernak;
-        provinsiC.text = originalProvinsi;
-        kabupatenC.text = originalKabupaten;
-        kecamatanC.text = originalKecamatan;
-        desaC.text = originalDesa;
-        alamat.value = originalAlamat;
-        namaPeternakC.text = originalNamaPeternak;
-        //fetchdata.selectedPeternakId.value = originalIdPeternak;
-        idKandagC.text = originalIdKandang;
-        idPeternakC.text = originalIdPeternak;
-        nikPeternakC.text = originalNikPeternak;
-        spesiesC.text = originalSpesies;
-        sexC.text = originalSex;
+        noKartuTernakC.text = originalNoKartuTernak;
+        idIsikhnasHewanC.text = originalIdIsikhnasTernak;
+        tempatLahirC.text = originalTempatLahir;
+        tanggalLahirC.text = originalTanggalLahir;
+        selectedGender.value = originalSex;
         umurC.text = originalUmur;
         identifikasiHewanC.text = originalIdentifikasi;
-        petugasPendaftarC.text = originalPetugas;
-        //selectedPetugasId.value = originalPetugas;
         tanggalTerdaftarC.text = originalTanggal;
+        selectedIdJenisHewanInEditMode.value = originalIdJenisHewan;
+        selectedIdRumpunHewanInEditMode.value = originalIdRumpunHewan;
+        selectedIdTujuanPemeliharaanInEditMode.value =
+            originalIdTujuanPemeliharaan;
+        selectedKandangIdInEditMode.value = originalIdKandang;
+        selectedPeternakIdInEditMode.value = originalIdPeternak;
+        selectedPetugasIdInEditMode.value = originalIdPetugas;
         fotoHewan.value = null;
-        latitude.value = originalLatitude;
-        longitude.value = originalLongitude;
         isEditing.value = false;
       },
     );
@@ -483,18 +470,6 @@ class DetailHewanController extends GetxController {
       message: "Apakah anda ingin mengedit data ini data Petugas ini ?",
       onCancel: () => Get.back(),
       onConfirm: () async {
-        print(kodeEartagNasionalC);
-        print(noKartuTernakC);
-        print(provinsiC);
-        print(kabupatenC);
-        print(kecamatanC);
-        print(desaC);
-        print(alamat);
-        print(fetchdata.selectedPeternakId);
-        print(fetchdata.selectedKandangId);
-        print(selectedSpesies);
-        print(fetchdata.selectedPetugasId);
-// Di dalam fungsi editHewan()
         if (fotoHewan.value != null) {
           // Jika ada foto baru, gunakan foto baru
           fotoHewan.value = fotoHewan.value;
@@ -503,32 +478,24 @@ class DetailHewanController extends GetxController {
           fotoHewan.value = File(originalfotoHewan);
         }
         hewanModel = await HewanApi().editHewanApi(
-          kodeEartagNasionalC.text,
-          noKartuTernakC.text,
-          provinsiC.text,
-          kabupatenC.text,
-          kecamatanC.text,
-          desaC.text,
-          alamat.value = strAlamat.value,
-          // namaPeternakC.text
-          fetchdata.selectedPeternakId.value,
-          fetchdata.selectedKandangId.value,
-          // nikPeternakC.text,
-          selectedSpesies.value,
-          selectedGender.value,
-
-          umurC.text,
-          identifikasiHewanC.text,
-          fetchdata.selectedPetugasId.value,
-          tanggalTerdaftarC.text,
-          fotoHewan.value,
-          latitude: latitude.value,
-          longitude: longitude.value,
-        );
+            idHewanC.text,
+            kodeEartagNasionalC.text,
+            noKartuTernakC.text,
+            idIsikhnasHewanC.text,
+            fetchdata.selectedIdJenisHewan.value,
+            fetchdata.selectedIdRumpunHewan.value,
+            fetchdata.selectedIdTujuanPemeliharaan.value,
+            fetchdata.selectedPeternakId.value,
+            fetchdata.selectedKandangId.value,
+            selectedGender.value,
+            tempatLahirC.text,
+            tanggalLahirC.text,
+            fetchdata.selectedPetugasId.value,
+            tanggalTerdaftarC.text,
+            fotoHewan.value);
 
         if (hewanModel != null && hewanModel!.status == 201) {
-          // Jika tagging berhasil, update data dan reset isEditing
-          await updateAlamatInfo();
+          // Jika tagging berhasil, update data dan reset isEditin
           isEditing.value = false;
           showSuccessMessage(
               "Berhasil mengedit Hewan dengan ID: ${kodeEartagNasionalC.text}");

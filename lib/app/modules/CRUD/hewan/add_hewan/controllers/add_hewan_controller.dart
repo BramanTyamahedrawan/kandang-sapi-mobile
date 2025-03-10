@@ -25,39 +25,16 @@ class AddHewanController extends GetxController {
   final formattedDate = ''.obs;
   final formattedDate1 = ''.obs;
   RxString alamat = ''.obs;
-  RxString selectedGender = 'Jantan'.obs;
-  RxString selectedSpesies = 'Sapi'.obs;
+  RxString selectedGender = ''.obs;
   Rx<File?> fotoHewan = Rx<File?>(null);
 
   List<String> genders = ["Jantan", "Betina"];
-  List<String> spesies = [
-    "Banteng",
-    "Domba",
-    "Kambing",
-    "Sapi",
-    "Sapi Brahman",
-    "Sapi Brangus",
-    "Sapi Limosin",
-    "Sapi fh",
-    "Sapi Perah",
-    "Sapi PO",
-    "Sapi Simental"
-  ];
-
-  RxString strLatLong =
-      'belum mendapatkan lat dan long, silakan tekan tombol'.obs;
-  RxString strAlamat = 'mencari lokasi..'.obs;
-  RxBool loading = false.obs;
-  RxString latitude = ''.obs;
-  RxString longitude = ''.obs;
 
   TextEditingController kodeEartagNasionalC = TextEditingController();
   TextEditingController noKartuTernakC = TextEditingController();
-  TextEditingController provinsiC = TextEditingController();
-  TextEditingController kabupatenC = TextEditingController();
-  TextEditingController kecamatanC = TextEditingController();
-  TextEditingController desaC = TextEditingController();
-  TextEditingController umurC = TextEditingController();
+  TextEditingController idIsikhnasTernakC = TextEditingController();
+  TextEditingController tempatLahirC = TextEditingController();
+  TextEditingController tanggalLahirC = TextEditingController();
   TextEditingController identifikasiHewanC = TextEditingController();
   TextEditingController tanggalTerdaftarC = TextEditingController();
 
@@ -65,11 +42,9 @@ class AddHewanController extends GetxController {
   onClose() {
     kodeEartagNasionalC.dispose();
     noKartuTernakC.dispose();
-    provinsiC.dispose();
-    kabupatenC.dispose();
-    kecamatanC.dispose();
-    desaC.dispose();
-    umurC.dispose();
+    idIsikhnasTernakC.dispose();
+    tempatLahirC.dispose();
+    tanggalLahirC.dispose();
     identifikasiHewanC.dispose();
     tanggalTerdaftarC.dispose();
     ever<File?>(fotoHewan, (_) {
@@ -83,7 +58,9 @@ class AddHewanController extends GetxController {
     fetchdata.fetchPeternaks();
     fetchdata.fetchPetugas();
     fetchdata.fetchKandangs();
-
+    fetchdata.fetchJenisHewan();
+    fetchdata.fetchRumpunHewan();
+    fetchdata.fetchTujuanPemeliharaan();
     fetchdata.selectedPeternakId.listen((peternakId) {
       fetchdata.filterHewanByPeternak(peternakId);
       fetchdata.filterKandangByPeternak(peternakId);
@@ -91,85 +68,85 @@ class AddHewanController extends GetxController {
   }
 
 //GET LOCATION
-  Future<Position> getGeoLocationPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+//   Future<Position> getGeoLocationPosition() async {
+//     bool serviceEnabled;
+//     LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    //location service not enabled, don't continue
-    if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      return Future.error('Location service Not Enabled');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permission denied');
-      }
-    }
+//     serviceEnabled = await Geolocator.isLocationServiceEnabled();
+//     //location service not enabled, don't continue
+//     if (!serviceEnabled) {
+//       await Geolocator.openLocationSettings();
+//       return Future.error('Location service Not Enabled');
+//     }
+//     permission = await Geolocator.checkPermission();
+//     if (permission == LocationPermission.denied) {
+//       permission = await Geolocator.requestPermission();
+//       if (permission == LocationPermission.denied) {
+//         return Future.error('Location permission denied');
+//       }
+//     }
 
-    //permission denied forever
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-        'Location permission denied forever, we cannot access',
-      );
-    }
-    //continue accessing the position of device
-    return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-  }
+//     //permission denied forever
+//     if (permission == LocationPermission.deniedForever) {
+//       return Future.error(
+//         'Location permission denied forever, we cannot access',
+//       );
+//     }
+//     //continue accessing the position of device
+//     return await Geolocator.getCurrentPosition(
+//       desiredAccuracy: LocationAccuracy.high,
+//     );
+//   }
 
-  //getAddress
-  Future<void> getAddressFromLongLat(Position position) async {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
-    print(placemarks);
+//   //getAddress
+//   Future<void> getAddressFromLongLat(Position position) async {
+//     List<Placemark> placemarks =
+//         await placemarkFromCoordinates(position.latitude, position.longitude);
+//     print(placemarks);
 
-    Placemark place = placemarks[0];
+//     Placemark place = placemarks[0];
 
-    latitude.value = position.latitude.toString();
-    longitude.value = position.longitude.toString();
+//     latitude.value = position.latitude.toString();
+//     longitude.value = position.longitude.toString();
 
-    strAlamat.value =
-        '${place.subAdministrativeArea}, ${place.subLocality}, ${place.locality}, '
-        '${place.postalCode}, ${place.country}, ${place.administrativeArea}';
-  }
+//     strAlamat.value =
+//         '${place.subAdministrativeArea}, ${place.subLocality}, ${place.locality}, '
+//         '${place.postalCode}, ${place.country}, ${place.administrativeArea}';
+//   }
 
-  // Fungsi untuk mendapatkan alamat dari geolocation dan mengupdate nilai provinsi, kabupaten, kecamatan, dan desa
-  Future<void> updateAlamatInfo() async {
-    try {
-      isLoading.value = true;
+//   // Fungsi untuk mendapatkan alamat dari geolocation dan mengupdate nilai provinsi, kabupaten, kecamatan, dan desa
+//   Future<void> updateAlamatInfo() async {
+//     try {
+//       isLoading.value = true;
 
-      // Mendapatkan posisi geolokasi
-      Position position = await getGeoLocationPosition();
+//       // Mendapatkan posisi geolokasi
+//       Position position = await getGeoLocationPosition();
 
-      // Mendapatkan alamat dari geolokasi
-      await getAddressFromLongLat(position);
+//       // Mendapatkan alamat dari geolokasi
+//       await getAddressFromLongLat(position);
 
-      // Mengupdate nilai provinsi, kabupaten, kecamatan, dan desa berdasarkan alamat
-      provinsiC.text = getAlamatInfo(5); //benar 5
-      kabupatenC.text = getAlamatInfo(0); //benar 0
-      kecamatanC.text = getAlamatInfo(2); //benar 2
-      desaC.text = getAlamatInfo(1); //benar 1
-    } catch (e) {
-      print('Error updating alamat info: $e');
-      showErrorMessage("Error updating alamat info: $e");
-    } finally {
-      isLoading.value = false;
-    }
-  }
+//       // Mengupdate nilai provinsi, kabupaten, kecamatan, dan desa berdasarkan alamat
+//       provinsiC.text = getAlamatInfo(5); //benar 5
+//       kabupatenC.text = getAlamatInfo(0); //benar 0
+//       kecamatanC.text = getAlamatInfo(2); //benar 2
+//       desaC.text = getAlamatInfo(1); //benar 1
+//     } catch (e) {
+//       print('Error updating alamat info: $e');
+//       showErrorMessage("Error updating alamat info: $e");
+//     } finally {
+//       isLoading.value = false;
+//     }
+//   }
 
-// Fungsi untuk mendapatkan informasi alamat berdasarkan index
-  String getAlamatInfo(int index) {
-    List<String> alamatInfo = strAlamat.value.split(', ');
-    if (index < alamatInfo.length) {
-      return alamatInfo[index];
-    } else {
-      return '';
-    }
-  }
+// // Fungsi untuk mendapatkan informasi alamat berdasarkan index
+//   String getAlamatInfo(int index) {
+//     List<String> alamatInfo = strAlamat.value.split(', ');
+//     if (index < alamatInfo.length) {
+//       return alamatInfo[index];
+//     } else {
+//       return '';
+//     }
+//   }
 
   // Fungsi untuk memilih gambar dari galeri
   Future<void> pickImage(bool fromCamera) async {
@@ -219,38 +196,40 @@ class AddHewanController extends GetxController {
       if (fetchdata.selectedPeternakId.value.isEmpty) {
         throw "Pilih Peternak terlebih dahulu.";
       }
+      if (fetchdata.selectedIdJenisHewan.value.isEmpty) {
+        throw "Pilih Jenis Hewan terlebih dahulu.";
+      }
+      if (fetchdata.selectedIdRumpunHewan.value.isEmpty) {
+        throw "Pilih Rumpun Hewan terlebih dahulu.";
+      }
+      if (fetchdata.selectedIdTujuanPemeliharaan.value.isEmpty) {
+        throw "Pilih tujuan pemeliharaan terlebih dahulu.";
+      }
 
       if (fetchdata.selectedPetugasId.value.isEmpty) {
         throw "Pilih Petugas terlebih dahulu.";
       }
 
       File? fotoHewanFile = fotoHewan.value;
-
-      if (fotoHewanFile == null) {
-        throw "Pilih gambar hewan terlebih dahulu.";
-      }
-
+      print("Memanggil addHewanAPI...");
       hewanModel = await HewanApi().addHewanAPI(
         kodeEartagNasionalC.text,
         noKartuTernakC.text,
-        provinsiC.text,
-        kabupatenC.text,
-        kecamatanC.text,
-        desaC.text,
-        alamat.value = strAlamat.value,
+        idIsikhnasTernakC.text,
+        fetchdata.selectedIdJenisHewan.value,
+        fetchdata.selectedIdRumpunHewan.value,
+        fetchdata.selectedIdTujuanPemeliharaan.value,
         fetchdata.selectedPeternakId.value,
         fetchdata.selectedKandangId.value,
-        selectedSpesies.value,
         selectedGender.value,
-        umurC.text,
+        tempatLahirC.text,
+        tanggalLahirC.text,
         identifikasiHewanC.text,
         fetchdata.selectedPetugasId.value,
-        tanggalTerdaftarC.text,
         fotoHewanFile,
-        latitude: latitude.value,
-        longitude: longitude.value,
       );
-      await updateAlamatInfo();
+      print("Selesai memanggil addHewanAPI");
+      // await updateAlamatInfo();
 
       if (hewanModel != null) {
         if (hewanModel?.status == 201) {
@@ -321,7 +300,7 @@ class AddHewanController extends GetxController {
 
     if (picked != null && picked != selectedDate1) {
       selectedDate1 = picked;
-      umurC.text = DateFormat('dd/MM/yyyy').format(picked);
+      tanggalLahirC.text = DateFormat('dd/MM/yyyy').format(picked);
     }
   }
 }

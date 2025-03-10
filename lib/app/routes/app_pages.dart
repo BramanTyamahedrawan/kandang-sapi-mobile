@@ -1,3 +1,5 @@
+import 'package:crud_flutter_api/app/modules/CRUD/hewan/detail_hewan/bindings/detail_hewan_binding.dart';
+import 'package:crud_flutter_api/app/modules/CRUD/hewan/detail_hewan/views/detail_hewan_view.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/add_jenishewan/views/add_jenishewan.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/detail_jenishewan/bindings/detail_jenisvaksin_binding.dart';
 import 'package:crud_flutter_api/app/modules/CRUD/jenis-hewan/detail_jenishewan/views/detail_jenishewan_view.dart';
@@ -33,8 +35,7 @@ import 'package:get/get.dart';
 // Hewan
 import '../modules/CRUD/hewan/add_hewan/bindings/add_hewan_binding.dart';
 import '../modules/CRUD/hewan/add_hewan/views/add_hewan.dart';
-import '../modules/CRUD/hewan/detail_hewan/bindings/detail_hewan_binding.dart';
-import '../modules/CRUD/hewan/detail_hewan/views/detail_hewan_view.dart';
+
 // Inseminasi
 import '../modules/CRUD/inseminasi/add_inseminasi/bindings/add_inseminasi_binding.dart';
 import '../modules/CRUD/inseminasi/add_inseminasi/views/add_inseminasi.dart';

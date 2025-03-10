@@ -15,10 +15,6 @@ class AddVaksinView extends GetView<AddVaksinController> {
   const AddVaksinView({super.key});
   @override
   Widget build(BuildContext context) {
-    print("Nama Vaksin List: ${controller.fetchdata.namaVaksinList}");
-    print(
-        "Filtered Nama Vaksin List: ${controller.fetchdata.filteredNamaVaksinList}");
-
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(

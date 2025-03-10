@@ -75,27 +75,26 @@ class AddkelahiranController extends GetxController {
   Future addHewan(BuildContext context) async {
     try {
       isLoading.value = true;
-      hewanModel = await HewanApi().addHewanAPI(
-          eartagAnakC.text, //eartag
-          "", //no kartu ternak
-          "", // prov
-          "", //kab
-          "", //kec
-          "", //des
-          "Perbaharui alamat hewan", //alamat
-          fetchdata.selectedPeternakId.value, //peternak
-          fetchdata.selectedKandangId.value, // kandang
-          selectedSpesies.value, //spesies
-          selectedGender.value, //gender /sex
-          "", //umur
-          "", // identifikasi hewan
-          fetchdata.selectedPetugasId.value, //petugas
-          tanggalLaporanC.text, //tanggal terdaftar
-          null, //fotohewan
-          latitude: '', //lat
-          longitude: '' //long
-
-          );
+      // hewanModel = await HewanApi().addHewanAPI(
+      //   eartagAnakC.text, //eartag
+      //   "", //no kartu ternak
+      //   "", // prov
+      //   "", //kab
+      //   "", //kec
+      //   "", //des
+      //   "Perbaharui alamat hewan", //alamat
+      //   fetchdata.selectedPeternakId.value, //peternak
+      //   fetchdata.selectedKandangId.value, // kandang
+      //   selectedSpesies.value, //spesies
+      //   selectedGender.value, //gender /sex
+      //   "", //umur
+      //   "", // identifikasi hewan
+      //   fetchdata.selectedPetugasId.value, //petugas
+      //   tanggalLaporanC.text, //tanggal terdaftar
+      //   null, //fotohewan
+      //   // latitude: '', //lat
+      //   // longitude: '' //long
+      // );
       if (hewanModel != null) {
         if (hewanModel?.status == 201) {
           Get.back();

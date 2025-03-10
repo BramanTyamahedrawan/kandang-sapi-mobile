@@ -133,22 +133,20 @@ class HomeController extends GetxController {
       } else {
         // Mengambil data latitude dan longitude dari setiap Hewan
         posts1.value.content!.forEach((hewani) {
-          double hewanLat = double.tryParse(hewani.latitude ?? '') ?? 0.0;
-          double hewanLon = double.tryParse(hewani.longitude ?? '') ?? 0.0;
-          print(hewani.latitude);
-          print(hewani.longitude);
+          // double hewanLat = double.tryParse(hewani.latitude ?? '') ?? 0.0;
+          // double hewanLon = double.tryParse(hewani.longitude ?? '') ?? 0.0;
 
           // Check if the Hewan is in the KRB
-          if (isHewanInKRB(hewanLat, hewanLon, centerSemeru.latitude,
-              centerSemeru.longitude, radiusKRB)) {
-            // Hewan berada dalam wilayah KRB
-            // Lakukan tindakan atau logika yang sesuai di sini
-            print(
-                'Hewan ${hewani.kodeEartagNasional} berada dalam wilayah KRB');
-          } else {
-            // Hewan di luar wilayah KRB
-            print('Hewan ${hewani.kodeEartagNasional} di luar wilayah KRB');
-          }
+          // if (isHewanInKRB(hewanLat, hewanLon, centerSemeru.latitude,
+          //     centerSemeru.longitude, radiusKRB)) {
+          //   // Hewan berada dalam wilayah KRB
+          //   // Lakukan tindakan atau logika yang sesuai di sini
+          //   print(
+          //       'Hewan ${hewani.kodeEartagNasional} berada dalam wilayah KRB');
+          // } else {
+          //   // Hewan di luar wilayah KRB
+          //   print('Hewan ${hewani.kodeEartagNasional} di luar wilayah KRB');
+          // }
         });
 
         // Panggil checkHewanInKRB setelah iterasi selesai
@@ -204,18 +202,18 @@ class HomeController extends GetxController {
         posts3.value.content!.forEach((kandang) {
           double kandangLat = double.tryParse(kandang.latitude ?? '') ?? 0.0;
           double kandangLon = double.tryParse(kandang.longitude ?? '') ?? 0.0;
-          print(kandang.latitude);
-          print(kandang.longitude);
+          // print(kandang.latitude);
+          // print(kandang.longitude);
 
           // Check if the kandang is in the KRB
           if (isKandangInKRB(kandangLat, kandangLon, centerSemeru.latitude,
               centerSemeru.longitude, radiusKRB)) {
             // Kandang berada dalam wilayah KRB
             // Lakukan tindakan atau logika yang sesuai di sini
-            print('Kandang ${kandang.idKandang} berada dalam wilayah KRB');
+            // print('Kandang ${kandang.idKandang} berada dalam wilayah KRB');
           } else {
             // Kandang di luar wilayah KRB
-            print('Kandang ${kandang.idKandang} di luar wilayah KRB');
+            // print('Kandang ${kandang.idKandang} di luar wilayah KRB');
           }
         });
 
@@ -359,7 +357,7 @@ class HomeController extends GetxController {
 
   void checkKandangInKRB() {
     List<LatLng> krbBoundary = calculateKRBBoundary(centerSemeru, radiusKRB);
-    print('KRB Boundary: $krbBoundary');
+    // print('KRB Boundary: $krbBoundary');
     countKandangInKRB.value = 0;
     // Iterate through the list of kandang
     posts3.value.content!.forEach((kandang) {
@@ -371,16 +369,16 @@ class HomeController extends GetxController {
           centerSemeru.longitude, radiusKRB)) {
         // Kandang berada dalam wilayah KRB
         // Lakukan tindakan atau logika yang sesuai di sini
-        print('Kandang ${kandang.idKandang} berada dalam wilayah KRB');
+        // print('Kandang ${kandang.idKandang} berada dalam wilayah KRB');
         countKandangInKRB++;
       } else {
         // Kandang di luar wilayah KRB
-        print('Kandang ${kandang.idKandang} di luar wilayah KRB');
+        // print('Kandang ${kandang.idKandang} di luar wilayah KRB');
       }
     });
 
     // Cetak atau gunakan nilai countKandangInKRB di sini
-    print('Jumlah kandang dalam wilayah KRB: ${countKandangInKRB.value}');
+    // print('Jumlah kandang dalam wilayah KRB: ${countKandangInKRB.value}');
   }
 
   double _degreesToRadians(double degrees) {
@@ -389,26 +387,26 @@ class HomeController extends GetxController {
 
   void checkHewanInKRB() {
     List<LatLng> krbBoundary = calculateKRBBoundary(centerSemeru, radiusKRB);
-    print('KRB Boundary: $krbBoundary');
+    // print('KRB Boundary: $krbBoundary');
     countHewanInKRB.value = 0;
     // Iterate through the list of hewan
     posts1.value.content!.forEach((hewani) {
-      double hewanLat = double.tryParse(hewani.latitude ?? '') ?? 0.0;
-      double hewanLon = double.tryParse(hewani.longitude ?? '') ?? 0.0;
+      // double hewanLat = double.tryParse(hewani.latitude ?? '') ?? 0.0;
+      // double hewanLon = double.tryParse(hewani.longitude ?? '') ?? 0.0;
       // Check if the hewan is in the KRB
-      if (isHewanInKRB(hewanLat, hewanLon, centerSemeru.latitude,
-          centerSemeru.longitude, radiusKRB)) {
-        // hewan berada dalam wilayah KRB
-        print('Hewan ${hewani.kodeEartagNasional} berada dalam wilayah KRB');
-        countHewanInKRB++;
-      } else {
-        // Hewan di luar wilayah KRB
-        print('Hewan ${hewani.kodeEartagNasional} di luar wilayah KRB');
-      }
+      // // if (isHewanInKRB(hewanLat, hewanLon, centerSemeru.latitude,
+      // //     centerSemeru.longitude, radiusKRB)) {
+      // //   // hewan berada dalam wilayah KRB
+      // //   print('Hewan ${hewani.kodeEartagNasional} berada dalam wilayah KRB');
+      // //   countHewanInKRB++;
+      // // } else {
+      // //   // Hewan di luar wilayah KRB
+      // //   print('Hewan ${hewani.kodeEartagNasional} di luar wilayah KRB');
+      // }
     });
 
     // Cetak atau gunakan nilai countHewanInKRB di sini
-    print('Jumlah Hewan dalam wilayah KRB: ${countHewanInKRB.value}');
+    // print('Jumlah Hewan dalam wilayah KRB: ${countHewanInKRB.value}');
   }
 
   double _degreesToRadians1(double degrees) {
@@ -436,7 +434,7 @@ class HomeController extends GetxController {
       boundary.add(LatLng(latitude, longitude));
     }
 
-    print('KRB Boundary: $boundary');
+    // print('KRB Boundary: $boundary');
     return boundary;
   }
 
@@ -488,7 +486,7 @@ class HomeController extends GetxController {
         },
       );
     } else {
-      print('Batal memilih lokasi penyimpanan');
+      // print('Batal memilih lokasi penyimpanan');
     }
   }
 

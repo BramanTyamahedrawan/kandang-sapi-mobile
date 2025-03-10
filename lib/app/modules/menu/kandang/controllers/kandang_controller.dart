@@ -65,15 +65,15 @@ class KandangController extends GetxController {
       return kandang.idKandang!.toLowerCase().contains(keyword.toLowerCase());
     }).toList();
 
-    void filterByJenisHewan(String jenisHewanC) {
-      final List<KandangModel> filteredList =
-          posts.value.content!.where((kandang) {
-        return kandang.jenisHewan!
-            .toLowerCase()
-            .contains(jenisHewanC.toLowerCase());
-      }).toList();
+    // void filterByJenisHewan(String jenisHewanC) {
+    //   final List<KandangModel> filteredList =
+    //       posts.value.content!.where((kandang) {
+    //     return kandang.jenisHewan!
+    //         .toLowerCase()
+    //         .contains(jenisHewanC.toLowerCase());
+    //   }).toList();
 
-      filteredPosts.assignAll(filteredList);
-    }
+    //   filteredPosts.assignAll(filteredList);
+    // }
   }
 }
